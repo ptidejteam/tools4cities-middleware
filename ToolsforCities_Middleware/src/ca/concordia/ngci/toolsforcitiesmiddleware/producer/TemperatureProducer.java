@@ -8,4 +8,5 @@ public class TemperatureProducer<E> implements IProducer<E> {
 		// TODO Using one thread, mimic a producer that produces random integer values
 		// every 1 sec.
 		}
+	// This is an update, to test GitHub.
 }
