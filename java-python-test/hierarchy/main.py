@@ -11,10 +11,10 @@ if __name__ == "__main__":
     buddy = Dog("Buddy", 1)
     cuddy = Dog("Cuddy", 2)
     duddy = Dog("Duddy", 3)
-    blue_whale = Whale('Blue', 15)
+    blue_whale = Whale('Blue', 15, gateway)
 
-    first_child = Whale('Red', 2)
-    second_child = Whale('Orange', 8)
+    first_child = Whale('Red', 2, gateway)
+    second_child = Whale('Orange', 8, gateway)
 
     blue_whale.addChild(first_child)
     blue_whale.addChild(second_child)

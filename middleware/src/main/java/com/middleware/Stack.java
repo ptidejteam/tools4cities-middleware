@@ -1,7 +1,5 @@
 package com.middleware;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -13,41 +11,60 @@ import com.middleware.interfaces.IWhale;
 public class Stack {
     private List<Object> internalList = new LinkedList<Object>();
 
+    public void push(int element) {
+        System.out.println("Integer Overloaded method called......");
+        internalList.add(element);
+    }
+
+    public void push(String element) {
+        System.out.println("String Overloaded method called......");
+        internalList.add(element);
+    }
+
+    public void push(Map<Object, Object> element) {
+        System.out.println("Hashmap Overloaded method called......");
+        internalList.add(element);
+    }
+
+    public void push(List<Object> element) {
+        System.out.println("List Overloaded method called......");
+        internalList.add(element);
+    }
+
+    public void push(IDog element) {
+        System.out.println("IDog Overloaded method called......");
+        element.bark();
+        processMammal(element);
+    }
+
+    public void push(IWhale element) {
+        System.out.println("IWhale Overloaded method called......");
+        element.swim();
+        System.out.println(element.getSpecies());
+        System.out.println(element.getFirstChild());
+        System.out.println(element.getChildren());
+        processMammal(element);
+    }
+
+    public void processMammal(IMammal element){
+        element.eat("bones");
+        element.sleep();
+        element.reproduce();
+        internalList.add(element);
+    }
+
+    public void push(IMammal element) {
+        //Never called. More specific (lower in hierarchy objects considered)
+        System.out.println("IMammal Overloaded method called......");
+        element.eat("bones");
+        element.sleep();
+        element.reproduce();
+        internalList.add(element);
+    }
+
     public void push(Object element) {
-
-        
-        if (element instanceof ArrayList){
-            List list = (ArrayList) element;
-            System.out.println(list.get(0));
-        }
-        
-        if (element instanceof HashMap) {
-            Map map = (HashMap) element;
-            System.out.println(map.get("age"));
-        }
-
-        if (element instanceof IMammal){
-            
-            IMammal mammal =  (IMammal) element;
-           
-            mammal.eat("bones");
-            mammal.sleep();
-            mammal.reproduce();
-
-            if (element instanceof IDog){
-                IDog dog =  (IDog) element;
-                dog.bark();
-            } else if(element instanceof IWhale){
-                IWhale whale = (IWhale) element;
-                whale.swim();
-                System.out.println(whale.getSpecies());
-                System.out.println(whale.getFirstChild());
-                //Calling whale.getChildren() results in an error. This is being investigated
-                //whale.getChildren();
-            }
-           
-        }
-        internalList.add(0, element);
+        System.out.println("Called....");
+        System.out.println(element);
     }
 
     public void pushMultiple(int number){

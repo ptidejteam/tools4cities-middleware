@@ -1,11 +1,13 @@
 from hierarchy.mammal import Mammal
+from typing import List
 
 
 class Whale(Mammal):
-    def __init__(self, name, age):
+    def __init__(self, name, age, gateway):
         super().__init__(name, age, "Whale")
         self.species = "Blue Whale"
-        self.children: ['Whale'] = []
+        self.children = gateway.jvm.java.util.ArrayList()
+        self.gateway = gateway
 
     def swim(self):
         print("Swimming gracefully")
