@@ -63,8 +63,7 @@ public class Stack {
     }
 
     public void push(Object element) {
-        System.out.println("Called....");
-        System.out.println(element);
+        internalList.add(element);
     }
 
     public void pushMultiple(int number){

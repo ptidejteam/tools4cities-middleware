@@ -1,6 +1,6 @@
-from py4j.java_gateway import JavaGateway, CallbackServerParameters, GatewayParameters
 from hierarchy.dog import Dog
 from hierarchy.whale import Whale
+from py4j.java_gateway import JavaGateway, CallbackServerParameters, GatewayParameters
 
 
 if __name__ == "__main__":
