@@ -1,0 +1,17 @@
+An error results accessing a method that returns a collection of objects, however, no error occurs if a method returns an object:
+AttributeError: 'list' object has no attribute '_get_object_id'
+
+structures like dictionaries and lists and not converted automatically. You need to explicitly convert them or use gateway
+parameters to automatically convert.
+
+Coversions between collections make a copy of the python list, e.g., actions performed on the Java side does not affect the python
+collection.
+
+Python classes can only implement Java interfaces.
+Abstract or concrete classes are not supported because Java does not natively support dynamic proxies for classes.
+Extending classes may be supported in future releases of Py4J.
+
+As a workaround, a subclass of the abstract class could be created on the Java side. The methods of the subclass would call the methods of a custom interface that a Python class could implement.
+
+Implementing a Java interface that returns a list of objects, the list to be returned from the python implementation must
+use the Java Arraylist type with gateway.jvm.java.util.ArrayList()
