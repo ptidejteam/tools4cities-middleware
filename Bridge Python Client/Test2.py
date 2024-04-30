@@ -1,3 +1,4 @@
+import os
 import unittest
 import subprocess
 from py4j.protocol import Py4JJavaError
@@ -11,8 +12,11 @@ from py4j.java_gateway import JavaGateway, JavaObject
 class TestStringMethods(unittest.TestCase):
     def setUp(self):
         PATH_TO_M2 = "C:/Users/si_ejaz/"
-        cmd = "java.exe -cp ../\"Bridge Java Server\"/target/classes;" + PATH_TO_M2 + ".m2/repository/net/sf/py4j/py4j/0.10.9.7/py4j-0.10.9.7.jar com.middleware.StackEntryPoint"
-        subprocess.Popen(cmd)
+        # cmd = "java.exe -cp ../\"Bridge Java Server\"/target/classes;" + PATH_TO_M2 + ".m2/repository/net/sf/py4j/py4j/0.10.9.7/py4j-0.10.9.7.jar com.middleware.StackEntryPoint"
+        # subprocess.Popen(cmd)
+        
+        subprocess.Popen(["java", "-cp", "../Bridge Java Server/target/classes" + os.pathsep + PATH_TO_M2 + ".m2/repository/net/sf/py4j/py4j/0.10.9.7/py4j-0.10.9.7.jar", "com.middleware.StackEntryPoint"])
+
         self.gateway = JavaGateway(callback_server_parameters=CallbackServerParameters(),
                           gateway_parameters=GatewayParameters(auto_convert=True))
         self.stack = self.gateway.entry_point.getStack()
@@ -65,4 +69,3 @@ class TestStringMethods(unittest.TestCase):
         
         self.assertEqual(bob.toString(), whale1.toString())
         self.assertEqual(bob.getFirstChild().toString(), whale2.toString())
-
