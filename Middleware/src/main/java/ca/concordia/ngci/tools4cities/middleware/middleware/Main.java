@@ -13,7 +13,7 @@ public class Main {
 		IProducer<List<String>> producer = new CSVProducer();
 		IConsumer<String> consumer = new StringConsumer();
 
-		Middleware middleware = new Middleware(producer, consumer);
+		Middleware middleware = new Middleware();
 
 		// Initiate request for data
 		middleware.requestData();
