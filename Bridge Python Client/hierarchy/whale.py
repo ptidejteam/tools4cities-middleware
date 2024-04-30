@@ -1,4 +1,4 @@
-from BridgePythonClient.hierarchy.mammal import Mammal
+from hierarchy.mammal import Mammal
 from typing import List
 
 

@@ -1,6 +1,6 @@
-from BridgePythonClient.hierarchy.nervous_system import NervousSystem
-from BridgePythonClient.hierarchy.respiratory_system import RespiratorySystem
-from BridgePythonClient.hierarchy.digestive_system import DigestiveSystem
+from hierarchy.nervous_system import NervousSystem
+from hierarchy.respiratory_system import RespiratorySystem
+from hierarchy.digestive_system import DigestiveSystem
 
 
 class Mammal:
