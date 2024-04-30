@@ -2,6 +2,7 @@ package ca.concordia.ngci.tools4cities.middleware.middleware;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 
 import ca.concordia.ngci.tools4cities.middleware.consumer.IConsumer;
 import ca.concordia.ngci.tools4cities.middleware.producer.IProducer;
@@ -12,10 +13,13 @@ import ca.concordia.ngci.tools4cities.middleware.producer.IProducer;
 public class Middleware {
 	private final IProducer<?> producer;
 	private final IConsumer<?> consumer;
+	private final IOperations<?> operation;
 
-	public Middleware(final IProducer<?> producer, final IConsumer<?> consumer) {
-		this.producer = producer;
-		this.consumer = consumer;
+	public Middleware() {
+		this.producer = null;
+		this.consumer = null;
+		this.operation = null;
+
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -27,7 +31,18 @@ public class Middleware {
 		consumer.receiveData((List) data);
 	}
 
-	public <E> void addConsumer(final IConsumer<E> aConsumer, final IProducer<E> aProducer) {
-		aProducer.addObserver(aConsumer);
+	public <E> void addProducer(final IProducer<E> aProducer) {
+		// aProducer.addObserver(aConsumer);
+	}
+	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public Set<IProducer> getProducers(){
+		return (Set<IProducer>) producer;
+		
+	}
+	
+	public <E> void requestData(IConsumer<E> initiator, Set<IProducer<?>> producer, OrderedSet<IOperations<?>> operations) {
+		
+		
 	}
 }
