@@ -5,13 +5,17 @@ from py4j.protocol import Py4JJavaError
 from hierarchy.dog import Dog
 from hierarchy.whale import Whale
 from py4j.java_gateway import CallbackServerParameters, GatewayParameters
+from dotenv import load_dotenv
 
 # Not ideal, the unit test should NOT be dependent on py4j
 from py4j.java_gateway import JavaGateway, JavaObject
 
+# Load environment variables from .env file
+load_dotenv()
+
 class TestStringMethods(unittest.TestCase):
     def setUp(self):
-        PATH_TO_M2 = "C:/Users/si_ejaz/"
+        PATH_TO_M2 = os.getenv('PATH_TO_M2')
         # cmd = "java.exe -cp ../\"Bridge Java Server\"/target/classes;" + PATH_TO_M2 + ".m2/repository/net/sf/py4j/py4j/0.10.9.7/py4j-0.10.9.7.jar com.middleware.StackEntryPoint"
         # subprocess.Popen(cmd)
         

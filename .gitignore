@@ -1,1 +1,8 @@
 /.metadata/
+Bridge Python Client/.idea
+Bridge Python Client/.env
+Bridge Python Client/.settings
+.idea
+.vscode
+Middleware/.settings
+Bridge Java Server/.settings
