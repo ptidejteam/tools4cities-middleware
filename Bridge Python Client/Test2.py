@@ -1,31 +1,37 @@
 import os
+import subprocess
 import time
 import unittest
-import subprocess
+
+from dotenv import load_dotenv
+from py4j.java_gateway import JavaGateway, JavaObject, CallbackServerParameters, GatewayParameters
 from py4j.protocol import Py4JJavaError
+
 from hierarchy.dog import Dog
 from hierarchy.whale import Whale
-from py4j.java_gateway import CallbackServerParameters, GatewayParameters
-from dotenv import load_dotenv
+
 
 # Not ideal, the unit test should NOT be dependent on py4j
-from py4j.java_gateway import JavaGateway, JavaObject
-
-# Load environment variables from .env file
-load_dotenv()
-
-
 class TestStringMethods(unittest.TestCase):
-
     def start_server(self):
+        # Load environment variables from .env file
+        load_dotenv()
+
         # Command to start the Java server
         path_to_m2 = os.getenv('PATH_TO_M2')
+        if (not os.path.exists(path_to_m2)):
+            raise ValueError("The path to .m2 doesn't exist, please create/edit the .env file in the root folder of this project")
+            pass
+        
         command = ["java", "-cp",
                    "../Bridge Java Server/target/classes" + os.pathsep + path_to_m2 + ".m2/repository/net/sf/py4j/py4j/0.10.9.7/py4j-0.10.9.7.jar",
                    "com.middleware.StackEntryPoint"]
+
         # Start the Java server as a subprocess
         subprocess.Popen(command)
-        time.sleep(0.12)
+        
+        # Wait for the Java server to have started
+        time.sleep(1)
 
     def setUp(self):
         self.start_server()
@@ -34,7 +40,7 @@ class TestStringMethods(unittest.TestCase):
         self.stack = self.gateway.entry_point.getStack()
 
     def tearDown(self):
-        self.gateway.shutdown(False)
+        self.gateway.shutdown()
 
     def test1(self):
         self.assertNotEqual(self.stack, None)
@@ -43,7 +49,6 @@ class TestStringMethods(unittest.TestCase):
         self.assertEqual(type(self.stack), JavaObject)
 
     def test3(self):
-
         try:
             self.stack.pop()
         except Py4JJavaError:
