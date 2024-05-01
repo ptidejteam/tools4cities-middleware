@@ -1,6 +1,6 @@
 import os
+import socket 
 import subprocess
-import time
 import unittest
 
 from dotenv import load_dotenv
@@ -13,6 +13,15 @@ from hierarchy.whale import Whale
 
 # Not ideal, the unit test should NOT be dependent on py4j
 class TestStringMethods(unittest.TestCase):
+    def is_port_available(self, host, port):
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.settimeout(2) #Timeout in case of port not open
+        try:
+            s.connect((host, port)) #Port ,Here 22 is port 
+            return True
+        except:
+            return False
+  
     def start_server(self):
         # Load environment variables from .env file
         load_dotenv()
@@ -31,7 +40,8 @@ class TestStringMethods(unittest.TestCase):
         subprocess.Popen(command)
         
         # Wait for the Java server to have started
-        time.sleep(1)
+        while(self.is_port_available("localhost", 25334)):
+            pass
 
     def setUp(self):
         self.start_server()
