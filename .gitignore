@@ -6,3 +6,5 @@ Bridge Python Client/.settings
 .vscode
 Middleware/.settings
 Bridge Java Server/.settings
+Bridge Java Server/.project
+Middleware/.project
