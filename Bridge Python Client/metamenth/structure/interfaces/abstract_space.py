@@ -1,9 +1,8 @@
 import uuid
 from metamenth.datatypes.interfaces.abstract_measure import AbstractMeasure
-from metamenth.datatypes.interfaces.abstract_zonal_entity import AbstractZonalEntity
 
 
-class AbstractSpace(AbstractZonalEntity):
+class AbstractSpace:
     """
     An abstract class for spaces in a building
     """
@@ -48,10 +47,12 @@ class AbstractSpace(AbstractZonalEntity):
     def schedules(self):
         raise AttributeError("Cannot get schedules")
 
-    def __str__(self):
+    def toString(self):
         return (
             f"UID: {self.UID}, "
             f"Area: {self.area}, "
             f"Location: {self.location}, "
-            f"Zones: {self._zones}, "
         )
+
+    class Java:
+        implements = ['com.middleware.interface.metamenth.IAbstractSpace']

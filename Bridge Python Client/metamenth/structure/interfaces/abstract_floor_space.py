@@ -1,6 +1,7 @@
 from typing import List
 from metamenth.structure.interfaces.abstract_space import AbstractSpace
 from metamenth.datatypes.interfaces.abstract_measure import AbstractMeasure
+from metamenth.measure_instruments.meter import Meter
 
 
 class AbstractFloorSpace(AbstractSpace):
@@ -55,9 +56,12 @@ class AbstractFloorSpace(AbstractSpace):
             return self.name == other.name
         return False
 
-    def __str__(self) -> str:
+    def toString(self) -> str:
         return (
             f"{super().__str__()}"
             f"Name: {self.name}, "
             f"Meter: {self.meter}\n"
         )
+
+    class Java:
+        implements = ['com.middleware.interface.metamenth.IAbstractFloorSpace']

@@ -43,10 +43,13 @@ class Room(AbstractFloorSpace):
         else:
             raise ValueError("room_type must be of type RoomType")
 
-    def __str__(self):
+    def toString(self):
         room_details = (
             f"Room ({super().__str__()} Room, "
             f"Room Type: {self.room_type})"
         )
 
         return room_details
+
+    class Java:
+        implements = ['com.middleware.interface.metamenth.IRoom']

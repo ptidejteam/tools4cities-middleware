@@ -146,7 +146,7 @@ class Meter:
                    and self.accumulation_frequency == other.accumulation_frequency
         return False
 
-    def __str__(self):
+    def toString(self):
         """
         :return: A formatted string representing the meter.
         """
@@ -157,3 +157,6 @@ class Meter:
                          f"Accumulation Frequency: {self.accumulation_frequency.value})")
 
         return f"{meter_details}"
+
+    class Java:
+        implements = ['com.middleware.interface.metamenth.IMeter']

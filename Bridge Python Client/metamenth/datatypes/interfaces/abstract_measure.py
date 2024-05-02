@@ -12,6 +12,9 @@ class AbstractMeasure(ABC):
     def __init__(self, measure: Measure):
         self.measurement_unit = measure.unit
 
-    def __str__(self):
+    def toString(self):
         return f"Unit: {self.measurement_unit.value}, " \
                f"Measure Type: {None}"
+
+    class Java:
+        implements = ['com.middleware.interface.metamenth.IAbstractMeasure']
