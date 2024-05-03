@@ -1,4 +1,6 @@
-package com.middleware.interfaces.metamenth;
+package com.middleware.interfaces.metamenth.structure;
+
+import com.middleware.interfaces.metamenth.datatypes.IAbstractMeasure;
 
 public interface IAbstractSpace {
     String toString();
