@@ -58,4 +58,4 @@ class Measure:
                 f"Mantissa: {self.getMantissa()}")
 
     class Java:
-        implements = ['com.middleware.interface.metamenth.IAbstractMeasure']
+        implements = ['com.middleware.interfaces.metamenth.datatypes.IMeasure']

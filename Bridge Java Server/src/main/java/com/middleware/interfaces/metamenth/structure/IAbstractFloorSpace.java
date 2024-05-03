@@ -1,4 +1,6 @@
-package com.middleware.interfaces.metamenth;
+package com.middleware.interfaces.metamenth.structure;
+
+import com.middleware.interfaces.metamenth.measureinstruments.IMeter;
 
 public interface IAbstractFloorSpace extends IAbstractSpace {
     String toString();

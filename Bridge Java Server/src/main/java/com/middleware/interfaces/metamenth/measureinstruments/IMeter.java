@@ -1,4 +1,4 @@
-package com.middleware.interfaces.metamenth;
+package com.middleware.interfaces.metamenth.measureinstruments;
 
 import com.middleware.enums.MeasurementUnit;
 import com.middleware.enums.MeterMeasureMode;

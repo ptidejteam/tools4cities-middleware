@@ -53,3 +53,8 @@ class RoomType(Enum):
     STUDY_ROOM = "StudyRoom"
     OTHER = "Other"
 
+    def getValue(self):
+        return self.value
+    class Java:
+        implements = ['com.middleware.enum.interfaces.IEnum']
+

@@ -59,4 +59,4 @@ class AbstractFloorSpace(AbstractSpace):
         )
 
     class Java:
-        implements = ['com.middleware.interface.metamenth.IAbstractFloorSpace']
+        implements = ['com.middleware.interface.metamenth.structure.IAbstractFloorSpace']

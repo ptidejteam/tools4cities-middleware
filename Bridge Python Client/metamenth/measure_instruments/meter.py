@@ -142,4 +142,4 @@ class Meter:
         return f"{meter_details}"
 
     class Java:
-        implements = ['com.middleware.interface.metamenth.IMeter']
+        implements = ['com.middleware.interfaces.metamenth.measureinstruments.IMeter']

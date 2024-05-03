@@ -30,8 +30,8 @@ class Room(AbstractFloorSpace):
         # call setters to apply validation
         self.setRoomType(room_type)
 
-    def getRoomType(self) -> RoomType:
-        return self._room_type
+    def getRoomType(self) -> str:
+        return self._room_type.value
 
     def setRoomType(self, value: RoomType):
         if value is not None:
@@ -48,4 +48,4 @@ class Room(AbstractFloorSpace):
         return room_details
 
     class Java:
-        implements = ['com.middleware.interface.metamenth.IRoom']
+        implements = ['com.middleware.interface.metamenth.structure.IRoom']

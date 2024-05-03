@@ -26,4 +26,4 @@ class AbstractMeasure(ABC):
                f"Measure Type: {None}"
 
     class Java:
-        implements = ['com.middleware.interface.metamenth.IAbstractMeasure']
+        implements = ['com.middleware.interfaces.metamenth.datatypes.IAbstractMeasure']
