@@ -4,4 +4,6 @@ import java.util.List;
 
 public interface IConsumer<E> {
 	void receiveData(final List<E> data);
+
+	E[] getResults();
 }
