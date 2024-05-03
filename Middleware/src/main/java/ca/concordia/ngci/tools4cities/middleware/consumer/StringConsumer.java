@@ -9,4 +9,10 @@ public class StringConsumer implements IConsumer<String> {
 			System.out.println("Received data: " + datum);
 		}
 	}
+
+	@Override
+	public String[] getResults() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

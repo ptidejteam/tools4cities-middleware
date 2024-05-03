@@ -16,6 +16,6 @@ public class Main {
 		Middleware middleware = new Middleware();
 
 		// Initiate request for data
-		middleware.requestData();
+		middleware.requestData(null, null, null);
 	}
 }

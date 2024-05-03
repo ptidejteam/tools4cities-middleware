@@ -62,9 +62,22 @@ public class Test1 {
 
 			}
 		};
+		final IProducer<Integer> producer3 = new IProducer<>() {
+
+			@Override
+			public Integer fetchData() throws IOException {
+				return null; // Should provide 1, 2, 3
+			}
+
+			@Override
+			public void addObserver(IConsumer<Integer> aConsumer) {
+				// TODO Auto-generated method stub
+
+			}
+		};
 		producers.add(producer1);
 		producers.add(producer2);
-		
+		producers.add(producer3);
 		final Queue<IOperation<?>> operations = new LinkedList<IOperation<?>>();
 		final IOperation<?> operation = new IOperation<>() {
 
