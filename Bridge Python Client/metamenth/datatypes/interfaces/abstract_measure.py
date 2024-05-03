@@ -10,10 +10,19 @@ class AbstractMeasure(ABC):
     Email: peteryefi@gmail.com
     """
     def __init__(self, measure: Measure):
-        self.measurement_unit = measure.unit
+        self._measurement_unit = None
+        self.setMeasurementUnit(measure.getUnit())
+
+    def getMeasurementUnit(self) -> str:
+        return self._measurement_unit.value
+
+    def setMeasurementUnit(self, measurementUnit):
+        if not measurementUnit:
+            raise ValueError('Measurement Unit is required')
+        self._measurement_unit = measurementUnit
 
     def toString(self):
-        return f"Unit: {self.measurement_unit.value}, " \
+        return f"Unit: {self.getMeasurementUnit()}, " \
                f"Measure Type: {None}"
 
     class Java:

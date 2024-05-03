@@ -18,40 +18,31 @@ class AbstractSpace:
         self._location = None
 
         # Apply validation
-        self.area = area
-        self.location = location
+        self.setArea(area)
+        self.setLocation(location)
 
-    @property
-    def UID(self) -> str:
+    def getUID(self) -> str:
         return self._UID
 
-    @property
-    def area(self) -> AbstractMeasure:
+    def getArea(self) -> AbstractMeasure:
         return self._area
 
-    @area.setter
-    def area(self, value: AbstractMeasure):
+    def setArea(self, value: AbstractMeasure):
         if value is None:
             raise ValueError('area must be of type BinaryMeasure')
         self._area = value
 
-    @property
-    def location(self) -> str:
+    def getLocation(self) -> str:
         return self._location
 
-    @location.setter
-    def location(self, value: str):
+    def setLocation(self, value: str):
         self._location = value
-
-    @property
-    def schedules(self):
-        raise AttributeError("Cannot get schedules")
 
     def toString(self):
         return (
-            f"UID: {self.UID}, "
-            f"Area: {self.area}, "
-            f"Location: {self.location}, "
+            f"UID: {self.getUID()}, "
+            f"Area: {self.getArea()}, "
+            f"Location: {self.getLocation()}, "
         )
 
     class Java:

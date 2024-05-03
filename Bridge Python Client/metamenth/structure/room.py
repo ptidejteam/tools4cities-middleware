@@ -25,19 +25,15 @@ class Room(AbstractFloorSpace):
         :param room_type: The type of the room.
         """
         super().__init__(area, name, location)
-        self._name = None
         self._room_type = None
 
         # call setters to apply validation
-        self.name = name
-        self.room_type = room_type
+        self.setRoomType(room_type)
 
-    @property
-    def room_type(self) -> RoomType:
+    def getRoomType(self) -> RoomType:
         return self._room_type
 
-    @room_type.setter
-    def room_type(self, value: RoomType):
+    def setRoomType(self, value: RoomType):
         if value is not None:
             self._room_type = value
         else:
@@ -45,8 +41,8 @@ class Room(AbstractFloorSpace):
 
     def toString(self):
         room_details = (
-            f"Room ({super().__str__()} Room, "
-            f"Room Type: {self.room_type})"
+            f"Room ({super().toString()} Room, "
+            f"Room Type: {self.getRoomType()})"
         )
 
         return room_details
