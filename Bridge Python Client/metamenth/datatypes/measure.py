@@ -1,10 +1,9 @@
 from dataclasses import dataclass
-from metamenth.enumerations.measurement_unit import MeasurementUnit
 
 
 @dataclass
 class Measure:
-    def __init__(self, unit: MeasurementUnit = None, minimum: float = 0.0, maximum: float = 0.0, slope: float = 0.0,
+    def __init__(self, unit: str = None, minimum: float = 0.0, maximum: float = 0.0, slope: float = 0.0,
                  exponent: float = 0.0, mantissa: float = 0.0):
         self._unit = unit
         self._minimum = minimum
@@ -13,10 +12,10 @@ class Measure:
         self._exponent = exponent
         self._mantissa = mantissa
 
-    def getUnit(self) -> MeasurementUnit:
+    def getUnit(self) -> str:
         return self._unit
 
-    def setUnit(self, unit: MeasurementUnit):
+    def setUnit(self, unit: str):
         self._unit = unit
 
     def getMinimum(self) -> float:

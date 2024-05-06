@@ -1,7 +1,4 @@
 import uuid
-from metamenth.enumerations.meter_type import MeterType
-from metamenth.enumerations.measurement_unit import MeasurementUnit
-from metamenth.enumerations.meter_measure_mode import MeterMeasureMode
 from metamenth.enumerations.meter_accumulation_frequency import MeterAccumulationFrequency
 
 
@@ -14,9 +11,9 @@ class Meter:
     """
 
     def __init__(self, meter_location: str, measurement_frequency: float,
-                 measurement_unit: MeasurementUnit, meter_type: MeterType,
-                 measure_mode: MeterMeasureMode, data_accumulated: bool = False,
-                 accumulation_frequency: MeterAccumulationFrequency = MeterAccumulationFrequency.NONE,
+                 measurement_unit: str, meter_type: str,
+                 measure_mode: str, data_accumulated: bool = False,
+                 accumulation_frequency: str = MeterAccumulationFrequency.NONE.value,
                  manufacturer: str = None):
         """
         Initializes a Meter instance.
@@ -38,7 +35,7 @@ class Meter:
         self._measurement_unit = None
         self._measure_mode = None
         self._data_accumulated = data_accumulated
-        self._accumulation_frequency = MeterAccumulationFrequency.NONE
+        self._accumulation_frequency = accumulation_frequency
 
         # Apply validation
         self.setManufacturer(manufacturer)
@@ -72,10 +69,10 @@ class Meter:
         else:
             raise ValueError("measurement_frequency must be a float")
 
-    def getMeasureMode(self) -> MeterMeasureMode:
+    def getMeasureMode(self) -> str:
         return self._measure_mode
 
-    def setMeasureMode(self, value: MeterMeasureMode):
+    def setMeasureMode(self, value: str):
         if value is not None:
             self._measure_mode = value
         else:
@@ -90,31 +87,29 @@ class Meter:
         else:
             raise ValueError("data_accumulated must be a boolean")
 
-    def getAccumulationFrequency(self) -> MeterAccumulationFrequency:
+    def getAccumulationFrequency(self) -> str:
         return self._accumulation_frequency
 
-    def setAccumulationFrequency(self, value: MeterAccumulationFrequency):
+    def setAccumulationFrequency(self, value: float):
         if value is not None:
             if self.getDataAccumulated() and value is None:
                 raise ValueError("accumulation_frequency must not be None")
             else:
                 self._accumulation_frequency = value
-        else:
-            raise ValueError("data_accumulated must be a boolean")
 
-    def getMeasurementUnit(self) -> MeasurementUnit:
+    def getMeasurementUnit(self) -> str:
         return self._measurement_unit
 
-    def setMeasurementUnit(self, value: MeasurementUnit):
+    def setMeasurementUnit(self, value: str):
         if value is not None:
             self._measurement_unit = value
         else:
             raise ValueError("Measurement unit must be of type MeasurementUnit")
 
-    def getMeterType(self) -> MeterType:
+    def getMeterType(self) -> str:
         return self._meter_type
 
-    def setMeterType(self, value: MeterType):
+    def setMeterType(self, value: str):
         if value is not None:
             self._meter_type = value
         else:
@@ -135,9 +130,9 @@ class Meter:
         """
         meter_details = (f"Meter (UID: {self.getUID()}, Location: {self.getMeterLocation()}, "
                          f"Manufacturer: {self.getManufacturer()}, Frequency: {self.getMeasurementFrequency()}, "
-                         f"Unit: {self.getMeasurementUnit().value}, Type: {self.getMeterType().value}, "
-                         f"Measure Mode: {self.getMeasureMode().value}, Data Accumulated: {self.getDataAccumulated()}, "
-                         f"Accumulation Frequency: {self.getAccumulationFrequency().value})")
+                         f"Unit: {self.getMeasurementUnit()}, Type: {self.getMeterType()}, "
+                         f"Measure Mode: {self.getMeasureMode()}, Data Accumulated: {self.getDataAccumulated()}, "
+                         f"Accumulation Frequency: {self.getAccumulationFrequency()})")
 
         return f"{meter_details}"
 

@@ -1,6 +1,5 @@
 from metamenth.datatypes.interfaces.abstract_measure import AbstractMeasure
 from metamenth.structure.interfaces.abstract_floor_space import AbstractFloorSpace
-from metamenth.enumerations.room_type import RoomType
 
 
 class Room(AbstractFloorSpace):
@@ -15,7 +14,7 @@ class Room(AbstractFloorSpace):
         self,
         area: AbstractMeasure,
         name: str,
-        room_type: RoomType,
+        room_type: str,
         location: str = None
     ):
         """
@@ -31,9 +30,9 @@ class Room(AbstractFloorSpace):
         self.setRoomType(room_type)
 
     def getRoomType(self) -> str:
-        return self._room_type.value
+        return self._room_type
 
-    def setRoomType(self, value: RoomType):
+    def setRoomType(self, value: str):
         if value is not None:
             self._room_type = value
         else:
@@ -48,4 +47,4 @@ class Room(AbstractFloorSpace):
         return room_details
 
     class Java:
-        implements = ['com.middleware.interface.metamenth.structure.IRoom']
+        implements = ['com.middleware.interfaces.metamenth.structure.IRoom']

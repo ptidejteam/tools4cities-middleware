@@ -1,5 +1,4 @@
 from hierarchy.mammal import Mammal
-from typing import List
 
 
 class Whale(Mammal):
