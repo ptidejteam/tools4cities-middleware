@@ -4,7 +4,9 @@ public enum RoomType {
     BEDROOM("Bedroom"),
     LIVING_ROOM("Living Room"),
     KITCHEN("Kitchen"),
-    BATHROOM("Bathroom");
+    BATHROOM("Bathroom"),
+    OFFICE("Office"),
+    STUDY_ROOM("Study Room");
 
     private final String value;
 
