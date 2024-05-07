@@ -19,9 +19,12 @@ class BinaryMeasure(AbstractMeasure):
     def getValue(self) -> float:
         return self._value
 
-    def __str__(self):
+    def toString(self):
         return (
             f"BinaryMeasure("
             f"Value: {self.getValue()}, "
             f"{super().__str__()})"
         )
+
+    class Java:
+        implements = ['com.middleware.interfaces.metamenth.datatypes.IBinaryMeasure']

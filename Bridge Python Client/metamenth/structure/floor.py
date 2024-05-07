@@ -46,10 +46,10 @@ class Floor(AbstractSpace):
         self.setFloorType(floor_type)
 
         if open_space:
-            self.add_open_space(open_space)
+            self.addOpenSpace(open_space)
 
         if room:
-            self.add_room(room)
+            self.addRoom(room)
 
         # A floor should have at least one open space or one room
         if not self._open_spaces and not self._rooms:
@@ -88,13 +88,13 @@ class Floor(AbstractSpace):
         else:
             raise ValueError("height must be of type AbstractMeasure")
 
-    def add_open_space(self, value: OpenSpace):
+    def addOpenSpace(self, value: OpenSpace):
         if value is not None:
             self._open_spaces.append(value)
         else:
             raise ValueError("open_spaces must be of type [OpenSpace]")
 
-    def add_room(self, value: Room):
+    def addRoom(self, value: Room):
         if value is not None:
             self._rooms.append(value)
         else:

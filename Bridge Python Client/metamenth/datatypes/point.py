@@ -27,3 +27,6 @@ class Point:
 
     def toString(self):
         return f"Latitude: {self.getLatitude()}, Longitude: {self.getLongitude()}"
+
+    class Java:
+        implements = ['com.middleware.interfaces.metamenth.datatypes.IPoint']

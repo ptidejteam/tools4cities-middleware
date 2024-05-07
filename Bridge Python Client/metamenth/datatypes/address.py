@@ -80,7 +80,7 @@ class Address:
     def getNorthOrientation(self) -> BinaryMeasure:
         return self._north_orientation
 
-    def __str__(self):
+    def toString(self):
         geo_coordinate_str = (
             f", GeoCoordinate: (Latitude: {self.getGeocoordinates().getLatitude()}, "
             f"Longitude: {self.getGeocoordinates().getLongitude()})"
@@ -104,4 +104,7 @@ class Address:
             f"{geo_coordinate_str}"
             f"{north_orientation_str})"
         )
+
+    class Java:
+        implements = ['com.middleware.interfaces.metamenth.datatypes.IAddress']
 

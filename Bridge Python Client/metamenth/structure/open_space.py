@@ -24,7 +24,7 @@ class OpenSpace(AbstractFloorSpace):
         self.setSpaceType(space_type)
 
     def getSpaceType(self) -> str:
-        return self._space_type.value
+        return self._space_type
 
     def setSpaceType(self, value: str):
         if value is None:

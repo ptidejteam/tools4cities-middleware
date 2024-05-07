@@ -14,7 +14,7 @@ class Building:
     """
 
     def __init__(self, construction_year: int, height: AbstractMeasure, floor_area: AbstractMeasure,
-                 internal_mass: AbstractMeasure, address: Address, building_type: str, floor: Floor, gateway):
+                 address: Address, building_type: str, floor: Floor, gateway, internal_mass: AbstractMeasure = None):
         """
         :param construction_year: The construction year of the building
         :param height: The height of the building
@@ -33,16 +33,14 @@ class Building:
         self._building_type = None
         self._floors = gateway.jvm.java.util.ArrayList()
         self._meters = gateway.jvm.java.util.ArrayList()
-        self.track_state = False
 
         # apply validation
         self.setConstructionYear(construction_year)
         self.setHeight(height)
         self.setFloorArea(floor_area)
-        self.setInternalMass(internal_mass)
         self.setAddress(address)
         self.setBuildingType(building_type)
-        self.add_floor(floor)
+        self.addFloor(floor)
 
     def getUID(self) -> str:
         return self._UID
@@ -103,14 +101,14 @@ class Building:
         else:
             raise ValueError("building_type must be of type str")
 
-    def add_floor(self, value: Floor):
+    def addFloor(self, value: Floor):
         if value is not None:
             self._floors.add(value)
         else:
             raise ValueError("floors must be of type Floor")
         return self
 
-    def add_meter(self, value: Meter):
+    def addMeter(self, value: Meter):
         if value is not None:
             self._meters.add(value)
         else:
@@ -132,3 +130,6 @@ class Building:
                 f"Floor Count: {len(self._floors)}, "
                 f"Floors:\n{floors_info}, "
                 f"Meters:\n{meter_info})")
+
+    class Java:
+        implements = ['com.middleware.interfaces.metamenth.structure.IBuilding']
