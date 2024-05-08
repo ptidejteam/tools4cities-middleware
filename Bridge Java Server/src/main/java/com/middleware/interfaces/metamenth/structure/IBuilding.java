@@ -6,7 +6,7 @@ import com.middleware.interfaces.metamenth.measureinstruments.IMeter;
 
 public interface IBuilding {
     String getUID();
-    String getConstructionYear();
+    int getConstructionYear();
     void setConstructionYear(int year);
     IAbstractMeasure getHeight();
     void setHeight(IAbstractMeasure height);

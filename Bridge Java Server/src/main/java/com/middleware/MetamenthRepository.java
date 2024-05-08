@@ -3,9 +3,11 @@ package com.middleware;
 import java.util.HashMap;
 import java.util.Map;
 import com.middleware.interfaces.metamenth.structure.IFloor;
+import com.middleware.interfaces.metamenth.structure.IOpenSpace;
 import com.middleware.interfaces.metamenth.structure.IRoom;
 import com.middleware.enums.FloorType;
 import com.middleware.enums.RoomType;
+import com.middleware.interfaces.metamenth.datatypes.IAddress;
 import com.middleware.interfaces.metamenth.datatypes.IBinaryMeasure;
 import com.middleware.interfaces.metamenth.structure.IBuilding;
 
@@ -24,6 +26,22 @@ public class MetamenthRepository {
 
     public void addEntity(IRoom element) {
         repository.put("room", element);
+    }
+
+    public void addEntity(IOpenSpace element) {
+        repository.put("open_space", element);
+    }
+
+    public void addEntity(IBinaryMeasure element) {
+        repository.put("binary_measure", element);
+    }
+
+    public void addEntity(IAddress element) {
+        repository.put("address", element);
+    }
+
+    public Object getEntity(String key){
+        return repository.getOrDefault(key, null);
     }
 
 

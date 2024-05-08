@@ -5,4 +5,5 @@ public interface IPoint {
     float getLatitude();
     void setLongitude(float longitude);
     float getLongitude();
+    String toString();
 }

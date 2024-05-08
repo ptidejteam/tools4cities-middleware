@@ -9,8 +9,9 @@ class Address:
     Author: Peter Yefi
     Email: peteryefi@gmail.com
     """
+
     def __init__(self, city: str, street: str, state: str, zip_code: str, country: str,
-                 geocoordinate: Point = None,  what3word: str = None, north_orientation: BinaryMeasure = None):
+                 geocoordinate: Point = None, north_orientation: BinaryMeasure = None):
         """
         :param city: The name of the city
         :param street: The street e.g., 6911 Ave De la Pepiniere.
@@ -37,32 +38,41 @@ class Address:
 
         self.north_orientation = north_orientation
 
-
     def setCity(self, value: str):
+        if value is None:
+            raise ValueError('city is required')
         self._city = value
 
     def getCity(self) -> str:
         return self._city
 
     def setStreet(self, value: str):
+        if value is None:
+            raise ValueError('street is required')
         self._street = value
 
     def getStreet(self) -> str:
         return self._street
 
     def setZipCode(self, value: str):
+        if value is None:
+            raise ValueError('zip_code is required')
         self._zip_code = value
 
     def getZipCode(self) -> str:
         return self._zip_code
 
     def setState(self, value: str):
+        if value is None:
+            raise ValueError('state is required')
         self._state = value
 
     def getState(self) -> str:
         return self._state
 
     def setCountry(self, value: str):
+        if value is None:
+            raise ValueError('country is required')
         self._country = value
 
     def getCountry(self) -> str:
@@ -107,4 +117,3 @@ class Address:
 
     class Java:
         implements = ['com.middleware.interfaces.metamenth.datatypes.IAddress']
-
