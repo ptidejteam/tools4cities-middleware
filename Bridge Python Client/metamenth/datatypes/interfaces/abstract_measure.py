@@ -21,9 +21,12 @@ class AbstractMeasure(ABC):
             raise ValueError('Measurement Unit is required')
         self._measurement_unit = measurementUnit
 
-    def toString(self):
+    def __str__(self):
         return f"Unit: {self.getMeasurementUnit()}, " \
                f"Measure Type: {None}"
+
+    def toString(self):
+       self.__str__()
 
     class Java:
         implements = ['com.middleware.interfaces.metamenth.datatypes.IAbstractMeasure']

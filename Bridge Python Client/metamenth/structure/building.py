@@ -14,7 +14,7 @@ class Building:
     """
 
     def __init__(self, construction_year: int, height: AbstractMeasure, floor_area: AbstractMeasure,
-                 address: Address, building_type: str, floor: Floor, gateway, internal_mass: AbstractMeasure = None):
+                 address: Address, building_type: str, floor: Floor, gateway):
         """
         :param construction_year: The construction year of the building
         :param height: The height of the building
