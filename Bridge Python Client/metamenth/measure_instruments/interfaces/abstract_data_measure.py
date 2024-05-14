@@ -65,3 +65,5 @@ class AbstractDataMeasure(ABC):
     def toString(self):
         return self.__str__()
 
+    class Java:
+        implements = ['com.middleware.interfaces.metamenth.measureinstruments.IAbstractDataMeasure']

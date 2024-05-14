@@ -1,6 +1,7 @@
 from metamenth.structure.interfaces.abstract_space import AbstractSpace
 from metamenth.datatypes.interfaces.abstract_measure import AbstractMeasure
 from metamenth.measure_instruments.meter import Meter
+from metamenth.transducers.interfaces.abstract_transducer import AbstractTransducer
 
 
 class AbstractFloorSpace(AbstractSpace):
@@ -22,6 +23,7 @@ class AbstractFloorSpace(AbstractSpace):
         super().__init__(area, location)
         self._name = None
         self._meter = None
+        self._transducers:  [AbstractTransducer] = []
         # apply validation through setters
         self.setName(name)
         self.setMeter(meter)
@@ -43,6 +45,23 @@ class AbstractFloorSpace(AbstractSpace):
             if value.getMeterLocation() != self.getLocation():
                 raise ValueError("what3words location of meter should be the same as space")
         self._meter = value
+
+    def addTransducer(self, transducer: AbstractTransducer):
+        if transducer not in self._transducers:
+            self._transducers.append(transducer)
+            return True
+        return False
+
+    def removeTransducer(self, transducer: AbstractTransducer):
+        if transducer in self._transducers:
+            self._transducers.remove(transducer)
+            return True
+        return False
+
+    def getTransducer(self, name: str) -> AbstractTransducer:
+        for transducer in self._transducers:
+            if transducer.getName() == name:
+                return transducer
 
     def __eq__(self, other):
         # spaces on a floor are equal if they share the same name

@@ -19,3 +19,6 @@ class TriggerHistory(AbstractDataMeasure):
 
     def getTriggerType(self) -> str:
         return self._trigger_type
+
+    class Java:
+        implements = ['com.middleware.interfaces.metamenth.measureinstruments.ITriggerHistory']

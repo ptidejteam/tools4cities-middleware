@@ -9,3 +9,6 @@ class SensorData(AbstractDataMeasure):
         :param timestamp: the time of measurement
         """
         super().__init__(value, timestamp)
+
+    class Java:
+        implements = ['com.middleware.interfaces.metamenth.measureinstruments.ISensorData']

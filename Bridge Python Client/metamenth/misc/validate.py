@@ -6,7 +6,6 @@ from metamenth.enumerations.sensor_measure import SensorMeasure
 class Validate:
     """
     Has miscillineous methods for validation
-
     """
 
     @staticmethod
@@ -120,6 +119,9 @@ class Validate:
         elif sensor_measure == SensorMeasure.OTHER.value:
             return True
         return False
+
+    class Java:
+        implements = ['com.middleware.interfaces.metamenth.misc.IValidate']
 
 
 

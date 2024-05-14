@@ -99,6 +99,9 @@ class Sensor(AbstractTransducer):
     def setSetPoint(self, value: AbstractMeasure):
         self.setTransducerSetPoint(value, self._unit)
 
+    def toString(self):
+        return self.__str__()
+
     def __str__(self):
         sensor_data = "\n".join(str(data) for data in self._data)
         return (
@@ -109,10 +112,13 @@ class Sensor(AbstractTransducer):
             f"Measure: {self.getMeasure()}, "
             f"Measure Range: {self.getMeasureRange()}, "
             f"Data Frequency: {self.getDataFrequency()}, "
-            f"Unit: {self.unit}, "
+            f"Unit: {self.getUnit()}, "
             f"CurrentValue: {self.getCurrentValue()}, "
             f"Measure Type: {self.getMeasureType()}, "
             f"Log Type: {self.getSensorLogType()}, "
             f"Data Count: {len(sensor_data)}\n"
             f"Data: {sensor_data})"
         )
+
+    class Java:
+        implements = ['com.middleware.interfaces.metamenth.transducers.ISensor']

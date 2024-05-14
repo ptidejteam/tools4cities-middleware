@@ -44,17 +44,17 @@ class AbstractTransducer(ABC):
     def setRegistryId(self, value: str):
         self._registry_id = value
 
-    def getSetPoint(self):
+    def getSetPoint(self) -> AbstractMeasure:
         return self._set_point
 
-    def setTransducerSetPoint(self, value: AbstractMeasure, measure: str):
-        if value is not None and measure is not None:
-            if value.measurement_unit.value != measure:
+    def setTransducerSetPoint(self, setpoint: AbstractMeasure, measure: str):
+        if setpoint is not None and measure is not None:
+            if setpoint.measurement_unit.value != measure:
                 raise ValueError('(Input) sensor measure: {} not matching set point measure: {}'
-                                 .format(value.measurement_unit.value, measure))
-        self._set_point = value
+                                 .format(setpoint.measurement_unit.value, measure))
+        self._set_point = setpoint
 
-    def getMetaData(self):
+    def getMetaData(self) -> Dict:
         return self._meta_data
 
     def addData(self, data: Union[List[TriggerHistory], List[SensorData]]):
@@ -62,8 +62,11 @@ class AbstractTransducer(ABC):
             raise ValueError('data should be a list of SensorData or TriggerHistory')
         self._data.extend(data)
 
-    def removeData(self, data: Union[TriggerHistory, SensorData]):
-        self._data.remove(data)
+    def removeData(self, data: Union[TriggerHistory, SensorData]) -> bool:
+        if data in self._data:
+            self._data.remove(data)
+            return True
+        return False
 
     def addMetaData(self, key, value):
         """
@@ -74,7 +77,7 @@ class AbstractTransducer(ABC):
         """
         self._meta_data[key] = value
 
-    def removeMetaData(self, key):
+    def removeMetaData(self, key) -> bool:
         """
         removes meta data to transducers
         :param key: the key part of the metadata
@@ -82,16 +85,10 @@ class AbstractTransducer(ABC):
         """
         try:
             del self._meta_data[key]
+            return True
         except KeyError as err:
             print(err, file=sys.stderr)
-
-    def getData(self):
-        """
-        Search data by attributes values
-        :param search_terms: a dictionary of attributes and their values
-        :return [SensorData|TriggerHistory]:
-        """
-        return self._data
+            return False
 
     def __eq__(self, other):
         if isinstance(other, AbstractTransducer):
@@ -99,7 +96,13 @@ class AbstractTransducer(ABC):
             return self.getName() == other.getName()
         return False
 
+    def toString(self) -> str:
+        return self.__str__()
+
     def __str__(self):
         return (f"Unit: {self.getUID()}, Name: {self.getName()}, Registry ID: {self.getRegistryId()}, "
                 f"Set Point: {self.getSetPoint()}, "
                 f"Metadata: {self.getMetaData()})")
+
+    class Java:
+        implements = ['com.middleware.interfaces.metamenth.transducers.IAbstractTransducer']
