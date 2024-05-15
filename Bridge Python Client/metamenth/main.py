@@ -40,7 +40,7 @@ if __name__ == "__main__":
     sensor = Sensor(name='TMP.01', measure=SensorMeasure.TEMPERATURE.getValue(), data_frequency=90,
                     unit=MeasurementUnit.DEGREE_CELSIUS.getValue(),
                     measure_type=SensorMeasureType.THERMO_COUPLE_TYPE_A.getValue(),
-                    sensor_log_type=SensorLogType.POLLING.getValue())
+                    sensor_log_type=SensorLogType.POLLING.getValue(), gateway=gateway)
 
     # add some data to the sensor
     sensor.addData([SensorData(14), SensorData(15), SensorData(16.8), SensorData(25.8), SensorData(10.19)])

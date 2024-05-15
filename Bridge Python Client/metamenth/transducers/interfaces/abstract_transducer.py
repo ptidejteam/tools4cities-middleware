@@ -1,5 +1,4 @@
 from abc import ABC
-from typing import Dict, Any
 from uuid import uuid4
 import sys
 from typing import List
@@ -12,6 +11,7 @@ from metamenth.datatypes.interfaces.abstract_measure import AbstractMeasure
 class AbstractTransducer(ABC):
     def __init__(self,
                  name: str,
+                 gateway,
                  registry_id: str = None):
         """
         Describes a transducers (in a building)
@@ -22,7 +22,7 @@ class AbstractTransducer(ABC):
         self._name = None
         self._registry_id = registry_id
         self._set_point = None
-        self._meta_data: Dict[str, Any] = {}
+        self._meta_data = gateway.jvm.java.util.HashMap()
         self._data = []
 
         self.setName(name)
@@ -54,7 +54,7 @@ class AbstractTransducer(ABC):
                                  .format(setpoint.measurement_unit.value, measure))
         self._set_point = setpoint
 
-    def getMetaData(self) -> Dict:
+    def getMetaData(self):
         return self._meta_data
 
     def addData(self, data: Union[List[TriggerHistory], List[SensorData]]):
@@ -75,7 +75,7 @@ class AbstractTransducer(ABC):
         :param value: the value part of the metadata
         :return:
         """
-        self._meta_data[key] = value
+        self._meta_data.put(key, value)
 
     def removeMetaData(self, key) -> bool:
         """
@@ -84,7 +84,7 @@ class AbstractTransducer(ABC):
         :return:
         """
         try:
-            del self._meta_data[key]
+            self._meta_data.remove(key)
             return True
         except KeyError as err:
             print(err, file=sys.stderr)

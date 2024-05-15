@@ -73,7 +73,6 @@ class Validate:
         :return: true if the correct unit is used for a specific sensor else false
         Always returns true if sensor measure is other
         """
-        print(sensor_measure, unit)
         if sensor_measure == SensorMeasure.TEMPERATURE.value:
             if unit == MeasurementUnit.DEGREE_CELSIUS.value:
                 return True

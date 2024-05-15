@@ -1,7 +1,6 @@
 import os
 import socket
 import subprocess
-import time
 import unittest
 from dotenv import load_dotenv
 from py4j.java_gateway import JavaGateway, JavaObject, CallbackServerParameters, GatewayParameters
@@ -16,6 +15,8 @@ from metamenth.structure.floor import Floor
 from metamenth.structure.building import Building
 from metamenth.datatypes.address import Address
 from metamenth.datatypes.point import Point
+from metamenth.transducers.sensor import Sensor
+from metamenth.measure_instruments.sensor_data import SensorData
 
 
 # Not ideal, the unit test should NOT be dependent on py4j
@@ -53,7 +54,6 @@ class TestMetamenthEntryPoint(unittest.TestCase):
 
     def setUp(self):
         self.start_server()
-
         self.gateway = JavaGateway(callback_server_parameters=CallbackServerParameters(),
                                    gateway_parameters=GatewayParameters(auto_convert=True))
 
@@ -123,6 +123,41 @@ class TestMetamenthEntryPoint(unittest.TestCase):
         self.assertEqual(received_address_obj.getGeocoordinates().toString(), address.getGeocoordinates().toString())
         self.assertNotEqual(received_address_obj.toString(), address_copy.toString())
 
+    def test_exchange_sensor_without_data(self):
+        SensorMeasure = self.gateway.jvm.com.middleware.enums.SensorMeasure
+        SensorMeasureType = self.gateway.jvm.com.middleware.enums.SensorMeasureType
+        SensorLogType = self.gateway.jvm.com.middleware.enums.SensorLogType
+        MeasurementUnit = self.gateway.jvm.com.middleware.enums.MeasurementUnit
+
+        sensor = Sensor(name='TMP.01', measure=SensorMeasure.TEMPERATURE.getValue(), data_frequency=90,
+                        unit=MeasurementUnit.DEGREE_CELSIUS.getValue(),
+                        measure_type=SensorMeasureType.THERMO_COUPLE_TYPE_A.getValue(),
+                        sensor_log_type=SensorLogType.POLLING.getValue(), gateway=self.gateway)
+
+        self.repo.addEntity(sensor)
+        received_sensor = self.repo.getEntity("sensor")
+        self.assertEqual(sensor.getSensorLogType(), received_sensor.getSensorLogType())
+        self.assertEqual(sensor.getName(), received_sensor.getName())
+        self.assertEqual(sensor.getMetaData(), received_sensor.getMetaData())
+        self.assertEqual(sensor.toString(), received_sensor.toString())
+
+    def test_exchange_sensor_with_data(self):
+        SensorMeasure = self.gateway.jvm.com.middleware.enums.SensorMeasure
+        SensorMeasureType = self.gateway.jvm.com.middleware.enums.SensorMeasureType
+        SensorLogType = self.gateway.jvm.com.middleware.enums.SensorLogType
+        MeasurementUnit = self.gateway.jvm.com.middleware.enums.MeasurementUnit
+
+        sensor = Sensor(name='TMP.01', measure=SensorMeasure.TEMPERATURE.getValue(), data_frequency=90,
+                        unit=MeasurementUnit.DEGREE_CELSIUS.getValue(),
+                        measure_type=SensorMeasureType.THERMO_COUPLE_TYPE_A.getValue(),
+                        sensor_log_type=SensorLogType.POLLING.getValue(), gateway=self.gateway)
+        sensor.addData([SensorData(15), SensorData(16.5), SensorData(27.5)])
+        self.repo.addEntity(sensor)
+        received_sensor = self.repo.getEntity("sensor")
+        self.assertEqual(sensor.getMeasureType(), received_sensor.getMeasureType())
+        self.assertEqual(sensor.getMetaData(), received_sensor.getMetaData())
+        self.assertEqual(sensor.toString(), received_sensor.toString())
+
     def test_exchange_invalid_address(self):
         try:
             address = Address(city='Montreal', street='3965 Rue Sherbrooke', zip_code='H1N 1E3', state='QC',
@@ -165,6 +200,37 @@ class TestMetamenthEntryPoint(unittest.TestCase):
         self.assertNotEqual(received_room_obj, room)
         self.assertIsInstance(room, Room)
         self.assertIsInstance(received_room_obj, JavaObject)
+
+    def test_exchange_room_with_meter_and_sensor(self):
+        MeasurementUnit = self.gateway.jvm.com.middleware.enums.MeasurementUnit
+        MeterType = self.gateway.jvm.com.middleware.enums.MeterType
+        MeterMeasureMode = self.gateway.jvm.com.middleware.enums.MeterMeasureMode
+        RoomType = self.gateway.jvm.com.middleware.enums.RoomType
+        SensorMeasure = self.gateway.jvm.com.middleware.enums.SensorMeasure
+        SensorMeasureType = self.gateway.jvm.com.middleware.enums.SensorMeasureType
+        SensorLogType = self.gateway.jvm.com.middleware.enums.SensorLogType
+
+        meter = Meter('hre.vrs.ies', 0.5, MeasurementUnit.KILOWATTS.getValue(),
+                      MeterType.ELECTRICITY.getValue(), MeterMeasureMode.AUTOMATIC.getValue(), False)
+        measure = Measure(unit=MeasurementUnit.SQUARE_METERS.getValue(), minimum=125)
+        area = BinaryMeasure(measure)
+        room = Room(area, name="STD 101", room_type=RoomType.STUDY_ROOM.getValue(), location='hre.vrs.ies')
+        room.setMeter(meter)
+
+        sensor = Sensor(name='TMP.01', measure=SensorMeasure.TEMPERATURE.getValue(), data_frequency=90,
+                        unit=MeasurementUnit.DEGREE_CELSIUS.getValue(),
+                        measure_type=SensorMeasureType.THERMO_COUPLE_TYPE_A.getValue(),
+                        sensor_log_type=SensorLogType.POLLING.getValue(), gateway=self.gateway)
+
+        sensor.addData([SensorData(15), SensorData(16.5), SensorData(27.5), SensorData(20)])
+        room.addTransducer(sensor)
+
+        self.repo.addEntity(room)
+        received_room_obj = self.repo.getEntity("room")
+        self.assertEqual(received_room_obj.getMeter().toString(), meter.toString())
+        self.assertEqual(received_room_obj.getName(), room.getName())
+        self.assertEqual(room.getTransducer(sensor.getName()).toString(),
+                         received_room_obj.getTransducer(sensor.getName()).toString())
 
     def test_exchange_open_space_but_get_room(self):
         MeasurementUnit = self.gateway.jvm.com.middleware.enums.MeasurementUnit
@@ -267,6 +333,15 @@ class TestMetamenthEntryPoint(unittest.TestCase):
         address = Address(city='Montreal', street='3965 Rue Sherbrooke', zip_code='H1N 1E3', state='QC',
                           country='Canada',
                           geocoordinate=Point(lat=4.8392838293, lon=-1.389883929))
+
+        SensorMeasure = self.gateway.jvm.com.middleware.enums.SensorMeasure
+        SensorMeasureType = self.gateway.jvm.com.middleware.enums.SensorMeasureType
+        SensorLogType = self.gateway.jvm.com.middleware.enums.SensorLogType
+        sensor = Sensor(name='TMP.01', measure=SensorMeasure.TEMPERATURE.getValue(), data_frequency=90,
+                        unit=MeasurementUnit.DEGREE_CELSIUS.getValue(),
+                        measure_type=SensorMeasureType.THERMO_COUPLE_TYPE_A.getValue(),
+                        sensor_log_type=SensorLogType.POLLING.getValue(), gateway=self.gateway)
+
         hall = OpenSpace(name="Hall", area=floor_area, space_type=SpaceType.HALL.getValue())
         room = Room(floor_area, name="STD 101", room_type=RoomType.STUDY_ROOM.getValue(), location='hre.vrs.ies')
         floor = Floor(area=floor_area, number=2, floor_type=FloorType.REGULAR.getValue(), open_space=hall, room=room)
@@ -280,6 +355,7 @@ class TestMetamenthEntryPoint(unittest.TestCase):
         floor_copy = copy.deepcopy(floor)
         self.repo.addEntity(room_copy)
         self.repo.addEntity(floor_copy)
+        self.repo.addEntity(sensor)
 
         received_building_obj = self.repo.getBuilding()
         self.assertEqual(received_building_obj.getConstructionYear(), 2025)

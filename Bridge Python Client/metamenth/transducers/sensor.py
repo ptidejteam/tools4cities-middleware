@@ -7,7 +7,7 @@ from metamenth.datatypes.interfaces.abstract_measure import AbstractMeasure
 class Sensor(AbstractTransducer):
 
     def __init__(self, name: str, measure: str, unit: str, measure_type: str,
-                 data_frequency: float, current_value: float = None,
+                 data_frequency: float, gateway, current_value: float = None,
                  measure_range: AbstractRangeMeasure = None, sensor_log_type: str = None):
         """
         :param name: the unique name of a sensor
@@ -16,8 +16,9 @@ class Sensor(AbstractTransducer):
         :param measure_type: the type of data measured by the sensor
         :param data_frequency: what interval is the data recorded
         :param current_value: the current value for the sensor
+        :param gateway: py4j gateway
         """
-        super().__init__(name)
+        super().__init__(name, gateway)
         self._measure = None
         self._data_frequency = None
         self._unit = None
