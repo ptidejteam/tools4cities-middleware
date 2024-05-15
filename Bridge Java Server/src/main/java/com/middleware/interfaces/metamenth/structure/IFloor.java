@@ -1,6 +1,5 @@
 package com.middleware.interfaces.metamenth.structure;
 
-import com.middleware.enums.FloorType;
 import com.middleware.interfaces.metamenth.datatypes.IAbstractMeasure;
 
 public interface IFloor {

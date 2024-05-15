@@ -10,6 +10,8 @@ from metamenth.structure.floor import Floor
 from metamenth.structure.building import Building
 from metamenth.datatypes.address import Address
 from metamenth.datatypes.point import Point
+from metamenth.transducers.sensor import Sensor
+from metamenth.measure_instruments.sensor_data import SensorData
 
 if __name__ == "__main__":
 
@@ -26,11 +28,22 @@ if __name__ == "__main__":
     MeasurementUnit = gateway.jvm.com.middleware.enums.MeasurementUnit
     MeterMeasureMode = gateway.jvm.com.middleware.enums.MeterMeasureMode
     BuildingType = gateway.jvm.com.middleware.enums.BuildingType
+    SensorMeasure = gateway.jvm.com.middleware.enums.SensorMeasure
+    SensorMeasureType = gateway.jvm.com.middleware.enums.SensorMeasureType
+    SensorLogType = gateway.jvm.com.middleware.enums.SensorLogType
 
     meter = Meter('hre.vrs.ies', 0.5, MeasurementUnit.KILOWATTS.getValue(),
                   MeterType.ELECTRICITY.getValue(), MeterMeasureMode.AUTOMATIC.getValue(), False)
     measure = Measure(unit=MeasurementUnit.SQUARE_METERS.getValue(), minimum=125)
     area = BinaryMeasure(measure)
+
+    sensor = Sensor(name='TMP.01', measure=SensorMeasure.TEMPERATURE.getValue(), data_frequency=90,
+                    unit=MeasurementUnit.DEGREE_CELSIUS.getValue(),
+                    measure_type=SensorMeasureType.THERMO_COUPLE_TYPE_A.getValue(),
+                    sensor_log_type=SensorLogType.POLLING.getValue())
+
+    # add some data to the sensor
+    sensor.addData([SensorData(14), SensorData(15), SensorData(16.8), SensorData(25.8), SensorData(10.19)])
 
     room = Room(area, name="STD 101", room_type=RoomType.STUDY_ROOM.getValue(), location='hre.vrs.ies')
     hall = OpenSpace(name="Hall", area=area, space_type=SpaceType.HALL.getValue())
@@ -49,9 +62,9 @@ if __name__ == "__main__":
     repo.addEntity(building)
     new_room = copy.deepcopy(room)
     repo.addEntity(new_room)
+    repo.addEntity(sensor)
     new_floor = copy.deepcopy(floor)
     repo.addEntity(new_floor)
     populated_building = repo.getBuilding()
-    print(populated_building)
     gateway.shutdown()
 

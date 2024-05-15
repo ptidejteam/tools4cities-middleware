@@ -14,7 +14,7 @@ class AbstractMeasure(ABC):
         self.setMeasurementUnit(measure.getUnit())
 
     def getMeasurementUnit(self) -> str:
-        return self._measurement_unit.value
+        return self._measurement_unit
 
     def setMeasurementUnit(self, measurementUnit):
         if not measurementUnit:

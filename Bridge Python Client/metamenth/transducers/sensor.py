@@ -33,8 +33,8 @@ class Sensor(AbstractTransducer):
         self.setMeasureType(measure_type)
 
         # validate sensor type and measurement
-        if not Validate.validateSensorType(self.getMeasure(), self.unit):
-            raise ValueError("{0} sensor can not have {1} measurement unit".format(measure.value, unit.value))
+        if not Validate.validateSensorType(self.getMeasure(), self.getUnit()):
+            raise ValueError("{0} sensor can not have {1} measurement unit".format(measure, unit))
 
     def getMeasure(self) -> str:
         return self._measure

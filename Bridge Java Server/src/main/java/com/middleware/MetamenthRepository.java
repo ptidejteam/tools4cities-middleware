@@ -5,6 +5,7 @@ import java.util.Map;
 import com.middleware.interfaces.metamenth.structure.IFloor;
 import com.middleware.interfaces.metamenth.structure.IOpenSpace;
 import com.middleware.interfaces.metamenth.structure.IRoom;
+import com.middleware.interfaces.metamenth.transducers.ISensor;
 import com.middleware.enums.FloorType;
 import com.middleware.enums.RoomType;
 import com.middleware.interfaces.metamenth.datatypes.IAddress;
@@ -40,9 +41,15 @@ public class MetamenthRepository {
         repository.put("address", element);
     }
 
+    public void addEntity(ISensor element) {
+        repository.put("sensor", element);
+    }
+
     public Object getEntity(String key){
         return repository.getOrDefault(key, null);
     }
+
+    
 
 
     public IBuilding getBuilding() {
@@ -52,6 +59,7 @@ public class MetamenthRepository {
         newRoom.setName("Kitchen 102");
         IBinaryMeasure roomArea = (IBinaryMeasure) newRoom.getArea();
         roomArea.setValue(30);
+        newRoom.addTransducer((ISensor) repository.get("sensor"));
 
         IFloor newFloor = (IFloor) repository.get("floor");
         newFloor.setNumber(1);
