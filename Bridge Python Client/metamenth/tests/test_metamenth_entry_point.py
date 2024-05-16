@@ -17,6 +17,7 @@ from metamenth.datatypes.address import Address
 from metamenth.datatypes.point import Point
 from metamenth.transducers.sensor import Sensor
 from metamenth.measure_instruments.sensor_data import SensorData
+from metamenth.datatypes.interfaces.abstract_range_measure import AbstractRangeMeasure
 
 
 # Not ideal, the unit test should NOT be dependent on py4j
@@ -152,11 +153,19 @@ class TestMetamenthEntryPoint(unittest.TestCase):
                         measure_type=SensorMeasureType.THERMO_COUPLE_TYPE_A.getValue(),
                         sensor_log_type=SensorLogType.POLLING.getValue(), gateway=self.gateway)
         sensor.addData([SensorData(15), SensorData(16.5), SensorData(27.5)])
+        sensor.setCurrentValue(26)
+
+        measure = Measure(unit=MeasurementUnit.DEGREE_CELSIUS.getValue(), minimum=5, maximum=40)
+        sensor_measure_range = AbstractRangeMeasure(measure)
+        sensor.setMeasureRange(sensor_measure_range)
+
         self.repo.addEntity(sensor)
         received_sensor = self.repo.getEntity("sensor")
         self.assertEqual(sensor.getMeasureType(), received_sensor.getMeasureType())
         self.assertEqual(sensor.getMetaData(), received_sensor.getMetaData())
         self.assertEqual(sensor.toString(), received_sensor.toString())
+        self.assertEqual(sensor.getMeasureRange().getMeasurementUnit(),
+                         received_sensor.getMeasureRange().getMeasurementUnit())
 
     def test_exchange_invalid_address(self):
         try:
@@ -360,6 +369,7 @@ class TestMetamenthEntryPoint(unittest.TestCase):
         received_building_obj = self.repo.getBuilding()
         self.assertEqual(received_building_obj.getConstructionYear(), 2025)
         self.assertEqual(building.getConstructionYear(), received_building_obj.getConstructionYear())
+        self.assertEqual(building.getAddress().toString(), received_building_obj.getAddress().toString())
         self.assertEqual(received_building_obj.toString(), building.toString())
 
 

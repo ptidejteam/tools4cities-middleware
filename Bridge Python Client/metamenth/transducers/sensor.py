@@ -7,7 +7,7 @@ from metamenth.datatypes.interfaces.abstract_measure import AbstractMeasure
 class Sensor(AbstractTransducer):
 
     def __init__(self, name: str, measure: str, unit: str, measure_type: str,
-                 data_frequency: float, gateway, current_value: float = None,
+                 data_frequency: int, gateway, current_value: float = None,
                  measure_range: AbstractRangeMeasure = None, sensor_log_type: str = None):
         """
         :param name: the unique name of a sensor
@@ -55,10 +55,10 @@ class Sensor(AbstractTransducer):
         else:
             raise ValueError("measure must be of type AbstractRangeMeasure")
 
-    def getDataFrequency(self) -> float:
+    def getDataFrequency(self) -> int:
         return self._data_frequency
 
-    def setDataFrequency(self, value: float):
+    def setDataFrequency(self, value: int):
         if value is not None:
             self._data_frequency = value
         else:

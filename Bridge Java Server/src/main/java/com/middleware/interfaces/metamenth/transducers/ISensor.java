@@ -9,12 +9,14 @@ public interface ISensor extends IAbstractTransducer {
     void setMeasure(String measure);
     IAbstractRangeMeasure getMeasureRange();
     void setMeasureRange(IAbstractRangeMeasure measureRange);
-    float getDataFrequency();
-    void setDataFrequency(float dataFrequency);
+    int getDataFrequency();
+    void setDataFrequency(int dataFrequency);
     String getUnit();
     void setUnit(String unit);
-    float getCurrentValue();
-    void setCurrentValue(float currentValue);
+    //using double or float creates an error when accessing in python
+    //Replace generic object type after investiation
+    Object getCurrentValue();
+    void setCurrentValue(Object currentValue);
     String getMeasureType();
     void setMeasureType(String measureType);
     String getSensorLogType();

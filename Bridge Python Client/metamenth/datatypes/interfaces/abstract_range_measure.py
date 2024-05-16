@@ -42,7 +42,7 @@ class AbstractRangeMeasure(AbstractMeasure):
         )
 
     def toString(self):
-        self.__str__()
+        return self.__str__()
 
     class Java:
         implements = ['com.middleware.interfaces.metamenth.datatypes.IAbstractRangeMeasure']

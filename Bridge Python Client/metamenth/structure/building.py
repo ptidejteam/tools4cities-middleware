@@ -1,8 +1,9 @@
 from uuid import uuid4
 from metamenth.datatypes.address import Address
-from .floor import Floor
+from metamenth.structure.floor import Floor
 from metamenth.measure_instruments.meter import Meter
 from metamenth.datatypes.interfaces.abstract_measure import AbstractMeasure
+from metamenth.measure_instruments.weather_station import WeatherStation
 
 
 class Building:
@@ -33,6 +34,7 @@ class Building:
         self._building_type = None
         self._floors = gateway.jvm.java.util.ArrayList()
         self._meters = gateway.jvm.java.util.ArrayList()
+        self._weather_stations: [WeatherStation] = []
 
         # apply validation
         self.setConstructionYear(construction_year)
@@ -82,7 +84,6 @@ class Building:
         else:
             raise ValueError("internal_mass must be of type AbstractMeasure")
 
-    @property
     def getAddress(self) -> Address:
         return self._address
 
@@ -101,19 +102,38 @@ class Building:
         else:
             raise ValueError("building_type must be of type str")
 
-    def addFloor(self, value: Floor):
-        if value is not None:
-            self._floors.add(value)
+    def addFloor(self, floor: Floor):
+        if floor is not None:
+            self._floors.add(floor)
         else:
             raise ValueError("floors must be of type Floor")
         return self
 
-    def addMeter(self, value: Meter):
-        if value is not None:
-            self._meters.add(value)
+    def addMeter(self, meter: Meter):
+        if meter is not None:
+            self._meters.add(meter)
         else:
             raise ValueError("meters must be of type Meter")
         return self
+
+    def addWeatherStation(self, weather_station: WeatherStation):
+        if weather_station not in  self._weather_stations:
+            if weather_station is not None:
+                self._weather_stations.append(weather_station)
+            else:
+                raise ValueError("weather_station must be of type Weather Station")
+        return self
+
+    def getWeatherStation(self, name: str) -> WeatherStation:
+        for weather_station in self._weather_stations:
+            if weather_station.getName() == name:
+                return weather_station
+
+    def removeWeatherStation(self, weather_station: WeatherStation) -> bool:
+        if weather_station in self._weather_stations:
+            self._weather_stations.remove(weather_station)
+            return True
+        return False
 
     def toString(self):
         floors_info = "\n".join([f"  - Floor {floor.getNumber()}: {floor}" for floor in self._floors])
@@ -125,7 +145,7 @@ class Building:
                 f"Height: {self.getHeight()}, "
                 f"Floor Area: {self.getFloorArea()}, "
                 f"Internal Mass: {self.getInternalMass()}, "
-                f"Address: {self.getAddress}, "
+                f"Address: {self.getAddress()}, "
                 f"Building Type: {self.getBuildingType()}, "
                 f"Floor Count: {len(self._floors)}, "
                 f"Floors:\n{floors_info}, "
