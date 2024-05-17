@@ -346,6 +346,35 @@ class TestMetamenthEntryPoint(unittest.TestCase):
                          building.getWeatherStation(weather_station.getName()).getWeatherData())
         self.assertEqual(received_building_obj.toString(), building.toString())
 
+    def test_remove_weather_station_from_building(self):
+        height_measure = Measure(unit=self.enums.MeasurementUnit.METERS.getValue(), minimum=50)
+        height = BinaryMeasure(height_measure)
+        area_measure = Measure(unit=self.enums.MeasurementUnit.SQUARE_METERS.getValue(), minimum=125)
+        floor_area = BinaryMeasure(area_measure)
+        address = Address(city='Montreal', street='3965 Rue Sherbrooke', zip_code='H1N 1E3', state='QC',
+                          country='Canada',
+                          geocoordinate=Point(lat=4.839243293, lon=-1.389883929))
+        hall = OpenSpace(name="Hall", area=floor_area, space_type=self.enums.SpaceType.HALL.getValue())
+        floor = Floor(area=floor_area, number=0, floor_type=self.enums.FloorType.BASEMENT.getValue(), open_space=hall)
+        building = Building(construction_year=1999, height=height, floor_area=floor_area,
+                            building_type=self.enums.BuildingType.RESIDENTIAL.getValue(), address=address, floor=floor,
+                            gateway=self.gateway)
+
+        weather_station = WeatherStation('WS 01', self.gateway)
+        temp_measure_1 = BinaryMeasure(Measure(unit=self.enums.MeasurementUnit.DEGREE_CELSIUS.getValue(), minimum=20))
+        temp_measure_2 = copy.deepcopy(temp_measure_1)
+        temp_measure_2.setValue(30)
+
+        weather_station.addWeatherData([WeatherData(temp_measure_1), WeatherData(temp_measure_2)])
+
+        building.addWeatherStation(weather_station)
+        self.repo.addEntity(building)
+        received_building_obj = self.repo.getEntity('building')
+        ws = received_building_obj.getWeatherStation(weather_station.getName())
+        self.assertTrue(received_building_obj.removeWeatherStation(ws))
+        self.assertIsNone(received_building_obj.getWeatherStation(weather_station.getName()))
+        self.assertEqual(received_building_obj.toString(), building.toString())
+
     def test_get_building(self):
         height_measure = Measure(unit=self.enums.MeasurementUnit.METERS.getValue(), minimum=50)
         height = BinaryMeasure(height_measure)

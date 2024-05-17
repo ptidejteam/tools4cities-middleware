@@ -130,9 +130,10 @@ class Building:
                 return weather_station
 
     def removeWeatherStation(self, weather_station: WeatherStation) -> bool:
-        if weather_station in self._weather_stations:
-            self._weather_stations.remove(weather_station)
-            return True
+        for station in self._weather_stations:
+            if station.getName() == weather_station.getName():
+                self._weather_stations.remove(station)
+                return True
         return False
 
     def toString(self):
