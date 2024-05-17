@@ -3,6 +3,7 @@ package com.middleware.interfaces.metamenth.structure;
 import com.middleware.interfaces.metamenth.datatypes.IAbstractMeasure;
 import com.middleware.interfaces.metamenth.datatypes.IAddress;
 import com.middleware.interfaces.metamenth.measureinstruments.IMeter;
+import com.middleware.interfaces.metamenth.measureinstruments.IWeatherStation;
 
 public interface IBuilding {
     String getUID();
@@ -20,6 +21,9 @@ public interface IBuilding {
     void setBuildingType(String buildingType);
     void addFloor(IFloor floor);
     void addMeter(IMeter meter);
+    IBuilding addWeatherStation(IWeatherStation weatherStation);
+    IWeatherStation getWeatherStation(String name);
+    Boolean removeWeatherStation(IWeatherStation weatherStation);
     String toString();
 
 }

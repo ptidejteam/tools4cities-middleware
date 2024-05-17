@@ -39,7 +39,8 @@ class WeatherStation:
         Adds some data recordings to this WeatherStation.
         :param weather_data: some weather data recorded for the weather station.
         """
-        self._weather_data.addAll(self.gateway.jvm.java.util.Arrays.asList(weather_data))
+        for data in weather_data:
+            self._weather_data.add(data)
 
     def getWeatherData(self):
         """
@@ -68,3 +69,6 @@ class WeatherStation:
         )
         weather_data = "\n".join(str(data) for data in self._weather_data)
         return f"{weather_station_details}\nWeather Data:\n{weather_data}"
+
+    class Java:
+        implements = ['com.middleware.interfaces.metamenth.measureinstruments.IWeatherStation']

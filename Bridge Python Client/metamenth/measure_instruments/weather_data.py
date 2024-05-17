@@ -43,3 +43,6 @@ class WeatherData:
             f"Timestamp: {self.getTimestamp()}, "
             f"Data: {self.getData()})"
         )
+
+    class Java:
+        implements = ['com.middleware.interfaces.metamenth.measureinstruments.IWeatherData']
