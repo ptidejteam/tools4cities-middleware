@@ -21,4 +21,4 @@ class TriggerHistory(AbstractDataMeasure):
         return self._trigger_type
 
     class Java:
-        implements = ['com.middleware.interfaces.metamenth.measureinstruments.ITriggerHistory']
+        implements = ['com.middleware.metamenth.interfaces.measureinstruments.ITriggerHistory']

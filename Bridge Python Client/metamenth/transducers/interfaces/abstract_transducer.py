@@ -49,9 +49,9 @@ class AbstractTransducer(ABC):
 
     def setTransducerSetPoint(self, setpoint: AbstractMeasure, measure: str):
         if setpoint is not None and measure is not None:
-            if setpoint.measurement_unit.value != measure:
+            if setpoint.getMeasurementUnit() != measure:
                 raise ValueError('(Input) sensor measure: {} not matching set point measure: {}'
-                                 .format(setpoint.measurement_unit.value, measure))
+                                 .format(setpoint.getMeasurementUnit(), measure))
         self._set_point = setpoint
 
     def getMetaData(self):
@@ -105,4 +105,4 @@ class AbstractTransducer(ABC):
                 f"Metadata: {self.getMetaData()})")
 
     class Java:
-        implements = ['com.middleware.interfaces.metamenth.transducers.IAbstractTransducer']
+        implements = ['com.middleware.metamenth.interfaces.transducers.IAbstractTransducer']

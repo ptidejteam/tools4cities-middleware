@@ -11,4 +11,4 @@ class SensorData(AbstractDataMeasure):
         super().__init__(value, timestamp)
 
     class Java:
-        implements = ['com.middleware.interfaces.metamenth.measureinstruments.ISensorData']
+        implements = ['com.middleware.metamenth.interfaces.measureinstruments.ISensorData']

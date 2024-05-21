@@ -112,4 +112,4 @@ class Floor(AbstractSpace):
         return f"{floor_details}\nRooms:\n{rooms}\nOpen Space:\n {open_spaces})"
 
     class Java:
-        implements = ['com.middleware.interfaces.metamenth.structure.IFloor']
+        implements = ['com.middleware.metamenth.interfaces.structure.IFloor']

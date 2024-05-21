@@ -46,4 +46,4 @@ class AbstractSpace:
         )
 
     class Java:
-        implements = ['com.middleware.interface.metamenth.structure.IAbstractSpace']
+        implements = ['com.middleware.metamenth.interfaces.structure.IAbstractSpace']

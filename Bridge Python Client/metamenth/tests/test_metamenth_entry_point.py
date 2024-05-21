@@ -50,7 +50,7 @@ class TestMetamenthEntryPoint(unittest.TestCase):
         command = ["java", "-cp",
                    os.path.abspath("../../../Bridge Java Server/target/classes") + os.pathsep + path_to_m2 +
                    ".m2/repository/net/sf/py4j/py4j/0.10.9.7/py4j-0.10.9.7.jar",
-                   "com.middleware.MetamenthEntryPoint"]
+                   "com.middleware.metamenth.MetamenthEntryPoint"]
 
         # Start the Java server as a subprocess
         subprocess.Popen(command)

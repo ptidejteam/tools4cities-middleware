@@ -116,4 +116,4 @@ class Address:
         )
 
     class Java:
-        implements = ['com.middleware.interfaces.metamenth.datatypes.IAddress']
+        implements = ['com.middleware.metamenth.interfaces.datatypes.IAddress']

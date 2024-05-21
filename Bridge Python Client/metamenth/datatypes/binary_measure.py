@@ -27,4 +27,4 @@ class BinaryMeasure(AbstractMeasure):
         )
 
     class Java:
-        implements = ['com.middleware.interfaces.metamenth.datatypes.IBinaryMeasure']
+        implements = ['com.middleware.metamenth.interfaces.datatypes.IBinaryMeasure']

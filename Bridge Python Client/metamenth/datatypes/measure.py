@@ -57,4 +57,4 @@ class Measure:
                 f"Mantissa: {self.getMantissa()}")
 
     class Java:
-        implements = ['com.middleware.interfaces.metamenth.datatypes.IMeasure']
+        implements = ['com.middleware.metamenth.interfaces.datatypes.IMeasure']

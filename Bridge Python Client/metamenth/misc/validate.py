@@ -121,7 +121,7 @@ class Validate:
         return False
 
     class Java:
-        implements = ['com.middleware.interfaces.metamenth.misc.IValidate']
+        implements = ['com.middleware.metamenth.interfaces.misc.IValidate']
 
 
 

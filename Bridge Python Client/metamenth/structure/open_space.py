@@ -35,4 +35,4 @@ class OpenSpace(AbstractFloorSpace):
         return f"OpenSpace ({super().__str__()} Space Type: {self.getSpaceType()})"
 
     class Java:
-        implements = ['com.middleware.interfaces.metamenth.structure.IOpenSpace']
+        implements = ['com.middleware.metamenth.interfaces.structure.IOpenSpace']

@@ -29,4 +29,4 @@ class Point:
         return f"Latitude: {self.getLatitude()}, Longitude: {self.getLongitude()}"
 
     class Java:
-        implements = ['com.middleware.interfaces.metamenth.datatypes.IPoint']
+        implements = ['com.middleware.metamenth.interfaces.datatypes.IPoint']

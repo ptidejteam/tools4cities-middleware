@@ -47,4 +47,4 @@ class Room(AbstractFloorSpace):
         return room_details
 
     class Java:
-        implements = ['com.middleware.interfaces.metamenth.structure.IRoom']
+        implements = ['com.middleware.metamenth.interfaces.structure.IRoom']

@@ -122,4 +122,4 @@ class Sensor(AbstractTransducer):
         )
 
     class Java:
-        implements = ['com.middleware.interfaces.metamenth.transducers.ISensor']
+        implements = ['com.middleware.metamenth.interfaces.transducers.ISensor']
