@@ -11,4 +11,6 @@ class JavaEnums:
         self.SensorMeasure = gateway.jvm.com.middleware.metamenth.enums.SensorMeasure
         self.SensorMeasureType = gateway.jvm.com.middleware.metamenth.enums.SensorMeasureType
         self.SensorLogType = gateway.jvm.com.middleware.metamenth.enums.SensorLogType
-        self.OFFICE_TYPE = gateway.jvm.com.middleware.metamenth.enums.OFFICE_TYPE
+        self.OfficeType = gateway.jvm.com.middleware.metamenth.enums.OFFICE_TYPE
+        self.CoverType = gateway.jvm.com.middleware.metamenth.enums.CoverType
+        self.MaterialType = gateway.jvm.com.middleware.metamenth.enums.MaterialType

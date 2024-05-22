@@ -22,6 +22,10 @@ from metamenth.datatypes.interfaces.abstract_range_measure import AbstractRangeM
 from metamenth.measure_instruments.weather_data import WeatherData
 from metamenth.measure_instruments.weather_station import WeatherStation
 from metamenth.tests.util import JavaEnums
+from metamenth.structure.cover import Cover
+from metamenth.structure.layer import Layer
+from metamenth.structure.material import Material
+from metamenth.structure.envelope import Envelope
 
 
 # Not ideal, the unit test should NOT be dependent on py4j
@@ -84,7 +88,7 @@ class TestMetamenthEntryPoint(unittest.TestCase):
 
     def test_get_non_existing_java_enum(self):
         try:
-            _ = self.enums.OFFICE_TYPE.OPENED.getValue()
+            _ = self.enums.OfficeType.OPENED.getValue()
         except TypeError as err:
             self.assertEqual(err.__str__(), "'JavaPackage' object is not callable")
 
@@ -410,4 +414,55 @@ class TestMetamenthEntryPoint(unittest.TestCase):
         self.assertEqual(received_building_obj.getConstructionYear(), 2025)
         self.assertEqual(building.getConstructionYear(), received_building_obj.getConstructionYear())
         self.assertEqual(building.getAddress().toString(), received_building_obj.getAddress().toString())
+        self.assertEqual(received_building_obj.toString(), building.toString())
+        self.assertEqual(received_building_obj.getEnvelope(), None)
+
+    def test_exchange_building_with_envelope(self):
+        height_measure = Measure(unit=self.enums.MeasurementUnit.METERS.getValue(), minimum=50)
+        height = BinaryMeasure(height_measure)
+        area_measure = Measure(unit=self.enums.MeasurementUnit.SQUARE_METERS.getValue(), minimum=125)
+        floor_area = BinaryMeasure(area_measure)
+        address = Address(city='Montreal', street='3965 Rue Sherbrooke', zip_code='H1N 1E3', state='QC',
+                          country='Canada',
+                          geocoordinate=Point(lat=4.8392838293, lon=-1.389883929))
+        hall = OpenSpace(name="Hall", area=floor_area, space_type=self.enums.SpaceType.HALL.getValue())
+        floor = Floor(area=floor_area, number=1, floor_type=self.enums.FloorType.REGULAR.getValue(), open_space=hall)
+        building = Building(construction_year=2024, height=height, floor_area=floor_area,
+                            building_type=self.enums.BuildingType.COMMERCIAL.getValue(), address=address, floor=floor,
+                            gateway=self.gateway)
+
+        cover = Cover(self.enums.CoverType.ROOF.getValue(), self.gateway)
+
+        density = BinaryMeasure(Measure(self.enums.MeasurementUnit.KILOGRAM_PER_CUBIC_METER.getValue(), 0.5))
+        heat_capacity = BinaryMeasure(Measure(self.enums.MeasurementUnit.JOULES_PER_KELVIN.getValue(), 4.5))
+        thermal_transmittance = BinaryMeasure(Measure(self.enums.MeasurementUnit.WATTS_PER_SQUARE_METER_KELVIN.getValue(), 2.5))
+        thermal_resistance = BinaryMeasure(Measure(self.enums.MeasurementUnit.SQUARE_METERS_KELVIN_PER_WATTS.getValue(), 2.3))
+
+        material = Material(
+            description="Material for the external wall of a building",
+            material_type=self.enums.MaterialType.ROOF_METAL_SHINGLES.getValue(),
+            density=density,
+            heat_capacity=heat_capacity,
+            thermal_transmittance=thermal_transmittance,
+            thermal_resistance=thermal_resistance
+        )
+
+        height = BinaryMeasure(Measure(self.enums.MeasurementUnit.METERS.getValue(), 30))
+        length = BinaryMeasure(Measure(self.enums.MeasurementUnit.METERS.getValue(), 50))
+        width = BinaryMeasure(Measure(self.enums.MeasurementUnit.METERS.getValue(), 0.2))
+
+        layer = Layer(height, length, width, material)
+
+        cover.addLayer(layer)
+        envelope = Envelope(self.gateway)
+        envelope.addCover(cover)
+
+        building.setEnvelope(envelope)
+
+        self.repo.addEntity(building)
+        received_building_obj = self.repo.getEntity('building')
+
+        self.assertEqual(received_building_obj.getEnvelope().getCoverByUID(cover.getUID()).toString(),
+                         building.getEnvelope().getCoverByUID(cover.getUID()).toString())
+        self.assertEqual(received_building_obj.getEnvelope().toString(), building.getEnvelope().toString())
         self.assertEqual(received_building_obj.toString(), building.toString())

@@ -24,6 +24,8 @@ public interface IBuilding {
     IBuilding addWeatherStation(IWeatherStation weatherStation);
     IWeatherStation getWeatherStation(String name);
     Boolean removeWeatherStation(IWeatherStation weatherStation);
+    IEnvelope getEnvelope();
+    void setEnvelope(IEnvelope envelope);
     String toString();
 
 }

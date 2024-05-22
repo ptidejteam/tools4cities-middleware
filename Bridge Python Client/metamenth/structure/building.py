@@ -4,6 +4,7 @@ from metamenth.structure.floor import Floor
 from metamenth.measure_instruments.meter import Meter
 from metamenth.datatypes.interfaces.abstract_measure import AbstractMeasure
 from metamenth.measure_instruments.weather_station import WeatherStation
+from metamenth.structure.envelope import Envelope
 
 
 class Building:
@@ -35,6 +36,7 @@ class Building:
         self._floors = gateway.jvm.java.util.ArrayList()
         self._meters = gateway.jvm.java.util.ArrayList()
         self._weather_stations: [WeatherStation] = []
+        self._envelope = None
 
         # apply validation
         self.setConstructionYear(construction_year)
@@ -136,6 +138,12 @@ class Building:
                 return True
         return False
 
+    def getEnvelope(self) -> Envelope:
+        return self._envelope
+
+    def setEnvelope(self, value: Envelope):
+        self._envelope = value
+
     def toString(self):
         floors_info = "\n".join([f"  - Floor {floor.getNumber()}: {floor}" for floor in self._floors])
         meter_info = "\n".join([f"  - {meter}" for meter in self._meters])
@@ -148,6 +156,7 @@ class Building:
                 f"Internal Mass: {self.getInternalMass()}, "
                 f"Address: {self.getAddress()}, "
                 f"Building Type: {self.getBuildingType()}, "
+                f"Envelope: {self.getEnvelope()}, "
                 f"Floor Count: {len(self._floors)}, "
                 f"Floors:\n{floors_info}, "
                 f"Meters:\n{meter_info})")
