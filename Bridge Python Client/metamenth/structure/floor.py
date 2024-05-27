@@ -18,6 +18,7 @@ class Floor(AbstractSpace):
         area: AbstractMeasure,
         number: int,
         floor_type: str,
+        gateway,
         height: AbstractMeasure = None,
         description: str = None,
         open_space: OpenSpace = None,
@@ -33,7 +34,7 @@ class Floor(AbstractSpace):
         :param open_space: Initial open spaces(s) on floor.
         :param room: Initial room(s) on floor.
         """
-        super().__init__(area, location)
+        super().__init__(area, gateway, location)
         self._description = description
         self._height = height
         self._number = None

@@ -1,8 +1,9 @@
 package com.middleware.metamenth.interfaces.structure;
 
 import com.middleware.metamenth.interfaces.datatypes.IAbstractMeasure;
+import com.middleware.metamenth.interfaces.datatypes.IAbstractZonalEntity;
 
-public interface IAbstractSpace {
+public interface IAbstractSpace extends IAbstractZonalEntity {
     String toString();
     String getUID();
     IAbstractMeasure getArea();

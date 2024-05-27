@@ -35,6 +35,7 @@ class Building:
         self._building_type = None
         self._floors = gateway.jvm.java.util.ArrayList()
         self._meters = gateway.jvm.java.util.ArrayList()
+        self._zones = gateway.jvm.java.util.ArrayList()
         self._weather_stations: [WeatherStation] = []
         self._envelope = None
 
@@ -137,6 +138,9 @@ class Building:
                 self._weather_stations.remove(station)
                 return True
         return False
+
+    def getZones(self):
+        return self._zones
 
     def getEnvelope(self) -> Envelope:
         return self._envelope

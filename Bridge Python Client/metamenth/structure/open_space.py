@@ -11,13 +11,13 @@ class OpenSpace(AbstractFloorSpace):
     Email: peteryefi@gmail.com
     """
 
-    def __init__(self, name: str, area: AbstractMeasure, space_type: str, location: str = None):
+    def __init__(self, name: str, area: AbstractMeasure, space_type: str, gateway, location: str = None):
         """
         :param area: The area of the open space.
         :param location: The location of the open space (three words delimited with a period).
         :param space_type: The type of open space (enum).
         """
-        super().__init__(area, name, location)
+        super().__init__(area, name, gateway, location)
         self._space_type = None
 
         # Apply validation
