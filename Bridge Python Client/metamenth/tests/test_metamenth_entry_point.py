@@ -26,6 +26,7 @@ from metamenth.structure.cover import Cover
 from metamenth.structure.layer import Layer
 from metamenth.structure.material import Material
 from metamenth.structure.envelope import Envelope
+from metamenth.datatypes.zone import Zone
 
 
 # Not ideal, the unit test should NOT be dependent on py4j
@@ -173,6 +174,20 @@ class TestMetamenthEntryPoint(unittest.TestCase):
         except ValueError as err:
             self.assertEqual(err.__str__(), 'country is required')
 
+    def test_exchange_zone(self):
+        zone = Zone("Lighting Zone", self.enums.ZoneType.LIGHTING.getValue(), self.gateway)
+        self.repo.addEntity("zone", zone)
+        none_zone = self.repo.getEntity("Zone")
+
+        self.assertIsNone(none_zone)
+
+        received_zone = self.repo.getEntity("zone")
+        self.assertEqual(received_zone.getName(), zone.getName())
+        self.assertEqual(received_zone.getZoneType(), zone.getZoneType())
+        self.assertIsNone(received_zone.getHvacType())
+        self.assertNotEqual(none_zone, received_zone)
+        self.assertEqual(received_zone.toString(), zone.toString())
+
     def test_exchange_room(self):
         measure = Measure(unit=self.enums.MeasurementUnit.SQUARE_METERS.getValue(), minimum=125)
         area = BinaryMeasure(measure)
@@ -187,6 +202,69 @@ class TestMetamenthEntryPoint(unittest.TestCase):
         self.assertEqual(received_room_obj.getRoomType(), room_copy.getRoomType())
         self.assertNotEqual(received_room_obj.toString(), room.toString())
         self.assertEqual(received_room_obj.toString(), room_copy.toString())
+
+    def test_get_room_zone(self):
+        measure = Measure(unit=self.enums.MeasurementUnit.SQUARE_METERS.getValue(), minimum=125)
+        area = BinaryMeasure(measure)
+        room = Room(area, name="STD 101", room_type=self.enums.RoomType.OFFICE.getValue(), gateway=self.gateway,
+                    location='hre.vrs.ies')
+        zone_1 = Zone("HVAC 01", self.enums.ZoneType.HVAC.getValue(), self.gateway,
+                      self.enums.HvacType.INTERIOR.getValue())
+
+        zone_2 = Zone("HVAC 02", self.enums.ZoneType.HVAC.getValue(), self.gateway,
+                      self.enums.HvacType.PERIMETER.getValue())
+
+        room.addZone(zone_1)
+        room.addZone(zone_2)
+
+        self.repo.addEntity("room", room)
+        received_room = self.repo.getEntity("room")
+        self.assertEqual(received_room.getZoneByName(zone_1.getName()).toString(), zone_1.toString())
+        self.assertNotEqual(received_room.getZoneByName(zone_1.getName()).toString(), zone_2.toString())
+
+    def test_remove_zone_from_room(self):
+        measure = Measure(unit=self.enums.MeasurementUnit.SQUARE_METERS.getValue(), minimum=125)
+        area = BinaryMeasure(measure)
+        room = Room(area, name="STD 101", room_type=self.enums.RoomType.OFFICE.getValue(), gateway=self.gateway,
+                    location='hre.vrs.ies')
+        zone_1 = Zone("HVAC 01", self.enums.ZoneType.HVAC.getValue(), self.gateway,
+                      self.enums.HvacType.INTERIOR.getValue())
+
+        zone_2 = Zone("HVAC 02", self.enums.ZoneType.HVAC.getValue(), self.gateway,
+                      self.enums.HvacType.PERIMETER.getValue())
+
+        room.addZone(zone_1)
+        room.addZone(zone_2)
+
+        self.repo.addEntity("room", room)
+        received_room = self.repo.getEntity("room")
+
+        received_room.removeZone(zone_1)
+
+        self.assertIsNone(received_room.getZoneByName(zone_1.getName()))
+        self.assertEqual(received_room.getZoneByName(zone_2.getName()).toString(), zone_2.toString())
+        self.assertEqual(len(received_room.getZones()), 1)
+
+    def test_get_room_zones(self):
+        measure = Measure(unit=self.enums.MeasurementUnit.SQUARE_METERS.getValue(), minimum=125)
+        area = BinaryMeasure(measure)
+        room = Room(area, name="STD 101", room_type=self.enums.RoomType.OFFICE.getValue(), gateway=self.gateway,
+                    location='hre.vrs.ies')
+        zone_1 = Zone("HVAC 01", self.enums.ZoneType.HVAC.getValue(), self.gateway,
+                      self.enums.HvacType.INTERIOR.getValue())
+
+        zone_2 = Zone("HVAC 02", self.enums.ZoneType.HVAC.getValue(), self.gateway,
+                      self.enums.HvacType.PERIMETER.getValue())
+
+        room.addZone(zone_1)
+        room.addZone(zone_2)
+
+        self.repo.addEntity("room", room)
+        received_room = self.repo.getEntity("room")
+
+        self.assertEqual(len(received_room.getZones()), 2)
+        received_room.removeZone(zone_2)
+        self.assertEqual(len(received_room.getZones()), 1)
 
     def test_exchange_room_with_meter(self):
         meter = Meter('hre.vrs.ies', 0.5, self.enums.MeasurementUnit.KILOWATTS.getValue(),
