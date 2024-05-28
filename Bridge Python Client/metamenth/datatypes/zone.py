@@ -69,15 +69,21 @@ class Zone:
             raise ValueError("HVAC type is only applicable for zones with ZoneType.HVAC.")
         self._hvac_type = value
 
+    def toString(self):
+        return self.__str__()
+
+    def equals(self, other):
+        return self.__eq__(other)
+
+    def hashCode(self):
+        return hash(self.getName())
+
     def __eq__(self, other):
         # zones are equal if they share the same name
         if isinstance(other, Zone):
             # Check for equality based on the 'name' attribute
             return self.getName() == other.getName()
         return False
-
-    def toString(self):
-        return self.__str__()
 
     def __str__(self):
 
@@ -94,4 +100,3 @@ class Zone:
 
     class Java:
         implements = ['com.middleware.metamenth.interfaces.datatypes.IZone']
-

@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface IAbstractZonalEntity {
     List<IZone> getZones();
-    void addZone(IZone zone);
-    void removeZone(IZone zone);
+    Boolean addZone(IZone zone);
+    Boolean removeZone(IZone zone);
     IZone getZoneByName(String name);
 }

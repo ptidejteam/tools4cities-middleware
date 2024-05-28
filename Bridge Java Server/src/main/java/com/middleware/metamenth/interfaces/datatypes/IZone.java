@@ -12,5 +12,6 @@ public interface IZone {
     String getHvacType();
     void setHvacType(String hvacType);
     String toString();
-
+    boolean equals(Object obj);
+    int hashCode();
 }

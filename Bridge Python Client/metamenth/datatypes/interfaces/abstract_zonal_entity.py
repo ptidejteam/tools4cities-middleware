@@ -11,25 +11,33 @@ class AbstractZonalEntity(ABC):
     def getZones(self):
         return self._zones
 
-    def addZone(self, zone):
+    def addZone(self, zone) -> bool:
         """
         Adds a zone to this entity
         :param zone: the zone
         :return:
         """
         # TODO: Add zone to building
-        self._zones.add(zone)
+        if not self._zones.contains(zone):
+            self._zones.add(zone)
+            return True
+        return False
 
-    def removeZone(self, zone):
+    def removeZone(self, zone) -> bool:
         """
         Removes a zone from a space: floor, room, open space
         :param zone: the zone to be removed
         :return:
         """
-        for z in self._zones:
-            if z.getName() == zone.getName():
-                self._zones.remove(z)
-                break
+
+        rm_index = -1
+        for i in range(len(self._zones)):
+            if self._zones[i].getName() == zone.getName():
+                rm_index = i
+        if rm_index > -1:
+            del self._zones[rm_index]
+            return True
+        return False
 
     def getZoneByName(self, name: str):
         """
@@ -40,6 +48,9 @@ class AbstractZonalEntity(ABC):
         for zone in self._zones:
             if zone.getName() == name:
                 return zone
+
+    class Java:
+        implements = ['com.middleware.metamenth.interfaces.datatypes.IAbstractZonalEntity']
 
 
 

@@ -13,4 +13,6 @@ class JavaEnums:
         self.SensorLogType = gateway.jvm.com.middleware.metamenth.enums.SensorLogType
         self.OfficeType = gateway.jvm.com.middleware.metamenth.enums.OFFICE_TYPE
         self.CoverType = gateway.jvm.com.middleware.metamenth.enums.CoverType
+        self.ZoneType = gateway.jvm.com.middleware.metamenth.enums.ZoneType
+        self.HvacType = gateway.jvm.com.middleware.metamenth.enums.HvacType
         self.MaterialType = gateway.jvm.com.middleware.metamenth.enums.MaterialType

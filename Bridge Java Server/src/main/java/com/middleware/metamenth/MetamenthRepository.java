@@ -16,7 +16,10 @@ public class MetamenthRepository {
 
     private Map<String, Object> repository = new HashMap<String, Object>();
 
-
+    public void addEntity(String key, Object entity){
+        repository.putIfAbsent(key, entity);
+    }
+    
     public void addEntity(IBuilding element) {
         repository.put("building", element);
     }
