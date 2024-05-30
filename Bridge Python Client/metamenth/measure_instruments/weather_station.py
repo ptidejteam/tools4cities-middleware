@@ -1,6 +1,8 @@
 from uuid import uuid4
 from metamenth.measure_instruments.weather_data import WeatherData
 from metamenth.misc.validate import Validate
+from metamenth.utils.search.structure_entity_search import StructureEntitySearch
+from typing import Dict
 
 
 class WeatherStation:
@@ -11,8 +13,9 @@ class WeatherStation:
         self._UID = str(uuid4())
         self._name = None
         self._location = Validate.validateWhat3word(location)
-        self._weather_data = gateway.jvm.java.util.ArrayList()
+        self._weather_data: [WeatherStation] = []
         self.gateway = gateway
+        self._structure_entity_search = StructureEntitySearch(gateway)
 
         self.setName(name)
 
@@ -40,14 +43,24 @@ class WeatherStation:
         :param weather_data: some weather data recorded for the weather station.
         """
         for data in weather_data:
-            self._weather_data.add(data)
+            self._weather_data.append(data)
 
-    def getWeatherData(self):
+    def getWeatherData(self, search_terms: Dict = None) -> [WeatherData]:
         """
         Search weather data by attributes values
+        :param search_terms: a dictionary of attributes and their values
         :return [WeatherData]:
         """
-        return self._weather_data
+        return self._structure_entity_search.search(self._weather_data, search_terms)
+
+    def getWeatherDataByDate(self, from_timestamp: str, to_timestamp: str = None) ->[WeatherData]:
+        """
+        searches weather data based on provided timestamp
+        :param from_timestamp: the start timestamp
+        :param to_timestamp: the end timestamp
+        :return: [WeatherData]
+        """
+        return self._structure_entity_search.dateRangeSearch(self._weather_data, from_timestamp, to_timestamp)
 
     def __eq__(self, other):
         # Weather stations are equal if they share the same name

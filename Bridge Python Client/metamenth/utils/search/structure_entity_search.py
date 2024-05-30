@@ -44,8 +44,6 @@ class StructureEntitySearch:
         :return:
         """
         results = self._gateway.jvm.java.util.ArrayList()
-        if search_terms is None:
-            return entity_list
 
         for entity in entity_list:
             found = True
@@ -59,7 +57,6 @@ class StructureEntitySearch:
             except AttributeError as err:
                 # TODO: log errors to file
                 print(err, file=sys.stderr)
-
         return results
 
     def dateRangeSearch(self, entity_list: Union[List[SensorData], List[TriggerHistory], List[MeterMeasure],
@@ -74,7 +71,7 @@ class StructureEntitySearch:
         if len(from_timestamp) == 10:  # Check if only date is provided
             from_timestamp += ' 00:00:00'  # Add default time of midnight
 
-        if to_timestamp is None:
+        if not to_timestamp:
 
             to_tp = datetime.now().replace(microsecond=0)
         else:

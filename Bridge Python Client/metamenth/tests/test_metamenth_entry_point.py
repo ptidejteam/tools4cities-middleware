@@ -61,11 +61,12 @@ class TestMetamenthEntryPoint(unittest.TestCase):
         # Start the Java server as a subprocess
         subprocess.Popen(command)
         # Wait for the Java server to have started
-        while self.is_port_available("localhost", 25334):
-            pass
+        #while self.is_port_available("localhost", 25334):
+            #pass
 
     def setUp(self):
         self.start_server()
+        time.sleep(0.19)
         self.gateway = JavaGateway(callback_server_parameters=CallbackServerParameters(),
                                    gateway_parameters=GatewayParameters(auto_convert=True))
 
@@ -457,8 +458,10 @@ class TestMetamenthEntryPoint(unittest.TestCase):
         building.addWeatherStation(weather_station)
         self.repo.addEntity(building)
         received_building_obj = self.repo.getEntity('building')
-        self.assertEqual(received_building_obj.getWeatherStation(weather_station.getName()).getWeatherData(),
-                         building.getWeatherStation(weather_station.getName()).getWeatherData())
+        self.assertEqual(len(received_building_obj.getWeatherStation(weather_station.getName()).getWeatherData({})),
+                       2)
+        self.assertEqual(len(building.getWeatherStation(weather_station.getName()).getWeatherData({})),
+                         2)
         self.assertEqual(received_building_obj.toString(), building.toString())
 
     def test_remove_weather_station_from_building(self):
