@@ -1,5 +1,8 @@
 import uuid
 from metamenth.enumerations.meter_accumulation_frequency import MeterAccumulationFrequency
+from metamenth.measure_instruments.meter_measure import MeterMeasure
+from metamenth.utils.search.structure_entity_search import StructureEntitySearch
+from typing import Dict
 
 
 class Meter:
@@ -12,7 +15,7 @@ class Meter:
 
     def __init__(self, meter_location: str, measurement_frequency: float,
                  measurement_unit: str, meter_type: str,
-                 measure_mode: str, data_accumulated: bool = False,
+                 measure_mode: str, gateway, data_accumulated: bool = False,
                  accumulation_frequency: str = MeterAccumulationFrequency.NONE.value,
                  manufacturer: str = None):
         """
@@ -24,6 +27,7 @@ class Meter:
         :param measurement_unit: The measurement unit of the meter data.
         :param meter_type: The type of the meter.
         :param measure_mode: the data measure mode: manual or automatic
+        :param gateway: py4j gateway object
         :param data_accumulated: indicate whether the data is accummulate or not
         :param accumulation_frequency: the frequency at which data is accumulated
         """
@@ -36,6 +40,8 @@ class Meter:
         self._measure_mode = None
         self._data_accumulated = data_accumulated
         self._accumulation_frequency = accumulation_frequency
+        self._meter_measure: [MeterMeasure] = []
+        self._structure_entity_search = StructureEntitySearch(gateway)
 
         # Apply validation
         self.setManufacturer(manufacturer)
@@ -90,7 +96,7 @@ class Meter:
     def getAccumulationFrequency(self) -> str:
         return self._accumulation_frequency
 
-    def setAccumulationFrequency(self, value: float):
+    def setAccumulationFrequency(self, value: str):
         if value is not None:
             if self.getDataAccumulated() and value is None:
                 raise ValueError("accumulation_frequency must not be None")
@@ -114,6 +120,31 @@ class Meter:
             self._meter_type = value
         else:
             raise ValueError("Meter type must be of type MeterType")
+
+    def addMeterMeasure(self, meter_measure: MeterMeasure):
+        """
+        Adds measurement reading for this meter
+        :param meter_measure: the meter measurement
+        :return:
+        """
+        self._meter_measure.append(meter_measure)
+
+    def getMeterMeasures(self, search_terms: Dict = None) -> [MeterMeasure]:
+        """
+        Search meter recordings by attributes values
+        :param search_terms: a dictionary of attributes and their values
+        :return [MeterMeasure]:
+        """
+        return self._structure_entity_search.search(self._meter_measure, search_terms)
+
+    def getMeterMeasureByDate(self, from_timestamp: str, to_timestamp: str = None) ->[MeterMeasure]:
+        """
+        searches meter recordings based on provided timestamp
+        :param from_timestamp: the start timestamp
+        :param to_timestamp: the end timestamp
+        :return: [MeterMeasure]
+        """
+        return self._structure_entity_search.dateRangeSearch(self._meter_measure, from_timestamp, to_timestamp)
 
     def __eq__(self, other):
         # Meters are equal if they share the same UID

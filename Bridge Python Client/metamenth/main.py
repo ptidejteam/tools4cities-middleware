@@ -1,6 +1,7 @@
 from py4j.java_gateway import JavaGateway, CallbackServerParameters, GatewayParameters
 
 from metamenth.measure_instruments.meter import Meter
+from metamenth.measure_instruments.meter_measure import MeterMeasure
 from metamenth.structure.room import Room
 from metamenth.structure.open_space import OpenSpace
 from metamenth.datatypes.measure import Measure
@@ -25,8 +26,15 @@ if __name__ == "__main__":
     repo = gateway.entry_point.getMetamenthRepository()
     enums = JavaEnums(gateway)
 
-    meter = Meter('hre.vrs.ies', 0.5, enums.MeasurementUnit.KILOWATTS.getValue(),
-                  enums.MeterType.ELECTRICITY.getValue(), enums.MeterMeasureMode.AUTOMATIC.getValue(), False)
+    meter = Meter(meter_location='hre.vrs.ies', measurement_frequency=0.5,
+                  measurement_unit=enums.MeasurementUnit.KILOWATTS.getValue(),
+                  meter_type=enums.MeterType.ELECTRICITY.getValue(),
+                  measure_mode=enums.MeterMeasureMode.AUTOMATIC.getValue(), gateway=gateway)
+
+    meter.addMeterMeasure(MeterMeasure(10.5))
+    meter.addMeterMeasure(MeterMeasure(11.15))
+    meter.addMeterMeasure(MeterMeasure(9.25))
+    print(meter.getMeterMeasures())
     measure = Measure(unit=enums.MeasurementUnit.SQUARE_METERS.getValue(), minimum=125)
     area = BinaryMeasure(measure)
 

@@ -1,5 +1,8 @@
 package com.middleware.metamenth.interfaces.measureinstruments;
 
+import java.util.HashMap;
+import java.util.List;
+
 import com.middleware.metamenth.enums.MeasurementUnit;
 import com.middleware.metamenth.enums.MeterMeasureMode;
 import com.middleware.metamenth.enums.MeterType;
@@ -23,4 +26,7 @@ public interface IMeter {
     void setMeasurementUnit(MeasurementUnit measurementUnit);
     MeterType getMeterType();
     void setMeterType(MeterType meterType);
+    void addMeterMeasure(IMeterMeasure measure);
+    List<IMeterMeasure> getMeterMeasureByDate(String fromDateStr, String toDateStr);
+    List<IMeterMeasure> getMeterMeasures(HashMap<String, Object> searchTerms);
 }

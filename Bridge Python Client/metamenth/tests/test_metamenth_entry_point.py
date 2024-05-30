@@ -27,6 +27,7 @@ from metamenth.structure.layer import Layer
 from metamenth.structure.material import Material
 from metamenth.structure.envelope import Envelope
 from metamenth.datatypes.zone import Zone
+from metamenth.measure_instruments.meter_measure import MeterMeasure
 
 
 # Not ideal, the unit test should NOT be dependent on py4j
@@ -269,7 +270,7 @@ class TestMetamenthEntryPoint(unittest.TestCase):
     def test_exchange_room_with_meter(self):
         meter = Meter('hre.vrs.ies', 0.5, self.enums.MeasurementUnit.KILOWATTS.getValue(),
                       self.enums.MeterType.ELECTRICITY.getValue(), self.enums.MeterMeasureMode.AUTOMATIC.getValue(),
-                      False)
+                      self.gateway)
         measure = Measure(unit=self.enums.MeasurementUnit.SQUARE_METERS.getValue(), minimum=125)
         area = BinaryMeasure(measure)
         room = Room(area, name="STD 101", room_type=self.enums.RoomType.STUDY_ROOM.getValue(), gateway=self.gateway,
@@ -282,6 +283,26 @@ class TestMetamenthEntryPoint(unittest.TestCase):
         self.assertNotEqual(received_room_obj, room)
         self.assertIsInstance(room, Room)
         self.assertIsInstance(received_room_obj, JavaObject)
+
+    def test_exchange_room_with_meter_and_measurement(self):
+        meter = Meter('hre.vrs.ies', 0.5, self.enums.MeasurementUnit.KILOWATTS.getValue(),
+                      self.enums.MeterType.ELECTRICITY.getValue(), self.enums.MeterMeasureMode.AUTOMATIC.getValue(),
+                      self.gateway)
+        meter_measure = MeterMeasure(10.5)
+        meter.addMeterMeasure(meter_measure)
+        meter.addMeterMeasure(MeterMeasure(11.23, '2024-05-29'))
+        meter.addMeterMeasure(MeterMeasure(20.5, '2024-06-01'))
+        measure = Measure(unit=self.enums.MeasurementUnit.SQUARE_METERS.getValue(), minimum=125)
+        area = BinaryMeasure(measure)
+        room = Room(area, name="STD 101", room_type=self.enums.RoomType.STUDY_ROOM.getValue(), gateway=self.gateway,
+                    location='hre.vrs.ies')
+        room.setMeter(meter)
+        self.repo.addEntity(room)
+        received_room_obj = self.repo.getEntity("room")
+        self.assertEqual(len(received_room_obj.getMeter().getMeterMeasures({})), 3)
+        self.assertEqual(received_room_obj.getMeter().getMeterMeasures({})[0].toString(),
+                         meter_measure.toString())
+        self.assertEqual(len(received_room_obj.getMeter().getMeterMeasureByDate('2024-05-29', None)), 2)
 
     def test_exchange_room_with_meter_and_sensor(self):
         meter = Meter('hre.vrs.ies', 0.5, self.enums.MeasurementUnit.KILOWATTS.getValue(),
