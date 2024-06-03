@@ -3,9 +3,6 @@ package ca.concordia.ngci.tools4cities.middleware.middleware;
 import java.util.Queue;
 import java.util.Set;
 
-import ca.concordia.ngci.tools4cities.middleware.consumer.IConsumer;
-import ca.concordia.ngci.tools4cities.middleware.producer.IProducer;
-
 // TODO Allow as many consumers and producers at run-time
 // TODO Make the Middleware a Singleton
 
@@ -29,7 +26,8 @@ public class Middleware {
 		return null;
 	}
 
-	public <E> void requestData(IConsumer<E> initiator, Set<IProducer<?>> producer, Queue<IOperation<?>> operations) {
+	public <E> void requestData(IConsumer<E> initiator,
+			Set<IProducer<?>> producer, Queue<IOperation> operations) {
 
 	}
 }

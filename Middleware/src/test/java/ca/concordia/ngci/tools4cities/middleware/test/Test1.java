@@ -9,32 +9,51 @@ import java.util.Set;
 import org.junit.Assert;
 import org.junit.Test;
 
-import ca.concordia.ngci.tools4cities.middleware.consumer.IConsumer;
-import ca.concordia.ngci.tools4cities.middleware.consumer.StringConsumer;
+import ca.concordia.ngci.tools4cities.middleware.consumers.StringConsumer;
+import ca.concordia.ngci.tools4cities.middleware.middleware.IConsumer;
 import ca.concordia.ngci.tools4cities.middleware.middleware.IOperation;
-import ca.concordia.ngci.tools4cities.middleware.middleware.Middleware;
-import ca.concordia.ngci.tools4cities.middleware.producer.IProducer;
+import ca.concordia.ngci.tools4cities.middleware.middleware.IProducer;
 
 public class Test1 {
 
+	public static class Test1Operation implements IOperation {
+		public Test1Operation(final Set<IProducer<?>> producers) {
+			// TODO Auto-generated constructor stub
+		}
+
+		@Override
+		public void newDataAvailable(IProducer<?> aProducer) {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public IProducer<?> fetchData() throws Exception {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public void addObserver(IConsumer<?> aConsumer) {
+			// TODO Auto-generated method stub
+			
+		}
+
+	}
+
 	@Test
 	public void test1() {
-		final IConsumer<String> consumer = new StringConsumer();
-		final Middleware m = new Middleware();
-
 		final Set<IProducer<?>> producers = new HashSet<IProducer<?>>();
+		final Queue<IOperation> operations = new LinkedList<IOperation>();
 
-		final Queue<IOperation<?>> operations = new LinkedList<IOperation<?>>();
+		final IConsumer<String> consumer = new StringConsumer(producers);
 
-		m.requestData(consumer, producers, operations);
-		Assert.assertArrayEquals(consumer.getResults(), new String[] { "AAA", "BBB", "CCC" });
+		Assert.assertArrayEquals(consumer.getResults(),
+				new String[] { "AAA", "BBB", "CCC" });
 	}
 
 	@Test
 	public void test2() {
-		final IConsumer<String> consumer = new StringConsumer();
-		final Middleware m = new Middleware();
-
 		final Set<IProducer<?>> producers = new HashSet<IProducer<?>>();
 		final IProducer<String> producer1 = new IProducer<>() {
 
@@ -45,6 +64,12 @@ public class Test1 {
 
 			@Override
 			public void addObserver(IConsumer<String> aConsumer) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void addObserver(IOperation anOperation) {
 				// TODO Auto-generated method stub
 
 			}
@@ -61,20 +86,21 @@ public class Test1 {
 				// TODO Auto-generated method stub
 
 			}
+
+			@Override
+			public void addObserver(IOperation anOperation) {
+				// TODO Auto-generated method stub
+
+			}
 		};
 		producers.add(producer1);
 		producers.add(producer2);
-		final Queue<IOperation<?>> operations = new LinkedList<IOperation<?>>();
-		final IOperation<?> operation = new IOperation<>() {
+		final IConsumer<String> consumer = new StringConsumer(producers);
+		final Queue<IOperation> operations = new LinkedList<IOperation>();
+		final IOperation operation = new Test1Operation(producers);
 
-			@Override
-			public IProducer fetchdata(Set<IProducer> p) {
-				return null;
-			}
-		};
-
-		m.requestData(consumer, producers, operations);
-		Assert.assertArrayEquals(consumer.getResults(), new String[] { "A1", "B2", "C3" });
+		Assert.assertArrayEquals(consumer.getResults(),
+				new String[] { "A1", "B2", "C3" });
 	}
 
 }
