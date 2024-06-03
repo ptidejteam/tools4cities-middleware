@@ -2,7 +2,9 @@ package ca.concordia.ngci.tools4cities.middleware.middleware;
 
 import java.io.IOException;
 
+import ca.concordia.ngci.tools4cities.middleware.consumer.JSONConsumer;
 import ca.concordia.ngci.tools4cities.middleware.consumer.OccupancyConsumer;
+import ca.concordia.ngci.tools4cities.middleware.producer.JSONProducer;
 import ca.concordia.ngci.tools4cities.middleware.producer.OccupancyProducer;
 
 public class Main {
@@ -15,11 +17,15 @@ public class Main {
 		// Initiate request for data
 		middleware.requestData(null, null, null);
 		
-		OccupancyConsumer consumer = new OccupancyConsumer();
-		OccupancyProducer producer = new OccupancyProducer(consumer);
+		JSONConsumer consumer = new JSONConsumer();
+		JSONProducer producer = new JSONProducer(consumer);
+		producer.sendData();
+		
+		OccupancyConsumer consumer_Ocu = new OccupancyConsumer();
+		OccupancyProducer producer_Ocu = new OccupancyProducer(consumer_Ocu);
 		
 	      for (int i = 0; i < 50; i++) {
-	            producer.produceData();
+	            producer_Ocu.produceData();
 	        }
 	}
 }
