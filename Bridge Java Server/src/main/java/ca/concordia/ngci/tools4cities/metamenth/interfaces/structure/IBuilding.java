@@ -1,0 +1,33 @@
+package ca.concordia.ngci.tools4cities.metamenth.interfaces.structure;
+
+import ca.concordia.ngci.tools4cities.metamenth.interfaces.datatypes.IAbstractMeasure;
+import ca.concordia.ngci.tools4cities.metamenth.interfaces.datatypes.IAddress;
+import ca.concordia.ngci.tools4cities.metamenth.interfaces.datatypes.IZone;
+import ca.concordia.ngci.tools4cities.metamenth.interfaces.measureinstruments.IMeter;
+import ca.concordia.ngci.tools4cities.metamenth.interfaces.measureinstruments.IWeatherStation;
+
+public interface IBuilding {
+    String getUID();
+    int getConstructionYear();
+    void setConstructionYear(int year);
+    IAbstractMeasure getHeight();
+    void setHeight(IAbstractMeasure height);
+    IAbstractMeasure getFloorArea();
+    void setFloorArea(IAbstractMeasure floorArea);
+    IAbstractMeasure getInternalMass();
+    void setInternalMass(IAbstractMeasure internalMass);
+    IAddress getAddress();
+    void setAddress(IAddress address);
+    String getBuildingType();
+    void setBuildingType(String buildingType);
+    void addFloor(IFloor floor);
+    void addMeter(IMeter meter);
+    IBuilding addWeatherStation(IWeatherStation weatherStation);
+    IWeatherStation getWeatherStation(String name);
+    Boolean removeWeatherStation(IWeatherStation weatherStation);
+    IEnvelope getEnvelope();
+    void setEnvelope(IEnvelope envelope);
+    IZone getZones();
+    String toString();
+
+}
