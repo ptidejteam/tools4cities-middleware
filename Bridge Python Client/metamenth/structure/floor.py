@@ -16,7 +16,7 @@ class Floor(AbstractSpace):
     def __init__(
         self,
         area: AbstractMeasure,
-        number: int,
+        number: float,
         floor_type: str,
         gateway,
         height: AbstractMeasure = None,
@@ -62,10 +62,10 @@ class Floor(AbstractSpace):
     def setDescription(self, value: str):
         self._description = value
 
-    def getNumber(self) -> int:
+    def getNumber(self) -> float:
         return self._number
 
-    def setNumber(self, value: int):
+    def setNumber(self, value: float):
         if value is not None:
             self._number = value
         else:

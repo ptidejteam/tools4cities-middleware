@@ -1,11 +1,10 @@
 package com.middleware.metamenth.interfaces.datatypes;
 
-import com.middleware.metamenth.enums.MeasurementUnit;
 
 public interface IMeasure {
     String toString();
-    MeasurementUnit getUnit();
-    void setUnit(MeasurementUnit unit);
+    String getUnit();
+    void setUnit(String unit);
     float getMinimum();
     void setMinimum(float minimum);
     float getMaximum();

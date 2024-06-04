@@ -1,7 +1,6 @@
 import os
 import socket
 import subprocess
-import time
 import unittest
 from dotenv import load_dotenv
 from py4j.java_gateway import JavaGateway, JavaObject, CallbackServerParameters, GatewayParameters
@@ -61,12 +60,11 @@ class TestMetamenthEntryPoint(unittest.TestCase):
         # Start the Java server as a subprocess
         subprocess.Popen(command)
         # Wait for the Java server to have started
-        #while self.is_port_available("localhost", 25334):
-            #pass
+        while self.is_port_available("localhost", 25334):
+            pass
 
     def setUp(self):
         self.start_server()
-        time.sleep(0.19)
         self.gateway = JavaGateway(callback_server_parameters=CallbackServerParameters(),
                                    gateway_parameters=GatewayParameters(auto_convert=True))
 
@@ -269,9 +267,9 @@ class TestMetamenthEntryPoint(unittest.TestCase):
         self.assertEqual(len(received_room.getZones()), 1)
 
     def test_exchange_room_with_meter(self):
-        meter = Meter('hre.vrs.ies', 0.5, self.enums.MeasurementUnit.KILOWATTS.getValue(),
+        meter = Meter(0.5, self.enums.MeasurementUnit.KILOWATTS.getValue(),
                       self.enums.MeterType.ELECTRICITY.getValue(), self.enums.MeterMeasureMode.AUTOMATIC.getValue(),
-                      self.gateway)
+                      self.gateway, meter_location='hre.vrs.ies')
         measure = Measure(unit=self.enums.MeasurementUnit.SQUARE_METERS.getValue(), minimum=125)
         area = BinaryMeasure(measure)
         room = Room(area, name="STD 101", room_type=self.enums.RoomType.STUDY_ROOM.getValue(), gateway=self.gateway,
@@ -286,9 +284,9 @@ class TestMetamenthEntryPoint(unittest.TestCase):
         self.assertIsInstance(received_room_obj, JavaObject)
 
     def test_exchange_room_with_meter_and_measurement(self):
-        meter = Meter('hre.vrs.ies', 0.5, self.enums.MeasurementUnit.KILOWATTS.getValue(),
+        meter = Meter(0.5, self.enums.MeasurementUnit.KILOWATTS.getValue(),
                       self.enums.MeterType.ELECTRICITY.getValue(), self.enums.MeterMeasureMode.AUTOMATIC.getValue(),
-                      self.gateway)
+                      self.gateway, meter_location='hre.vrs.ies')
         meter_measure = MeterMeasure(10.5)
         meter.addMeterMeasure(meter_measure)
         meter.addMeterMeasure(MeterMeasure(11.23, '2024-05-29'))
@@ -303,12 +301,12 @@ class TestMetamenthEntryPoint(unittest.TestCase):
         self.assertEqual(len(received_room_obj.getMeter().getMeterMeasures({})), 3)
         self.assertEqual(received_room_obj.getMeter().getMeterMeasures({})[0].toString(),
                          meter_measure.toString())
-        self.assertEqual(len(received_room_obj.getMeter().getMeterMeasureByDate('2024-05-29', None)), 2)
+        self.assertEqual(len(received_room_obj.getMeter().getMeterMeasureByDate('2024-05-29', None)), 3)
 
     def test_exchange_room_with_meter_and_sensor(self):
-        meter = Meter('hre.vrs.ies', 0.5, self.enums.MeasurementUnit.KILOWATTS.getValue(),
+        meter = Meter(0.5, self.enums.MeasurementUnit.KILOWATTS.getValue(),
                       self.enums.MeterType.ELECTRICITY.getValue(), self.enums.MeterMeasureMode.AUTOMATIC.getValue(),
-                      False)
+                      gateway=self.gateway, meter_location='hre.vrs.ies')
         measure = Measure(unit=self.enums.MeasurementUnit.SQUARE_METERS.getValue(), minimum=125)
         area = BinaryMeasure(measure)
         room = Room(area, name="STD 101", room_type=self.enums.RoomType.STUDY_ROOM.getValue(), gateway=self.gateway,
@@ -459,7 +457,7 @@ class TestMetamenthEntryPoint(unittest.TestCase):
         self.repo.addEntity(building)
         received_building_obj = self.repo.getEntity('building')
         self.assertEqual(len(received_building_obj.getWeatherStation(weather_station.getName()).getWeatherData({})),
-                       2)
+                         2)
         self.assertEqual(len(building.getWeatherStation(weather_station.getName()).getWeatherData({})),
                          2)
         self.assertEqual(received_building_obj.toString(), building.toString())

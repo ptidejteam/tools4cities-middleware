@@ -13,11 +13,11 @@ class Meter:
     Email: peteryefi@gmail.com
     """
 
-    def __init__(self, meter_location: str, measurement_frequency: float,
+    def __init__(self, measurement_frequency: float,
                  measurement_unit: str, meter_type: str,
                  measure_mode: str, gateway, data_accumulated: bool = False,
                  accumulation_frequency: str = MeterAccumulationFrequency.NONE.value,
-                 manufacturer: str = None):
+                 manufacturer: str = None,  meter_location: str = None):
         """
         Initializes a Meter instance.
 

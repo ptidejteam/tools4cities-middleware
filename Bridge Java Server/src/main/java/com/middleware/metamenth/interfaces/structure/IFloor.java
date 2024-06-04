@@ -6,8 +6,8 @@ public interface IFloor {
     String toString();
     String getDescription();
     void setDescription(String description);
-    int getNumber();
-    void setNumber(int number);
+    Object getNumber();
+    void setNumber(double number);
     String getFloorType();
     void setFloorType(String flootType);
     IAbstractMeasure getHeight();

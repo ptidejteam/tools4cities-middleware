@@ -6,6 +6,7 @@ import com.middleware.metamenth.interfaces.structure.IFloor;
 import com.middleware.metamenth.interfaces.structure.IOpenSpace;
 import com.middleware.metamenth.interfaces.structure.IRoom;
 import com.middleware.metamenth.interfaces.transducers.ISensor;
+import py4j.GatewayServer;
 import com.middleware.metamenth.enums.FloorType;
 import com.middleware.metamenth.enums.RoomType;
 import com.middleware.metamenth.interfaces.datatypes.IAddress;
@@ -15,6 +16,7 @@ import com.middleware.metamenth.interfaces.structure.IBuilding;
 public class MetamenthRepository {
 
     private Map<String, Object> repository = new HashMap<String, Object>();
+
 
     public void addEntity(String key, Object entity){
         repository.putIfAbsent(key, entity);
@@ -74,4 +76,5 @@ public class MetamenthRepository {
         building.addFloor(newFloor);
         return building;
     }
+
 }

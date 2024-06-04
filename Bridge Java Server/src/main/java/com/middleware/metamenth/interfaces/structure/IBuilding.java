@@ -2,6 +2,7 @@ package com.middleware.metamenth.interfaces.structure;
 
 import com.middleware.metamenth.interfaces.datatypes.IAbstractMeasure;
 import com.middleware.metamenth.interfaces.datatypes.IAddress;
+import com.middleware.metamenth.interfaces.datatypes.IZone;
 import com.middleware.metamenth.interfaces.measureinstruments.IMeter;
 import com.middleware.metamenth.interfaces.measureinstruments.IWeatherStation;
 
@@ -26,6 +27,7 @@ public interface IBuilding {
     Boolean removeWeatherStation(IWeatherStation weatherStation);
     IEnvelope getEnvelope();
     void setEnvelope(IEnvelope envelope);
+    IZone getZones();
     String toString();
 
 }
