@@ -1,5 +1,8 @@
 package ca.concordia.ngci.tools4cities.metamenth.interfaces.structure;
 
+import java.util.List;
+import java.util.Map;
+
 import ca.concordia.ngci.tools4cities.metamenth.interfaces.datatypes.IAbstractMeasure;
 import ca.concordia.ngci.tools4cities.metamenth.interfaces.datatypes.IAddress;
 import ca.concordia.ngci.tools4cities.metamenth.interfaces.datatypes.IZone;
@@ -28,6 +31,12 @@ public interface IBuilding {
     IEnvelope getEnvelope();
     void setEnvelope(IEnvelope envelope);
     IZone getZones();
+    IFloor getFloorById(String id);
+    IFloor getFloorByNumber(double number);
+    List<IFloor> getFloors(Map<String, Object> searchTerms);
+    IMeter getMeterById(String id);
+    List<IMeter> getMeterByType(String meterType);
+    List<IMeter> getMeters(Map<String, Object> searchTerms);
     String toString();
 
 }

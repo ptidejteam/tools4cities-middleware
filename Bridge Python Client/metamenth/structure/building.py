@@ -5,6 +5,8 @@ from metamenth.measure_instruments.meter import Meter
 from metamenth.datatypes.interfaces.abstract_measure import AbstractMeasure
 from metamenth.measure_instruments.weather_station import WeatherStation
 from metamenth.structure.envelope import Envelope
+from metamenth.utils.search.structure_entity_search import StructureEntitySearch
+from typing import List, Dict
 
 
 class Building:
@@ -38,6 +40,7 @@ class Building:
         self._zones = gateway.jvm.java.util.ArrayList()
         self._weather_stations: [WeatherStation] = []
         self._envelope = None
+        self._structure_entity_search = StructureEntitySearch(gateway)
 
         # apply validation
         self.setConstructionYear(construction_year)
@@ -147,6 +150,54 @@ class Building:
 
     def setEnvelope(self, value: Envelope):
         self._envelope = value
+
+    def getFloorById(self, uid: str) -> Floor:
+        """
+        Retrieves a floor given the uid
+        :param uid: the uid of the floor
+        :return:
+        """
+        return self._structure_entity_search.searchByUid(self._floors, uid)
+
+    def getFloorByNumber(self, floor_number: int) -> Floor:
+        """
+        Retrieves a floor given the floor number
+        :param floor_number: the number assigned to the floor
+        :return:
+        """
+        return self._structure_entity_search.searchByNumber(self._floors, floor_number)
+
+    def getFloors(self, search_term: Dict = None) -> List[Floor]:
+        """
+        Retrieves floors given the attributes and their values
+        :param search_term: the uid of the floor
+        :return:
+        """
+        return self._structure_entity_search.search(self._floors, search_term)
+
+    def getMeterById(self, uid: str) -> Meter:
+        """
+        Returns a meter based on uid
+        :param uid: the uid of the meter
+        :return:
+        """
+        return self._structure_entity_search.searchByUid(self._meters, uid)
+
+    def getMeterByType(self, meter_type: str) -> [Meter]:
+        """
+        Returns a meter based on type of meter
+        :param meter_type: the type of meter
+        :return:
+        """
+        return self._structure_entity_search.search(self._meters, {'meter_type': meter_type})
+
+    def getMeters(self, search_terms: Dict = None) -> [Meter]:
+        """
+        Returns a meter based on some attributes and their values
+        :param search_terms: attributes and value key pairs
+        :return:
+        """
+        return self._structure_entity_search.search(self._meters, search_terms)
 
     def toString(self):
         floors_info = "\n".join([f"  - Floor {floor.getNumber()}: {floor}" for floor in self._floors])

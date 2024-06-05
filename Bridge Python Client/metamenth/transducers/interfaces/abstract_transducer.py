@@ -6,6 +6,8 @@ from typing import Union
 from metamenth.measure_instruments.sensor_data import SensorData
 from metamenth.measure_instruments.trigger_history import TriggerHistory
 from metamenth.datatypes.interfaces.abstract_measure import AbstractMeasure
+from typing import Dict
+from metamenth.utils.search.structure_entity_search import StructureEntitySearch
 
 
 class AbstractTransducer(ABC):
@@ -23,6 +25,7 @@ class AbstractTransducer(ABC):
         self._registry_id = registry_id
         self._set_point = None
         self._meta_data = gateway.jvm.java.util.HashMap()
+        self._structure_entity_search = StructureEntitySearch(gateway)
         self._data = []
 
         self.setName(name)
@@ -89,6 +92,24 @@ class AbstractTransducer(ABC):
         except KeyError as err:
             print(err, file=sys.stderr)
             return False
+
+    def getData(self, search_terms: Dict = None) -> Union[List[SensorData], List[TriggerHistory]]:
+        """
+        Search data by attributes values
+        :param search_terms: a dictionary of attributes and their values
+        :return [SensorData|TriggerHistory]:
+        """
+        return self._structure_entity_search.search(self._data, search_terms)
+
+    def getDataByDate(self, from_timestamp: str, to_timestamp: str = None) -> Union[List[SensorData],
+    List[TriggerHistory]]:
+        """
+        searches transducer data based on provided timestamp
+        :param from_timestamp: the start timestamp
+        :param to_timestamp: the end timestamp
+        :return: [SensorData|TriggerHistory]
+        """
+        return self._structure_entity_search.dateRangeSearch(self._data, from_timestamp, to_timestamp)
 
     def __eq__(self, other):
         if isinstance(other, AbstractTransducer):

@@ -25,7 +25,7 @@ class StructureEntitySearch:
         :param uid: the unique identifiers
         :return:
         """
-        return StructureEntitySearch.searchStructureEntity(entity_list, 'UID', uid)
+        return self.searchStructureEntity(entity_list, '_UID', uid)
 
     def searchByName(self, entity_list, name):
         """
@@ -34,7 +34,16 @@ class StructureEntitySearch:
         :param name: name of the structure
         :return:
         """
-        return StructureEntitySearch.searchStructureEntity(entity_list, 'name', name)
+        return self.searchStructureEntity(entity_list, '_name', name)
+
+    def searchByNumber(self, entity_list, number):
+        """
+        search structures by name
+        :param entity_list: the list of entity to search for a particular entity
+        :param number: number of the entity
+        :return:
+        """
+        return self.searchStructureEntity(entity_list, '_number', number)
 
     def search(self, entity_list, search_terms: Dict):
         """
@@ -44,15 +53,17 @@ class StructureEntitySearch:
         :return:
         """
         results = self._gateway.jvm.java.util.ArrayList()
-
         for entity in entity_list:
             found = True
             try:
-                for attribute, value in search_terms.items():
-                    att_value = getattr(entity, attribute)
-                    if att_value != value:
-                        found = False
-                if found:
+                if search_terms:
+                    for attribute, value in search_terms.items():
+                        att_value = getattr(entity, attribute)
+                        if att_value != value:
+                            found = False
+                    if found:
+                        results.add(entity)
+                else:
                     results.add(entity)
             except AttributeError as err:
                 # TODO: log errors to file
@@ -96,8 +107,8 @@ class StructureEntitySearch:
         :param search_value: the search value
         :return:
         """
-
         for entity in entity_list:
+
             try:
                 if getattr(entity, search_field) == search_value:
                     return entity

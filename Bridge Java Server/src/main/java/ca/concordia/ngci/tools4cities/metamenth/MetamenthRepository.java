@@ -70,6 +70,7 @@ public class MetamenthRepository {
         newFloor.setNumber(1);
         newFloor.setFloorType(FloorType.BASEMENT.getValue());
         newFloor.addRoom(newRoom);
+        
 
         IBuilding building = (IBuilding) repository.get("building");
         building.setConstructionYear(2025);

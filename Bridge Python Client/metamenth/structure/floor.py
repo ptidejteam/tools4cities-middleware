@@ -2,7 +2,8 @@ from metamenth.structure.interfaces.abstract_space import AbstractSpace
 from metamenth.datatypes.interfaces.abstract_measure import AbstractMeasure
 from metamenth.structure.open_space import OpenSpace
 from metamenth.structure.room import Room
-from typing import List
+from typing import List, Dict
+from metamenth.utils.search.structure_entity_search import StructureEntitySearch
 
 
 class Floor(AbstractSpace):
@@ -41,6 +42,7 @@ class Floor(AbstractSpace):
         self._floor_type = None
         self._open_spaces: List['OpenSpace'] = []
         self._rooms: List['Room'] = []
+        self._structure_entity_search = StructureEntitySearch(gateway)
 
         # apply validation
         self.setNumber(number)
@@ -100,6 +102,54 @@ class Floor(AbstractSpace):
             self._rooms.append(value)
         else:
             raise ValueError("rooms must be of type [Room]")
+
+    def getOpenSpaceById(self, uid: str) -> OpenSpace:
+        """
+        Retrieves an open space given the uid
+        :param uid: the uid of the open space
+        :return:
+        """
+        return self._structure_entity_search.searchByUid(self._open_spaces, uid)
+
+    def getRoomById(self, uid: str) -> Room:
+        """
+        Retrieves a room given the uid
+        :param uid: the uid of the room
+        :return:
+        """
+        return self._structure_entity_search.searchByUid(self._rooms, uid)
+
+    def getOpenSpaceByName(self, name: str) -> OpenSpace:
+        """
+        Retrieves an open space given the name
+        :param name: the name of the open space
+        :return:
+        """
+        return self._structure_entity_search.searchByName(self._open_spaces, name)
+
+    def getRoomByName(self, name: str) -> Room:
+        """
+        Retrieves a room given the name
+        :param name: the name of the room
+        :return:
+        """
+        return self._structure_entity_search.searchByName(self._rooms, name)
+
+    def getRooms(self, search_term: Dict = None) -> List[Room]:
+        """
+        Retrieves rooms that match attributes and their values
+        :param search_term: attributes and their values
+        :return:
+        """
+        return self._structure_entity_search.search(self._rooms, search_term)
+
+    def getOpenSpaces(self, search_term: Dict = None) -> List[OpenSpace]:
+        """
+        Retrieves open spaces that match attributes and their values
+        :param search_term: attributes and their values
+        :return:
+        """
+        return self._structure_entity_search.search(self._open_spaces, search_term)
 
     def toString(self):
         floor_details = (f"Floor {super().__str__()} {self.getNumber()} ({self.getFloorType()}): {self.getDescription()},"

@@ -1,6 +1,4 @@
-JPype1==1.5.0
 packaging==23.2
 pkg-about==1.1.5
 py4j==0.10.9.7
-pyjnius==1.6.1
 tomli==2.0.1

@@ -34,7 +34,6 @@ if __name__ == "__main__":
     meter.addMeterMeasure(MeterMeasure(10.5))
     meter.addMeterMeasure(MeterMeasure(11.15))
     meter.addMeterMeasure(MeterMeasure(9.25))
-    print(meter.getMeterMeasures())
     measure = Measure(unit=enums.MeasurementUnit.SQUARE_METERS.getValue(), minimum=125)
     area = BinaryMeasure(measure)
 

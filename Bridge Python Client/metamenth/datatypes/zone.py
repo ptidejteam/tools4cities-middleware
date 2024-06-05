@@ -32,7 +32,7 @@ class Zone:
         # Apply validation
         self.setName(name)
         self.setZoneType(zone_type)
-        if zone_type == self.gateway.jvm.com.middleware.metamenth.enums.ZoneType.HVAC.getValue():
+        if zone_type == self.gateway.jvm.ca.concordia.ngci.tools4cities.metamenth.enums.ZoneType.HVAC.getValue():
             self.setHvacType(hvac_type)
         self.setDescription(description)
 
@@ -65,7 +65,7 @@ class Zone:
         return self._hvac_type
 
     def setHvacType(self, value: str):
-        if self.getZoneType() != self.gateway.jvm.com.middleware.metamenth.enums.ZoneType.HVAC.getValue():
+        if self.getZoneType() != self.gateway.jvm.ca.concordia.ngci.tools4cities.metamenth.enums.ZoneType.HVAC.getValue():
             raise ValueError("HVAC type is only applicable for zones with ZoneType.HVAC.")
         self._hvac_type = value
 
