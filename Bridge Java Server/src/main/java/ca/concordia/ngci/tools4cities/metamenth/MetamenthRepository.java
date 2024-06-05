@@ -12,7 +12,6 @@ import ca.concordia.ngci.tools4cities.metamenth.interfaces.structure.IFloor;
 import ca.concordia.ngci.tools4cities.metamenth.interfaces.structure.IOpenSpace;
 import ca.concordia.ngci.tools4cities.metamenth.interfaces.structure.IRoom;
 import ca.concordia.ngci.tools4cities.metamenth.interfaces.transducers.ISensor;
-import py4j.GatewayServer;
 
 public class MetamenthRepository {
 

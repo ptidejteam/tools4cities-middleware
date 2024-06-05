@@ -29,4 +29,4 @@ class AbstractMeasure(ABC):
        return self.__str__()
 
     class Java:
-        implements = ['com.middleware.metamenth.interfaces.datatypes.IAbstractMeasure']
+        implements = ['ca.concordia.ngci.tools4cities.metamenth.interfaces.datatypes.IAbstractMeasure']

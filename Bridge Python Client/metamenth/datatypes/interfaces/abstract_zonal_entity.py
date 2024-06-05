@@ -50,7 +50,7 @@ class AbstractZonalEntity(ABC):
                 return zone
 
     class Java:
-        implements = ['com.middleware.metamenth.interfaces.datatypes.IAbstractZonalEntity']
+        implements = ['ca.concordia.ngci.tools4cities.metamenth.interfaces.datatypes.IAbstractZonalEntity']
 
 
 

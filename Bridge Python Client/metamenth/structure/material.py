@@ -111,4 +111,4 @@ class Material:
         )
 
     class Java:
-        implements = ['com.middleware.metamenth.interfaces.structure.IMaterial']
+        implements = ['ca.concordia.ngci.tools4cities.metamenth.interfaces.structure.IMaterial']

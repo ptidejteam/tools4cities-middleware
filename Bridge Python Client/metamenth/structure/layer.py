@@ -98,4 +98,4 @@ class Layer:
         )
 
     class Java:
-        implements = ['com.middleware.metamenth.interfaces.structure.ILayer']
+        implements = ['ca.concordia.ngci.tools4cities.metamenth.interfaces.structure.ILayer']

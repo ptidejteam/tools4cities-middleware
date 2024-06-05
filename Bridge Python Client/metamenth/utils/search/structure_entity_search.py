@@ -107,4 +107,4 @@ class StructureEntitySearch:
         return None
 
     class Java:
-        implements = ['com.middleware.metamenth.interfaces.utils.search.IStructureEntitySearch']
+        implements = ['ca.concordia.ngci.tools4cities.metamenth.interfaces.utils.search.IStructureEntitySearch']

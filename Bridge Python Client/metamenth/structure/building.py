@@ -166,4 +166,4 @@ class Building:
                 f"Meters:\n{meter_info})")
 
     class Java:
-        implements = ['com.middleware.metamenth.interfaces.structure.IBuilding']
+        implements = ['ca.concordia.ngci.tools4cities.metamenth.interfaces.structure.IBuilding']

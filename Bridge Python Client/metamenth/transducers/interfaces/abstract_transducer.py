@@ -105,4 +105,4 @@ class AbstractTransducer(ABC):
                 f"Metadata: {self.getMetaData()})")
 
     class Java:
-        implements = ['com.middleware.metamenth.interfaces.transducers.IAbstractTransducer']
+        implements = ['ca.concordia.ngci.tools4cities.metamenth.interfaces.transducers.IAbstractTransducer']

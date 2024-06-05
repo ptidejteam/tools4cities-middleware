@@ -84,4 +84,4 @@ class WeatherStation:
         return f"{weather_station_details}\nWeather Data:\n{weather_data}"
 
     class Java:
-        implements = ['com.middleware.metamenth.interfaces.measureinstruments.IWeatherStation']
+        implements = ['ca.concordia.ngci.tools4cities.metamenth.interfaces.measureinstruments.IWeatherStation']

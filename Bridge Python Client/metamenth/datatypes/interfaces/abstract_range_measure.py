@@ -45,4 +45,4 @@ class AbstractRangeMeasure(AbstractMeasure):
         return self.__str__()
 
     class Java:
-        implements = ['com.middleware.metamenth.interfaces.datatypes.IAbstractRangeMeasure']
+        implements = ['ca.concordia.ngci.tools4cities.metamenth.interfaces.datatypes.IAbstractRangeMeasure']

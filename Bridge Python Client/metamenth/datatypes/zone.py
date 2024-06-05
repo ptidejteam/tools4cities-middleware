@@ -99,4 +99,4 @@ class Zone:
         return zone_details
 
     class Java:
-        implements = ['com.middleware.metamenth.interfaces.datatypes.IZone']
+        implements = ['ca.concordia.ngci.tools4cities.metamenth.interfaces.datatypes.IZone']

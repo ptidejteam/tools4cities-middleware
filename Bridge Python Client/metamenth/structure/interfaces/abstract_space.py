@@ -47,4 +47,4 @@ class AbstractSpace(AbstractZonalEntity):
         )
 
     class Java:
-        implements = ['com.middleware.metamenth.interfaces.structure.IAbstractSpace']
+        implements = ['ca.concordia.ngci.tools4cities.metamenth.interfaces.structure.IAbstractSpace']

@@ -116,4 +116,4 @@ class Address:
         )
 
     class Java:
-        implements = ['com.middleware.metamenth.interfaces.datatypes.IAddress']
+        implements = ['ca.concordia.ngci.tools4cities.metamenth.interfaces.datatypes.IAddress']

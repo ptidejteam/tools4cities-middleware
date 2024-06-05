@@ -66,4 +66,4 @@ class Cover:
         )
 
     class Java:
-        implements = ['com.middleware.metamenth.interfaces.structure.ICover']
+        implements = ['ca.concordia.ngci.tools4cities.metamenth.interfaces.structure.ICover']

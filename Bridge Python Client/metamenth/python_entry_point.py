@@ -61,7 +61,7 @@ class PythonEntryPoint:
         return Building(construction_year, height, floor_area, address, building_type, floor, JavaGateway())
 
     class Java:
-        implements = ['com.middleware.metamenth.interfaces.PythonEntryPoint']
+        implements = ['ca.concordia.ngci.tools4cities.metamenth.interfaces.PythonEntryPoint']
 
 
 

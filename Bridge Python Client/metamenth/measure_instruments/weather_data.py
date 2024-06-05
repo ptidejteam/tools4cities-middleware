@@ -45,4 +45,4 @@ class WeatherData:
         )
 
     class Java:
-        implements = ['com.middleware.metamenth.interfaces.measureinstruments.IWeatherData']
+        implements = ['ca.concordia.ngci.tools4cities.metamenth.interfaces.measureinstruments.IWeatherData']
