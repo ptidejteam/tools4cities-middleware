@@ -4,12 +4,17 @@ import ca.concordia.ngci.tools4cities.metamenth.interfaces.datatypes.IAbstractMe
 import ca.concordia.ngci.tools4cities.metamenth.interfaces.datatypes.IAddress;
 import ca.concordia.ngci.tools4cities.metamenth.interfaces.datatypes.IMeasure;
 import ca.concordia.ngci.tools4cities.metamenth.interfaces.datatypes.IPoint;
+import ca.concordia.ngci.tools4cities.metamenth.interfaces.datatypes.IZone;
 import ca.concordia.ngci.tools4cities.metamenth.interfaces.measureinstruments.IMeter;
 import ca.concordia.ngci.tools4cities.metamenth.interfaces.measureinstruments.IMeterMeasure;
+import ca.concordia.ngci.tools4cities.metamenth.interfaces.measureinstruments.ISensorData;
+import ca.concordia.ngci.tools4cities.metamenth.interfaces.measureinstruments.IWeatherData;
+import ca.concordia.ngci.tools4cities.metamenth.interfaces.measureinstruments.IWeatherStation;
 import ca.concordia.ngci.tools4cities.metamenth.interfaces.structure.IBuilding;
 import ca.concordia.ngci.tools4cities.metamenth.interfaces.structure.IFloor;
 import ca.concordia.ngci.tools4cities.metamenth.interfaces.structure.IOpenSpace;
 import ca.concordia.ngci.tools4cities.metamenth.interfaces.structure.IRoom;
+import ca.concordia.ngci.tools4cities.metamenth.interfaces.transducers.ISensor;
 
 /**
  * Interfaces to allow Java access the corresponding Python methods to create objects
@@ -29,4 +34,9 @@ public interface IPythonEntryPoint {
     IAddress createAddress(String city, String street, String state, String zipCode, String country, IPoint coordinates);
     IBuilding createBuilding(int constructionYear, IAbstractMeasure height, IAbstractMeasure floor_area, IAddress address, 
     String buildingType, IFloor floor);
+    ISensor createSensor(String name, String measure, String unit, String measure_type, int data_frequency);
+    ISensorData createSensorData(double value, String timestamp);
+    IWeatherStation createWeatherStation(String name);
+    IWeatherData createWeatherData(IAbstractMeasure data, String timestamp);
+    IZone createZone(String name, String zone_type);
 }

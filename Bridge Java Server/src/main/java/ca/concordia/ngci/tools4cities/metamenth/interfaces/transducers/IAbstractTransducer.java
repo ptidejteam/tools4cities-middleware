@@ -15,7 +15,7 @@ public interface IAbstractTransducer {
     IAbstractMeasure getSetPoint();
     void setTransducerSetPoint(IAbstractMeasure setpoint, String measure);
     Map<String, Object> getMetaData();
-    void addData(Object data);
+    void addData(List<Object> data);
     boolean removeData(Object data);
     void addMetaData(String key, Object value);
     boolean removeMetaData(String key);

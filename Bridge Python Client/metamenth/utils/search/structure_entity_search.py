@@ -108,7 +108,6 @@ class StructureEntitySearch:
         :return:
         """
         for entity in entity_list:
-
             try:
                 if getattr(entity, search_field) == search_value:
                     return entity

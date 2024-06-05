@@ -6,4 +6,6 @@ public interface IAbstractMeasure {
     String toString();
     String getMeasurementUnit();
     void setMeasurementUnit(MeasurementUnit measurementUnit);
+    String getMeasureType();
+    void setMeasureType(String measureType);
 }

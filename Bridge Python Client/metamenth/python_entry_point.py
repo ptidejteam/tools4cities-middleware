@@ -60,6 +60,21 @@ class PythonEntryPoint:
                        building_type: str, floor: Floor):
         return Building(construction_year, height, floor_area, address, building_type, floor, JavaGateway())
 
+    def createSensor(self, name: str, measure: str, unit: str, measure_type: str, data_frequency: int):
+        return Sensor(name, measure, unit, measure_type, data_frequency, JavaGateway())
+
+    def createSensorData(self, value: float, timestamp: str):
+        return SensorData(value, timestamp)
+
+    def createWeatherStation(self, name: str):
+        return WeatherStation(name, JavaGateway())
+
+    def createWeatherData(self, data: BinaryMeasure, timestamp: str):
+        return WeatherData(data, timestamp)
+
+    def createZone(self, name: str, zone_type: str):
+        return Zone(name, zone_type, JavaGateway())
+
     class Java:
         implements = ['ca.concordia.ngci.tools4cities.metamenth.interfaces.PythonEntryPoint']
 

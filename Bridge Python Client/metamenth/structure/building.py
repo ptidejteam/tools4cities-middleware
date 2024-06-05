@@ -159,7 +159,7 @@ class Building:
         """
         return self._structure_entity_search.searchByUid(self._floors, uid)
 
-    def getFloorByNumber(self, floor_number: int) -> Floor:
+    def getFloorByNumber(self, floor_number: float) -> Floor:
         """
         Retrieves a floor given the floor number
         :param floor_number: the number assigned to the floor
