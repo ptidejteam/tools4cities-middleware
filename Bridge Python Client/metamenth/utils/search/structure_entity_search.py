@@ -8,6 +8,7 @@ from metamenth.measure_instruments.trigger_history import TriggerHistory
 from metamenth.measure_instruments.meter_measure import MeterMeasure
 from metamenth.measure_instruments.weather_data import WeatherData
 from metamenth.misc.validate import Validate
+from py4j.java_gateway import JavaGateway
 
 
 class StructureEntitySearch:
@@ -15,8 +16,8 @@ class StructureEntitySearch:
     A visitor that entities in structures, e.g., meter, weather, stations, etc
     """
 
-    def __init__(self, gateway):
-        self._gateway = gateway
+    def __init__(self):
+        self._gateway = JavaGateway()
 
     def searchByUid(self, entity_list, uid):
         """
@@ -25,7 +26,7 @@ class StructureEntitySearch:
         :param uid: the unique identifiers
         :return:
         """
-        return self.searchStructureEntity(entity_list, '_UID', uid)
+        return self.searchStructureEntity(entity_list, 'UID', uid)
 
     def searchByName(self, entity_list, name):
         """
@@ -34,16 +35,17 @@ class StructureEntitySearch:
         :param name: name of the structure
         :return:
         """
-        return self.searchStructureEntity(entity_list, '_name', name)
+        return self.searchStructureEntity(entity_list, 'Name', name)
 
     def searchByNumber(self, entity_list, number):
+        print('caasss')
         """
         search structures by name
         :param entity_list: the list of entity to search for a particular entity
         :param number: number of the entity
         :return:
         """
-        return self.searchStructureEntity(entity_list, '_number', number)
+        return self.searchStructureEntity(entity_list, 'Number', number)
 
     def search(self, entity_list, search_terms: Dict):
         """
@@ -58,8 +60,8 @@ class StructureEntitySearch:
             try:
                 if search_terms:
                     for attribute, value in search_terms.items():
-                        att_value = getattr(entity, attribute)
-                        if att_value != value:
+                        # change attribute into getter
+                        if not self._search_with_attribute(attribute, value, entity):
                             found = False
                     if found:
                         results.add(entity)
@@ -109,12 +111,17 @@ class StructureEntitySearch:
         """
         for entity in entity_list:
             try:
-                if getattr(entity, search_field) == search_value:
+                if self._search_with_attribute(search_field, search_value, entity):
                     return entity
             except AttributeError as err:
                 # TODO: log errors to file
                 print(err, file=sys.stderr)
         return None
+
+    def _search_with_attribute(self, attr, value, entity) -> bool:
+        attribute = 'get' + attr
+        attr_getter = entity.__getattr__(attribute)
+        return attr_getter() == value
 
     class Java:
         implements = ['ca.concordia.ngci.tools4cities.metamenth.interfaces.utils.search.IStructureEntitySearch']

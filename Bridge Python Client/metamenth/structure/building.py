@@ -7,6 +7,7 @@ from metamenth.measure_instruments.weather_station import WeatherStation
 from metamenth.structure.envelope import Envelope
 from metamenth.utils.search.structure_entity_search import StructureEntitySearch
 from typing import List, Dict
+from py4j.java_gateway import JavaGateway
 
 
 class Building:
@@ -18,16 +19,16 @@ class Building:
     """
 
     def __init__(self, construction_year: int, height: AbstractMeasure, floor_area: AbstractMeasure,
-                 address: Address, building_type: str, floor: Floor, gateway):
+                 address: Address, building_type: str, floor: Floor):
         """
         :param construction_year: The construction year of the building
         :param height: The height of the building
         :param floor_area: The floor area of the building
-        :param internal_mass: The internal mass of the building
         :param address: The address of the building
         :param building_type: The type of building
         """
         super().__init__()
+        gateway = JavaGateway()
         self._UID = str(uuid4())
         self._construction_year = None
         self._height = None
@@ -35,12 +36,12 @@ class Building:
         self._internal_mass = None
         self._address = None
         self._building_type = None
+        self._structure_entity_search = StructureEntitySearch()
         self._floors = gateway.jvm.java.util.ArrayList()
         self._meters = gateway.jvm.java.util.ArrayList()
         self._zones = gateway.jvm.java.util.ArrayList()
         self._weather_stations: [WeatherStation] = []
         self._envelope = None
-        self._structure_entity_search = StructureEntitySearch(gateway)
 
         # apply validation
         self.setConstructionYear(construction_year)
@@ -100,6 +101,7 @@ class Building:
             raise ValueError("address must be of type Address")
 
     def getBuildingType(self) -> str:
+        print('Are you invoked...')
         return self._building_type
 
     def setBuildingType(self, value: str):
@@ -123,7 +125,7 @@ class Building:
         return self
 
     def addWeatherStation(self, weather_station: WeatherStation):
-        if weather_station not in  self._weather_stations:
+        if weather_station not in self._weather_stations:
             if weather_station is not None:
                 self._weather_stations.append(weather_station)
             else:
@@ -159,7 +161,7 @@ class Building:
         """
         return self._structure_entity_search.searchByUid(self._floors, uid)
 
-    def getFloorByNumber(self, floor_number: float) -> Floor:
+    def getFloorByNumber(self, floor_number) -> Floor:
         """
         Retrieves a floor given the floor number
         :param floor_number: the number assigned to the floor
@@ -170,9 +172,11 @@ class Building:
     def getFloors(self, search_term: Dict = None) -> List[Floor]:
         """
         Retrieves floors given the attributes and their values
-        :param search_term: the uid of the floor
+        :param search_term: class attributes and their values should be in
+        pascal casing, e.g., {'Number': 1}
         :return:
         """
+        print('are you invoked')
         return self._structure_entity_search.search(self._floors, search_term)
 
     def getMeterById(self, uid: str) -> Meter:

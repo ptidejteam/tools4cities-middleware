@@ -1,11 +1,13 @@
 from abc import ABC
+from py4j.java_gateway import JavaGateway
 
 
 class AbstractZonalEntity(ABC):
 
-    def __init__(self, gateway):
+    def __init__(self):
         """
         """
+        gateway = JavaGateway()
         self._zones = gateway.jvm.java.util.ArrayList()
 
     def getZones(self):

@@ -15,7 +15,7 @@ class Meter:
 
     def __init__(self, measurement_frequency: float,
                  measurement_unit: str, meter_type: str,
-                 measure_mode: str, gateway, data_accumulated: bool = False,
+                 measure_mode: str, data_accumulated: bool = False,
                  accumulation_frequency: str = MeterAccumulationFrequency.NONE.value,
                  manufacturer: str = None,  meter_location: str = None):
         """
@@ -27,7 +27,6 @@ class Meter:
         :param measurement_unit: The measurement unit of the meter data.
         :param meter_type: The type of the meter.
         :param measure_mode: the data measure mode: manual or automatic
-        :param gateway: py4j gateway object
         :param data_accumulated: indicate whether the data is accummulate or not
         :param accumulation_frequency: the frequency at which data is accumulated
         """
@@ -41,7 +40,7 @@ class Meter:
         self._data_accumulated = data_accumulated
         self._accumulation_frequency = accumulation_frequency
         self._meter_measure: [MeterMeasure] = []
-        self._structure_entity_search = StructureEntitySearch(gateway)
+        self._structure_entity_search = StructureEntitySearch()
 
         # Apply validation
         self.setManufacturer(manufacturer)

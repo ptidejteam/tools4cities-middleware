@@ -10,7 +10,7 @@ public interface IFloor extends IAbstractSpace {
     String getDescription();
     void setDescription(String description);
     Object getNumber();
-    void setNumber(double number);
+    void setNumber(Object number);
     String getFloorType();
     void setFloorType(String flootType);
     IAbstractMeasure getHeight();

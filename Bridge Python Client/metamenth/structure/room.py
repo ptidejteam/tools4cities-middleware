@@ -15,7 +15,6 @@ class Room(AbstractFloorSpace):
         area: AbstractMeasure,
         name: str,
         room_type: str,
-        gateway,
         location: str = None
     ):
         """
@@ -24,7 +23,7 @@ class Room(AbstractFloorSpace):
         :param name: The name of the room.
         :param room_type: The type of the room.
         """
-        super().__init__(area, name, gateway, location)
+        super().__init__(area, name, location)
         self._room_type = None
 
         # call setters to apply validation

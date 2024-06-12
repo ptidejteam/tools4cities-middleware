@@ -8,24 +8,25 @@ from metamenth.measure_instruments.trigger_history import TriggerHistory
 from metamenth.datatypes.interfaces.abstract_measure import AbstractMeasure
 from typing import Dict
 from metamenth.utils.search.structure_entity_search import StructureEntitySearch
+from py4j.java_gateway import JavaGateway
 
 
 class AbstractTransducer(ABC):
     def __init__(self,
                  name: str,
-                 gateway,
                  registry_id: str = None):
         """
         Describes a transducers (in a building)
         :param name: the unique name of the transducers
         :param registry_id: the registry id of the transducers
         """
+        gateway = JavaGateway()
         self._UID = str(uuid4())
         self._name = None
         self._registry_id = registry_id
         self._set_point = None
         self._meta_data = gateway.jvm.java.util.HashMap()
-        self._structure_entity_search = StructureEntitySearch(gateway)
+        self._structure_entity_search = StructureEntitySearch()
         self._data = []
 
         self.setName(name)

@@ -27,7 +27,7 @@ public interface IPythonEntryPoint {
     IAbstractMeasure createMeasurement(IMeasure measure, String measureType);
     IRoom createRoom(IAbstractMeasure area, String name, String roomType, String location);
     IOpenSpace createOpenSpace(IAbstractMeasure area, String name, String spaceType, String location);
-    IFloor createFloor(IAbstractMeasure area, float floorNumber, String floorType, IAbstractMeasure height, String des, IRoom room);
+    IFloor createFloor(IAbstractMeasure area, Object floorNumber, String floorType, IAbstractMeasure height, String des, IRoom room);
     IMeter createMeter(float measurementRreq, String unit, String meterType, String measureMode);
     IMeterMeasure createMeasureMeasure(float value);
     IPoint createCoordinates(double lat, double lon);

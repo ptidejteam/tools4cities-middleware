@@ -12,16 +12,15 @@ class AbstractFloorSpace(AbstractSpace):
     Email: peteryefi@gmail.com
     """
 
-    def __init__(self, area: AbstractMeasure, name: str, gateway, location: str = None, meter: Meter = None):
+    def __init__(self, area: AbstractMeasure, name: str, location: str = None, meter: Meter = None):
         """
         Models spaces on a building's floor
         :param area: the area of the space
         :param name: the name of the space
         :param location: the what3word location of the space
-        :param gateway, py4j gateway object
         """
 
-        super().__init__(area, gateway, location)
+        super().__init__(area, location)
         self._name = None
         self._meter = None
         self._transducers:  [AbstractTransducer] = []

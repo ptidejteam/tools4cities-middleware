@@ -1,6 +1,5 @@
 from metamenth.structure.interfaces.abstract_floor_space import AbstractFloorSpace
 from metamenth.datatypes.interfaces.abstract_measure import AbstractMeasure
-from metamenth.enumerations.open_space_type import OpenSpaceType
 
 
 class OpenSpace(AbstractFloorSpace):
@@ -11,13 +10,13 @@ class OpenSpace(AbstractFloorSpace):
     Email: peteryefi@gmail.com
     """
 
-    def __init__(self, name: str, area: AbstractMeasure, space_type: str, gateway, location: str = None):
+    def __init__(self, name: str, area: AbstractMeasure, space_type: str, location: str = None):
         """
         :param area: The area of the open space.
         :param location: The location of the open space (three words delimited with a period).
         :param space_type: The type of open space (enum).
         """
-        super().__init__(area, name, gateway, location)
+        super().__init__(area, name, location)
         self._space_type = None
 
         # Apply validation

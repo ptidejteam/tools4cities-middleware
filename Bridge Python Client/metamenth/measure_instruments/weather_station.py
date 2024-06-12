@@ -6,7 +6,7 @@ from typing import Dict
 
 
 class WeatherStation:
-    def __init__(self, name: str, gateway, location: str = None):
+    def __init__(self, name: str, location: str = None):
         """
         :param location: The location of the weather station.
         """
@@ -14,8 +14,7 @@ class WeatherStation:
         self._name = None
         self._location = Validate.validateWhat3word(location)
         self._weather_data: [WeatherStation] = []
-        self.gateway = gateway
-        self._structure_entity_search = StructureEntitySearch(gateway)
+        self._structure_entity_search = StructureEntitySearch()
 
         self.setName(name)
 

@@ -4,6 +4,7 @@ from metamenth.structure.open_space import OpenSpace
 from metamenth.structure.room import Room
 from typing import List, Dict
 from metamenth.utils.search.structure_entity_search import StructureEntitySearch
+from py4j.java_gateway import JavaGateway
 
 
 class Floor(AbstractSpace):
@@ -17,9 +18,8 @@ class Floor(AbstractSpace):
     def __init__(
         self,
         area: AbstractMeasure,
-        number: float,
+        number,
         floor_type: str,
-        gateway,
         height: AbstractMeasure = None,
         description: str = None,
         open_space: OpenSpace = None,
@@ -35,14 +35,15 @@ class Floor(AbstractSpace):
         :param open_space: Initial open spaces(s) on floor.
         :param room: Initial room(s) on floor.
         """
-        super().__init__(area, gateway, location)
+        super().__init__(area, location)
+        gateway = JavaGateway()
         self._description = description
         self._height = height
         self._number = None
         self._floor_type = None
         self._open_spaces: List['OpenSpace'] = []
         self._rooms: List['Room'] = []
-        self._structure_entity_search = StructureEntitySearch(gateway)
+        self._structure_entity_search = StructureEntitySearch()
 
         # apply validation
         self.setNumber(number)
@@ -64,10 +65,10 @@ class Floor(AbstractSpace):
     def setDescription(self, value: str):
         self._description = value
 
-    def getNumber(self) -> float:
+    def getNumber(self):
         return self._number
 
-    def setNumber(self, value: float):
+    def setNumber(self, value):
         if value is not None:
             self._number = value
         else:
@@ -127,7 +128,7 @@ class Floor(AbstractSpace):
         """
         return self._structure_entity_search.searchByName(self._open_spaces, name)
 
-    def getRoomByName(self, name: str) -> Room:
+    def getRoomByName(self, name) -> Room:
         """
         Retrieves a room given the name
         :param name: the name of the room

@@ -1,6 +1,7 @@
 import os
 import socket
 import subprocess
+import time
 import unittest
 from dotenv import load_dotenv
 from py4j.java_gateway import JavaGateway, JavaObject, CallbackServerParameters, GatewayParameters
@@ -137,7 +138,7 @@ class TestMetamenthEntryPoint(unittest.TestCase):
         sensor = Sensor(name='TMP.01', measure=self.enums.SensorMeasure.TEMPERATURE.getValue(), data_frequency=90,
                         unit=self.enums.MeasurementUnit.DEGREE_CELSIUS.getValue(),
                         measure_type=self.enums.SensorMeasureType.THERMO_COUPLE_TYPE_A.getValue(),
-                        sensor_log_type=self.enums.SensorLogType.POLLING.getValue(), gateway=self.gateway)
+                        sensor_log_type=self.enums.SensorLogType.POLLING.getValue())
 
         self.repo.addEntity(sensor)
         received_sensor = self.repo.getEntity("sensor")
@@ -150,7 +151,7 @@ class TestMetamenthEntryPoint(unittest.TestCase):
         sensor = Sensor(name='TMP.01', measure=self.enums.SensorMeasure.TEMPERATURE.getValue(), data_frequency=90,
                         unit=self.enums.MeasurementUnit.DEGREE_CELSIUS.getValue(),
                         measure_type=self.enums.SensorMeasureType.THERMO_COUPLE_TYPE_A.getValue(),
-                        sensor_log_type=self.enums.SensorLogType.POLLING.getValue(), gateway=self.gateway)
+                        sensor_log_type=self.enums.SensorLogType.POLLING.getValue())
         sensor.addData([SensorData(15), SensorData(16.5), SensorData(27.5)])
         sensor.setCurrentValue(26)
 
@@ -191,7 +192,7 @@ class TestMetamenthEntryPoint(unittest.TestCase):
     def test_exchange_room(self):
         measure = Measure(unit=self.enums.MeasurementUnit.SQUARE_METERS.getValue(), minimum=125)
         area = BinaryMeasure(measure)
-        room = Room(area, name="STD 101", room_type=self.enums.RoomType.STUDY_ROOM.getValue(), gateway=self.gateway,
+        room = Room(area, name="STD 101", room_type=self.enums.RoomType.STUDY_ROOM.getValue(),
                     location='hre.vrs.ies')
         room_copy = copy.copy(room)
         room_copy.setRoomType(self.enums.RoomType.BEDROOM.getValue())
@@ -206,7 +207,7 @@ class TestMetamenthEntryPoint(unittest.TestCase):
     def test_get_room_zone(self):
         measure = Measure(unit=self.enums.MeasurementUnit.SQUARE_METERS.getValue(), minimum=125)
         area = BinaryMeasure(measure)
-        room = Room(area, name="STD 101", room_type=self.enums.RoomType.OFFICE.getValue(), gateway=self.gateway,
+        room = Room(area, name="STD 101", room_type=self.enums.RoomType.OFFICE.getValue(),
                     location='hre.vrs.ies')
         zone_1 = Zone("HVAC 01", self.enums.ZoneType.HVAC.getValue(), self.gateway,
                       self.enums.HvacType.INTERIOR.getValue())
@@ -225,7 +226,7 @@ class TestMetamenthEntryPoint(unittest.TestCase):
     def test_remove_zone_from_room(self):
         measure = Measure(unit=self.enums.MeasurementUnit.SQUARE_METERS.getValue(), minimum=125)
         area = BinaryMeasure(measure)
-        room = Room(area, name="STD 101", room_type=self.enums.RoomType.OFFICE.getValue(), gateway=self.gateway,
+        room = Room(area, name="STD 101", room_type=self.enums.RoomType.OFFICE.getValue(),
                     location='hre.vrs.ies')
         zone_1 = Zone("HVAC 01", self.enums.ZoneType.HVAC.getValue(), self.gateway,
                       self.enums.HvacType.INTERIOR.getValue())
@@ -248,7 +249,7 @@ class TestMetamenthEntryPoint(unittest.TestCase):
     def test_get_room_zones(self):
         measure = Measure(unit=self.enums.MeasurementUnit.SQUARE_METERS.getValue(), minimum=125)
         area = BinaryMeasure(measure)
-        room = Room(area, name="STD 101", room_type=self.enums.RoomType.OFFICE.getValue(), gateway=self.gateway,
+        room = Room(area, name="STD 101", room_type=self.enums.RoomType.OFFICE.getValue(),
                     location='hre.vrs.ies')
         zone_1 = Zone("HVAC 01", self.enums.ZoneType.HVAC.getValue(), self.gateway,
                       self.enums.HvacType.INTERIOR.getValue())
@@ -269,10 +270,10 @@ class TestMetamenthEntryPoint(unittest.TestCase):
     def test_exchange_room_with_meter(self):
         meter = Meter(0.5, self.enums.MeasurementUnit.KILOWATTS.getValue(),
                       self.enums.MeterType.ELECTRICITY.getValue(), self.enums.MeterMeasureMode.AUTOMATIC.getValue(),
-                      self.gateway, meter_location='hre.vrs.ies')
+                      meter_location='hre.vrs.ies')
         measure = Measure(unit=self.enums.MeasurementUnit.SQUARE_METERS.getValue(), minimum=125)
         area = BinaryMeasure(measure)
-        room = Room(area, name="STD 101", room_type=self.enums.RoomType.STUDY_ROOM.getValue(), gateway=self.gateway,
+        room = Room(area, name="STD 101", room_type=self.enums.RoomType.STUDY_ROOM.getValue(),
                     location='hre.vrs.ies')
         room.setMeter(meter)
         self.repo.addEntity(room)
@@ -286,14 +287,14 @@ class TestMetamenthEntryPoint(unittest.TestCase):
     def test_exchange_room_with_meter_and_measurement(self):
         meter = Meter(0.5, self.enums.MeasurementUnit.KILOWATTS.getValue(),
                       self.enums.MeterType.ELECTRICITY.getValue(), self.enums.MeterMeasureMode.AUTOMATIC.getValue(),
-                      self.gateway, meter_location='hre.vrs.ies')
+                      meter_location='hre.vrs.ies')
         meter_measure = MeterMeasure(10.5)
         meter.addMeterMeasure(meter_measure)
         meter.addMeterMeasure(MeterMeasure(11.23, '2024-05-29'))
         meter.addMeterMeasure(MeterMeasure(20.5, '2024-06-01'))
         measure = Measure(unit=self.enums.MeasurementUnit.SQUARE_METERS.getValue(), minimum=125)
         area = BinaryMeasure(measure)
-        room = Room(area, name="STD 101", room_type=self.enums.RoomType.STUDY_ROOM.getValue(), gateway=self.gateway,
+        room = Room(area, name="STD 101", room_type=self.enums.RoomType.STUDY_ROOM.getValue(),
                     location='hre.vrs.ies')
         room.setMeter(meter)
         self.repo.addEntity(room)
@@ -306,17 +307,17 @@ class TestMetamenthEntryPoint(unittest.TestCase):
     def test_exchange_room_with_meter_and_sensor(self):
         meter = Meter(0.5, self.enums.MeasurementUnit.KILOWATTS.getValue(),
                       self.enums.MeterType.ELECTRICITY.getValue(), self.enums.MeterMeasureMode.AUTOMATIC.getValue(),
-                      gateway=self.gateway, meter_location='hre.vrs.ies')
+                      meter_location='hre.vrs.ies')
         measure = Measure(unit=self.enums.MeasurementUnit.SQUARE_METERS.getValue(), minimum=125)
         area = BinaryMeasure(measure)
-        room = Room(area, name="STD 101", room_type=self.enums.RoomType.STUDY_ROOM.getValue(), gateway=self.gateway,
+        room = Room(area, name="STD 101", room_type=self.enums.RoomType.STUDY_ROOM.getValue(),
                     location='hre.vrs.ies')
         room.setMeter(meter)
 
         sensor = Sensor(name='TMP.01', measure=self.enums.SensorMeasure.TEMPERATURE.getValue(), data_frequency=90,
                         unit=self.enums.MeasurementUnit.DEGREE_CELSIUS.getValue(),
                         measure_type=self.enums.SensorMeasureType.THERMO_COUPLE_TYPE_A.getValue(),
-                        sensor_log_type=self.enums.SensorLogType.POLLING.getValue(), gateway=self.gateway)
+                        sensor_log_type=self.enums.SensorLogType.POLLING.getValue())
 
         sensor.addData([SensorData(15), SensorData(16.5), SensorData(27.5), SensorData(20)])
         room.addTransducer(sensor)
@@ -331,7 +332,7 @@ class TestMetamenthEntryPoint(unittest.TestCase):
     def test_exchange_open_space_but_get_room(self):
         measure = Measure(unit=self.enums.MeasurementUnit.SQUARE_METERS.getValue(), minimum=125)
         area = BinaryMeasure(measure)
-        hall = OpenSpace(name="Hall", area=area, gateway=self.gateway, space_type=self.enums.SpaceType.HALL.getValue())
+        hall = OpenSpace(name="Hall", area=area, space_type=self.enums.SpaceType.HALL.getValue())
         self.repo.addEntity(hall)
         room = self.repo.getEntity("room")
         self.assertIsNone(room)
@@ -339,7 +340,7 @@ class TestMetamenthEntryPoint(unittest.TestCase):
     def test_exchange_open_space(self):
         measure = Measure(unit=self.enums.MeasurementUnit.SQUARE_METERS.getValue(), minimum=125)
         area = BinaryMeasure(measure)
-        hall = OpenSpace(name="Hall", area=area, gateway=self.gateway, space_type=self.enums.SpaceType.HALL.getValue())
+        hall = OpenSpace(name="Hall", area=area, space_type=self.enums.SpaceType.HALL.getValue())
         self.repo.addEntity(hall)
         received_space_obj = self.repo.getEntity("open_space")
         self.assertEqual(received_space_obj.toString(), hall.toString())
@@ -348,7 +349,7 @@ class TestMetamenthEntryPoint(unittest.TestCase):
         area_measure = Measure(unit=self.enums.MeasurementUnit.SQUARE_METERS.getValue(), minimum=125)
         floor_area = BinaryMeasure(area_measure)
         try:
-            floor = Floor(area=floor_area, number=2, gateway=self.gateway,
+            floor = Floor(area=floor_area, number=2,
                           floor_type=self.enums.FloorType.REGULAR.getValue())
             self.repo.addEntity(floor)
         except ValueError as err:
@@ -357,9 +358,9 @@ class TestMetamenthEntryPoint(unittest.TestCase):
     def test_exchange_floor(self):
         area_measure = Measure(unit=self.enums.MeasurementUnit.SQUARE_METERS.getValue(), minimum=125)
         floor_area = BinaryMeasure(area_measure)
-        hall = OpenSpace(name="Hall", area=floor_area, gateway=self.gateway,
+        hall = OpenSpace(name="Hall", area=floor_area,
                          space_type=self.enums.SpaceType.HALL.getValue())
-        floor = Floor(area=floor_area, number=2, gateway=self.gateway,
+        floor = Floor(area=floor_area, number=2,
                       floor_type=self.enums.FloorType.REGULAR.getValue(), open_space=hall)
         self.repo.addEntity(floor)
         received_floor_obj = self.repo.getEntity("floor")
@@ -378,8 +379,7 @@ class TestMetamenthEntryPoint(unittest.TestCase):
                           geocoordinate=Point(lat=4.8392838293, lon=-1.389883929))
         try:
             _ = Building(construction_year=2024, height=height, floor_area=floor_area,
-                         building_type=self.enums.BuildingType.COMMERCIAL.getValue(), address=address, floor=None,
-                         gateway=self.gateway)
+                         building_type=self.enums.BuildingType.COMMERCIAL.getValue(), address=address, floor=None)
         except ValueError as err:
             self.assertEqual(err.__str__(), "floors must be of type Floor")
 
@@ -391,13 +391,12 @@ class TestMetamenthEntryPoint(unittest.TestCase):
         address = Address(city='Montreal', street='3965 Rue Sherbrooke', zip_code='H1N 1E3', state='QC',
                           country='Canada',
                           geocoordinate=Point(lat=4.8392838293, lon=-1.389883929))
-        hall = OpenSpace(name="Hall", area=floor_area, gateway=self.gateway,
+        hall = OpenSpace(name="Hall", area=floor_area,
                          space_type=self.enums.SpaceType.HALL.getValue())
-        floor = Floor(area=floor_area, number=1, gateway=self.gateway,
+        floor = Floor(area=floor_area, number=1,
                       floor_type=self.enums.FloorType.REGULAR.getValue(), open_space=hall)
         building = Building(construction_year=2024, height=height, floor_area=floor_area,
-                            building_type=self.enums.BuildingType.COMMERCIAL.getValue(), address=address, floor=floor,
-                            gateway=self.gateway)
+                            building_type=self.enums.BuildingType.COMMERCIAL.getValue(), address=address, floor=floor)
         self.repo.addEntity(building)
         received_building_obj = self.repo.getEntity('building')
         self.assertEqual(received_building_obj.getHeight().toString(), building.getHeight().toString())
@@ -413,15 +412,14 @@ class TestMetamenthEntryPoint(unittest.TestCase):
         address = Address(city='Montreal', street='3965 Rue Sherbrooke', zip_code='H1N 1E3', state='QC',
                           country='Canada',
                           geocoordinate=Point(lat=4.839243293, lon=-1.389883929))
-        hall = OpenSpace(name="Hall", area=floor_area, gateway=self.gateway,
+        hall = OpenSpace(name="Hall", area=floor_area,
                          space_type=self.enums.SpaceType.HALL.getValue())
-        floor = Floor(area=floor_area, number=0, gateway=self.gateway,
+        floor = Floor(area=floor_area, number=0,
                       floor_type=self.enums.FloorType.BASEMENT.getValue(), open_space=hall)
         building = Building(construction_year=1999, height=height, floor_area=floor_area,
-                            building_type=self.enums.BuildingType.RESIDENTIAL.getValue(), address=address, floor=floor,
-                            gateway=self.gateway)
+                            building_type=self.enums.BuildingType.RESIDENTIAL.getValue(), address=address, floor=floor)
 
-        weather_station = WeatherStation('WS 01', self.gateway)
+        weather_station = WeatherStation('WS 01')
         building.addWeatherStation(weather_station)
         self.repo.addEntity(building)
         received_building_obj = self.repo.getEntity('building')
@@ -438,15 +436,13 @@ class TestMetamenthEntryPoint(unittest.TestCase):
         address = Address(city='Montreal', street='3965 Rue Sherbrooke', zip_code='H1N 1E3', state='QC',
                           country='Canada',
                           geocoordinate=Point(lat=4.839243293, lon=-1.389883929))
-        hall = OpenSpace(name="Hall", area=floor_area, gateway=self.gateway,
+        hall = OpenSpace(name="Hall", area=floor_area,
                          space_type=self.enums.SpaceType.HALL.getValue())
-        floor = Floor(area=floor_area, number=0, gateway=self.gateway,
-                      floor_type=self.enums.FloorType.BASEMENT.getValue(), open_space=hall)
+        floor = Floor(area=floor_area, number=0, floor_type=self.enums.FloorType.BASEMENT.getValue(), open_space=hall)
         building = Building(construction_year=1999, height=height, floor_area=floor_area,
-                            building_type=self.enums.BuildingType.RESIDENTIAL.getValue(), address=address, floor=floor,
-                            gateway=self.gateway)
+                            building_type=self.enums.BuildingType.RESIDENTIAL.getValue(), address=address, floor=floor)
 
-        weather_station = WeatherStation('WS 01', self.gateway)
+        weather_station = WeatherStation('WS 01')
         temp_measure_1 = BinaryMeasure(Measure(unit=self.enums.MeasurementUnit.DEGREE_CELSIUS.getValue(), minimum=20))
         temp_measure_2 = copy.deepcopy(temp_measure_1)
         temp_measure_2.setValue(30)
@@ -470,15 +466,12 @@ class TestMetamenthEntryPoint(unittest.TestCase):
         address = Address(city='Montreal', street='3965 Rue Sherbrooke', zip_code='H1N 1E3', state='QC',
                           country='Canada',
                           geocoordinate=Point(lat=4.839243293, lon=-1.389883929))
-        hall = OpenSpace(name="Hall", area=floor_area, gateway=self.gateway,
-                         space_type=self.enums.SpaceType.HALL.getValue())
-        floor = Floor(area=floor_area, number=0, gateway=self.gateway,
-                      floor_type=self.enums.FloorType.BASEMENT.getValue(), open_space=hall)
+        hall = OpenSpace(name="Hall", area=floor_area, space_type=self.enums.SpaceType.HALL.getValue())
+        floor = Floor(area=floor_area, number=0, floor_type=self.enums.FloorType.BASEMENT.getValue(), open_space=hall)
         building = Building(construction_year=1999, height=height, floor_area=floor_area,
-                            building_type=self.enums.BuildingType.RESIDENTIAL.getValue(), address=address, floor=floor,
-                            gateway=self.gateway)
+                            building_type=self.enums.BuildingType.RESIDENTIAL.getValue(), address=address, floor=floor)
 
-        weather_station = WeatherStation('WS 01', self.gateway)
+        weather_station = WeatherStation('WS 01')
         temp_measure_1 = BinaryMeasure(Measure(unit=self.enums.MeasurementUnit.DEGREE_CELSIUS.getValue(), minimum=20))
         temp_measure_2 = copy.deepcopy(temp_measure_1)
         temp_measure_2.setValue(30)
@@ -505,25 +498,18 @@ class TestMetamenthEntryPoint(unittest.TestCase):
         sensor = Sensor(name='TMP.01', measure=self.enums.SensorMeasure.TEMPERATURE.getValue(), data_frequency=90,
                         unit=self.enums.MeasurementUnit.DEGREE_CELSIUS.getValue(),
                         measure_type=self.enums.SensorMeasureType.THERMO_COUPLE_TYPE_A.getValue(),
-                        sensor_log_type=self.enums.SensorLogType.POLLING.getValue(), gateway=self.gateway)
+                        sensor_log_type=self.enums.SensorLogType.POLLING.getValue())
 
-        hall = OpenSpace(name="Hall", area=floor_area, gateway=self.gateway,
-                         space_type=self.enums.SpaceType.HALL.getValue())
-        room = Room(floor_area, name="STD 101", gateway=self.gateway,
-                    room_type=self.enums.RoomType.STUDY_ROOM.getValue(),
-                    location='hre.vrs.ies')
-        floor = Floor(area=floor_area, number=2, gateway=self.gateway,
-                      floor_type=self.enums.FloorType.REGULAR.getValue(), open_space=hall,
+        hall = OpenSpace(name="Hall", area=floor_area, space_type=self.enums.SpaceType.HALL.getValue())
+        room = Room(floor_area, name="STD 101", room_type=self.enums.RoomType.STUDY_ROOM.getValue(), location='hre.vrs.ies')
+        floor = Floor(area=floor_area, number=2, floor_type=self.enums.FloorType.REGULAR.getValue(), open_space=hall,
                       room=room)
         building = Building(construction_year=2024, height=height, floor_area=floor_area,
-                            building_type=self.enums.BuildingType.COMMERCIAL.getValue(), address=address, floor=floor,
-                            gateway=self.gateway)
+                            building_type=self.enums.BuildingType.COMMERCIAL.getValue(), address=address, floor=floor)
 
         self.repo.addEntity(building)
 
-        room_2 = Room(floor_area, name="STD 101", gateway=self.gateway,
-                      room_type=self.enums.RoomType.OFFICE.getValue(),
-                      location='hre.vrs.ies')
+        room_2 = Room(floor_area, name="STD 101", room_type=self.enums.RoomType.OFFICE.getValue(), location='hre.vrs.ies')
 
         floor_copy = copy.copy(floor)
         self.repo.addEntity(room_2)
@@ -545,13 +531,12 @@ class TestMetamenthEntryPoint(unittest.TestCase):
         address = Address(city='Montreal', street='3965 Rue Sherbrooke', zip_code='H1N 1E3', state='QC',
                           country='Canada',
                           geocoordinate=Point(lat=4.8392838293, lon=-1.389883929))
-        hall = OpenSpace(name="Hall", area=floor_area, gateway=self.gateway,
+        hall = OpenSpace(name="Hall", area=floor_area,
                          space_type=self.enums.SpaceType.HALL.getValue())
-        floor = Floor(area=floor_area, number=1, gateway=self.gateway,
+        floor = Floor(area=floor_area, number=1,
                       floor_type=self.enums.FloorType.REGULAR.getValue(), open_space=hall)
         building = Building(construction_year=2024, height=height, floor_area=floor_area,
-                            building_type=self.enums.BuildingType.COMMERCIAL.getValue(), address=address, floor=floor,
-                            gateway=self.gateway)
+                            building_type=self.enums.BuildingType.COMMERCIAL.getValue(), address=address, floor=floor)
 
         cover = Cover(self.enums.CoverType.ROOF.getValue(), self.gateway)
 

@@ -32,7 +32,7 @@ public interface IBuilding {
     void setEnvelope(IEnvelope envelope);
     IZone getZones();
     IFloor getFloorById(String id);
-    IFloor getFloorByNumber(double number);
+    IFloor getFloorByNumber(Object number);
     List<IFloor> getFloors(Map<String, Object> searchTerms);
     IMeter getMeterById(String id);
     List<IMeter> getMeterByType(String meterType);

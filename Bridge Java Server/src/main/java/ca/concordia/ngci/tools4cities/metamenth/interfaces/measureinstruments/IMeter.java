@@ -24,7 +24,7 @@ public interface IMeter {
     void setAccumulationFrequency(float accummulationFrequency);
     MeasurementUnit getMeasurementUnit();
     void setMeasurementUnit(MeasurementUnit measurementUnit);
-    MeterType getMeterType();
+    String getMeterType();
     void setMeterType(MeterType meterType);
     void addMeterMeasure(IMeterMeasure measure);
     List<IMeterMeasure> getMeterMeasureByDate(String fromDateStr, String toDateStr);
