@@ -1,5 +1,3 @@
-import time
-
 from py4j.java_gateway import JavaGateway, CallbackServerParameters
 from python_entry_point import PythonEntryPoint
 

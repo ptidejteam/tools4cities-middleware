@@ -10,7 +10,7 @@ class BinaryMeasure(AbstractMeasure):
     Email: peteryefi@gmail.com
     """
     def __init__(self, measure: Measure):
-        super().__init__(measure)
+        super().__init__(measure, None)
         self.setValue(measure.getMinimum())
 
     def setValue(self, value: float):

@@ -3,7 +3,7 @@ from dataclasses import dataclass
 
 @dataclass
 class Measure:
-    def __init__(self, unit: str = None, minimum: float = 0.0, maximum: float = 0.0, slope: float = 0.0,
+    def __init__(self, unit: str, minimum: float = 0.0, maximum: float = 0.0, slope: float = 0.0,
                  exponent: float = 0.0, mantissa: float = 0.0):
         self._unit = unit
         self._minimum = minimum

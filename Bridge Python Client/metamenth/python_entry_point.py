@@ -1,4 +1,7 @@
-from py4j.java_gateway import JavaGateway
+import os
+import sys
+
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from metamenth.measure_instruments.meter import Meter
 from metamenth.measure_instruments.meter_measure import MeterMeasure
@@ -17,6 +20,7 @@ from metamenth.measure_instruments.weather_data import WeatherData
 from metamenth.datatypes.zone import Zone
 
 
+
 class PythonEntryPoint:
     """
     Provides an entry point for java client to create
@@ -24,6 +28,7 @@ class PythonEntryPoint:
     For example, a Java client can access createRoom with the necessary
     parameter to create a Room object
     """
+
     def __init__(self):
         pass
 
@@ -77,6 +82,3 @@ class PythonEntryPoint:
 
     class Java:
         implements = ['ca.concordia.ngci.tools4cities.metamenth.interfaces.PythonEntryPoint']
-
-
-

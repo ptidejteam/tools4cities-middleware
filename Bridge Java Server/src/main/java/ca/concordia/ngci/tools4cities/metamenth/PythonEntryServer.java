@@ -46,5 +46,6 @@ public class PythonEntryServer {
         PythonEntryServer pythonEntryServer = new PythonEntryServer();
         IPythonEntryPoint pythonEntryPoint = (IPythonEntryPoint) pythonEntryServer.gatewayServer.getPythonServerEntryPoint(new Class[]{ IPythonEntryPoint.class });
         pythonEntryServer.createLBBuilding(pythonEntryPoint);
+        System.out.println("Server is running...");
   }
 }
