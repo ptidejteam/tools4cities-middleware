@@ -22,4 +22,5 @@ public interface IAbstractTransducer {
     String toString();
     List<Object> getData(HashMap<String, Object> searchTerms);
     List<Object> getDataByDate(String fromDateStr, String toDateStr);
+    boolean equals(IAbstractTransducer obj);
 }

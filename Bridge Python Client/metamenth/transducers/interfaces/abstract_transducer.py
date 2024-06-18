@@ -112,6 +112,9 @@ class AbstractTransducer(ABC):
         """
         return self._structure_entity_search.dateRangeSearch(self._data, from_timestamp, to_timestamp)
 
+    def equals(self, other) -> bool:
+        return self.__eq__(other)
+    
     def __eq__(self, other):
         if isinstance(other, AbstractTransducer):
             # Check for equality based on the 'name' attribute

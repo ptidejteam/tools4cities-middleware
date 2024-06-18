@@ -52,8 +52,8 @@ class PythonEntryPoint:
     def createMeter(self, measurement_freq: float, unit: str, meter_type: str, measure_mode: str):
         return Meter(measurement_freq, unit, meter_type, measure_mode)
 
-    def createMeasureMeasure(self, value: float):
-        return MeterMeasure(value)
+    def createMeterMeasure(self, value: float, timestamp: str = None):
+        return MeterMeasure(value, timestamp)
 
     def createCoordinates(self, lat: float, lon: float):
         return Point(lat, lon)

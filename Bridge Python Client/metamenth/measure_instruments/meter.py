@@ -109,7 +109,7 @@ class Meter:
         if value is not None:
             self._measurement_unit = value
         else:
-            raise ValueError("Measurement unit must be of type MeasurementUnit")
+            raise ValueError("Measurement unit must be of type str")
 
     def getMeterType(self) -> str:
         return self._meter_type

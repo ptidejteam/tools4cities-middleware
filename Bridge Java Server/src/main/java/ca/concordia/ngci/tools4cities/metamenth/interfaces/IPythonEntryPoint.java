@@ -28,8 +28,8 @@ public interface IPythonEntryPoint {
     IRoom createRoom(IAbstractMeasure area, String name, String roomType, String location);
     IOpenSpace createOpenSpace(IAbstractMeasure area, String name, String spaceType, String location);
     IFloor createFloor(IAbstractMeasure area, Object floorNumber, String floorType, IAbstractMeasure height, String des, IRoom room);
-    IMeter createMeter(float measurementRreq, String unit, String meterType, String measureMode);
-    IMeterMeasure createMeasureMeasure(float value);
+    IMeter createMeter(double measurementFreq, String unit, String meterType, String measureMode);
+    IMeterMeasure createMeterMeasure(double value, String timestamp);
     IPoint createCoordinates(double lat, double lon);
     IAddress createAddress(String city, String street, String state, String zipCode, String country, IPoint coordinates);
     IBuilding createBuilding(int constructionYear, IAbstractMeasure height, IAbstractMeasure floor_area, IAddress address, 
