@@ -114,7 +114,7 @@ class AbstractTransducer(ABC):
 
     def equals(self, other) -> bool:
         return self.__eq__(other)
-    
+
     def __eq__(self, other):
         if isinstance(other, AbstractTransducer):
             # Check for equality based on the 'name' attribute

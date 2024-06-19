@@ -5,6 +5,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import ca.concordia.ngci.tools4cities.metamenth.enums.FloorType;
 import ca.concordia.ngci.tools4cities.metamenth.enums.MeasurementUnit;
 import ca.concordia.ngci.tools4cities.metamenth.enums.MeterMeasureMode;
 import ca.concordia.ngci.tools4cities.metamenth.enums.MeterType;
@@ -18,6 +19,7 @@ import ca.concordia.ngci.tools4cities.metamenth.interfaces.datatypes.IBinaryMeas
 import ca.concordia.ngci.tools4cities.metamenth.interfaces.datatypes.IMeasure;
 import ca.concordia.ngci.tools4cities.metamenth.interfaces.measureinstruments.IMeter;
 import ca.concordia.ngci.tools4cities.metamenth.interfaces.measureinstruments.ISensorData;
+import ca.concordia.ngci.tools4cities.metamenth.interfaces.structure.IFloor;
 import ca.concordia.ngci.tools4cities.metamenth.interfaces.structure.IOpenSpace;
 import ca.concordia.ngci.tools4cities.metamenth.interfaces.structure.IRoom;
 import ca.concordia.ngci.tools4cities.metamenth.interfaces.transducers.ISensor;
@@ -51,7 +53,7 @@ public class TestPythonServer {
         	}
     		
     		try {
-    			Thread.sleep(80);
+    			Thread.sleep(90);
     		}catch(InterruptedException e) {
     			e.printStackTrace();
     		}
@@ -136,6 +138,20 @@ public class TestPythonServer {
          Assert.assertEquals(lastMeasure, 10.0, 0.0001);
     }
     
+    @Test 
+    public void testGetMeterMeasureByDate() {
+        IMeter meter = pythonEntryPoint.createMeter(90, MeasurementUnit.KILOWATTS_PER_HOUR.getValue(), MeterType.ELECTRICITY.getValue(), MeterMeasureMode.AUTOMATIC.getValue());
+        LocalDate startDate = LocalDate.now().minusDays(10);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+   	 	for (int i = 0; i < 10; i++) {
+   	 		LocalDate currentDate = startDate.plusDays(i);
+   	 		meter.addMeterMeasure(pythonEntryPoint.createMeterMeasure(i+1, currentDate.format(formatter)));
+   	 	}
+   	 	
+   	 	Assert.assertEquals(meter.getMeterMeasureByDate("2024-06-10", "2024-06-13").size(), 4);
+   	 	Assert.assertEquals(meter.getMeterMeasureByDate("2024-06-10", null).size(), 9);
+    }
+    
     @Test
     public void testCreateSensor() {
     	ISensor sensor = pythonEntryPoint.createSensor("TMP 01", SensorMeasure.TEMPERATURE.getValue(), MeasurementUnit.DEGREE_CELSIUS.getValue(), SensorMeasureType.THERMO_COUPLE_TYPE_A.getValue(), 900);
@@ -160,6 +176,19 @@ public class TestPythonServer {
         double firstValue = (double) firstData.getValue();
         Assert.assertNotNull(firstData.getUID());
         Assert.assertEquals(firstValue, 10.0, 0.0001);
+    }
+    
+    @Test 
+    public void testCreateRoomWithMeter() {
+    	IMeasure measure  =  pythonEntryPoint.createMeasure(MeasurementUnit.SQUARE_METERS.getValue(), 20);
+        IBinaryMeasure measurement = (IBinaryMeasure) pythonEntryPoint.createMeasurement(measure, "Binary");
+        IRoom room = pythonEntryPoint.createRoom(measurement, "Room 001", RoomType.OFFICE.getValue(), "hei.ies.ies");
+        
+        IMeter meter = pythonEntryPoint.createMeter(90, MeasurementUnit.KILOWATTS_PER_HOUR.getValue(), MeterType.ELECTRICITY.getValue(), MeterMeasureMode.AUTOMATIC.getValue());
+        meter.setMeterLocation("hei.ies.ies");
+   	 	room.setMeter(meter);
+   	 	Assert.assertEquals(room.getMeter().getMeasurementFrequency(), meter.getMeasurementFrequency(), 0.0001);
+   	 	Assert.assertEquals(meter.toString(), room.getMeter().toString());
     }
     
     @Test 
@@ -225,5 +254,16 @@ public class TestPythonServer {
         Assert.assertEquals(openSpace.getTransducer("TMP 01").toString(), tempSensor2.toString());
         Assert.assertNotEquals(openSpace.getTransducer("TMP 01").toString(), tempSensor.toString());
        
+    }
+    
+    @Test
+    public void testCreateFloorWithRoom() {
+    	IMeasure measure  =  pythonEntryPoint.createMeasure(MeasurementUnit.SQUARE_METERS.getValue(), 20);
+    	IBinaryMeasure roomMeasurement = (IBinaryMeasure) pythonEntryPoint.createMeasurement(measure, "Binary");
+        IRoom room = pythonEntryPoint.createRoom(roomMeasurement, "Room 001", RoomType.OFFICE.getValue(), "hei.ies.ies");
+    	IMeasure floorSize  = pythonEntryPoint.createMeasure(MeasurementUnit.SQUARE_METERS.getValue(), 150);
+        IBinaryMeasure floorMeasurement = (IBinaryMeasure) pythonEntryPoint.createMeasurement(floorSize, "Binary");
+        IFloor floor =  pythonEntryPoint.createFloor(floorMeasurement, 1, FloorType.REGULAR.getValue(), floorMeasurement, "First floor of the building", room);
+        System.out.println(floor);
     }
 }
