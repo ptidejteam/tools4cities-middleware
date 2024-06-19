@@ -12,4 +12,5 @@ public interface IAbstractFloorSpace extends IAbstractSpace {
     boolean addTransducer(IAbstractTransducer transducer);
     boolean removeTransducer(IAbstractTransducer transducer);
     IAbstractTransducer getTransducer(String name);
+    boolean equals(Object obj);
 }

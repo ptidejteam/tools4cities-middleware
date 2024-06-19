@@ -1,4 +1,5 @@
 from uuid import uuid4
+from py4j.java_gateway import JavaGateway
 
 
 class Zone:
@@ -12,7 +13,6 @@ class Zone:
     def __init__(self,
                  name: str,
                  zone_type: str,
-                 gateway,
                  hvac_type: str = None,
                  description: str = None
                  ):
@@ -27,7 +27,7 @@ class Zone:
         self._name = None
         self._zone_type = None
         self._hvac_type = None
-        self.gateway = gateway
+        self.gateway = JavaGateway()
 
         # Apply validation
         self.setName(name)

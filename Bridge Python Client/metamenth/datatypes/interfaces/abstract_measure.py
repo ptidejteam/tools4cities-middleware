@@ -32,6 +32,14 @@ class AbstractMeasure(ABC):
         return f"Unit: {self.getMeasurementUnit()}, " \
                f"Measure Type: {self.getMeasureType()}"
 
+    def equals(self, other) -> bool:
+        return self.__eq__(other)
+
+    def __eq__(self, other):
+        if isinstance(other, AbstractMeasure):
+            return self.getMeasurementUnit() == other.getMeasurementUnit() and self.getMeasureType() == other.getMeasureType()
+        return False
+
     def toString(self):
        return self.__str__()
 

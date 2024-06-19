@@ -53,8 +53,12 @@ class AbstractFloorSpace(AbstractSpace):
         return False
 
     def removeTransducer(self, transducer: AbstractTransducer):
-        if transducer in self._transducers:
-            self._transducers.remove(transducer)
+        rm_index = -1
+        for i in range(len(self._transducers)):
+            if self._transducers[i].getName() == transducer.getName():
+                rm_index = i
+        if rm_index > -1:
+            del self._transducers[rm_index]
             return True
         return False
 
@@ -62,6 +66,9 @@ class AbstractFloorSpace(AbstractSpace):
         for transducer in self._transducers:
             if transducer.getName() == name:
                 return transducer
+
+    def equals(self, other):
+        return self.__eq__(other)
 
     def __eq__(self, other):
         # spaces on a floor are equal if they share the same name

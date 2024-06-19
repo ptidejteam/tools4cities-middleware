@@ -8,4 +8,5 @@ public interface IAbstractMeasure {
     void setMeasurementUnit(MeasurementUnit measurementUnit);
     String getMeasureType();
     void setMeasureType(String measureType);
+    boolean equals(Object obj);
 }
