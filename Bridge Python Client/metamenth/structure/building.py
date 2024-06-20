@@ -193,7 +193,7 @@ class Building:
         :param meter_type: the type of meter
         :return:
         """
-        return self._structure_entity_search.search(self._meters, {'meter_type': meter_type})
+        return self._structure_entity_search.search(self._meters, {'MeterType': meter_type})
 
     def getMeters(self, search_terms: Dict = None) -> [Meter]:
         """

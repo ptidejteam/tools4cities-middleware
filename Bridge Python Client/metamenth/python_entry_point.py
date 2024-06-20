@@ -20,7 +20,6 @@ from metamenth.measure_instruments.weather_data import WeatherData
 from metamenth.datatypes.zone import Zone
 
 
-
 class PythonEntryPoint:
     """
     Provides an entry point for java client to create
@@ -46,8 +45,8 @@ class PythonEntryPoint:
         return OpenSpace(name, area, space_type, location)
 
     def createFloor(self, area: BinaryMeasure, floor_number: float, floor_type: str, height: BinaryMeasure,
-                    des: str, room: Room):
-        return Floor(area, floor_number, floor_type, height, des, room=room)
+                    des: str, room: Room, open_space: OpenSpace):
+        return Floor(area, floor_number, floor_type, height, des, room=room, open_space=open_space)
 
     def createMeter(self, measurement_freq: float, unit: str, meter_type: str, measure_mode: str):
         return Meter(measurement_freq, unit, meter_type, measure_mode)

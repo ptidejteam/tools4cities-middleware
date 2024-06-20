@@ -11,7 +11,7 @@ class WeatherData:
 
         """
         self._UID = str(uuid4())
-        self._timestamp = datetime.now() if timestamp is None else Validate.parseDate(timestamp)
+        self._timestamp = datetime.now().replace(microsecond=0) if timestamp is None else Validate.parseDate(timestamp)
         self._data = None
 
         self.setData(data)
@@ -25,7 +25,7 @@ class WeatherData:
     def setData(self, value: AbstractMeasure):
         self._data = value
 
-    def getTimestamp(self) -> str:
+    def getTimeStamp(self) -> str:
         return str(self._timestamp)
 
     def toString(self):
@@ -40,7 +40,7 @@ class WeatherData:
         return (
             f"BuildingWeatherData("
             f"UID: {self.getUID()}, "
-            f"Timestamp: {self.getTimestamp()}, "
+            f"Timestamp: {self.getTimeStamp()}, "
             f"Data: {self.getData()})"
         )
 

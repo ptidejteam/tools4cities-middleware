@@ -5,9 +5,12 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import ca.concordia.ngci.tools4cities.metamenth.enums.BuildingType;
+import ca.concordia.ngci.tools4cities.metamenth.enums.DataMeasurementType;
 import ca.concordia.ngci.tools4cities.metamenth.enums.FloorType;
 import ca.concordia.ngci.tools4cities.metamenth.enums.HvacType;
 import ca.concordia.ngci.tools4cities.metamenth.enums.MeasurementUnit;
+import ca.concordia.ngci.tools4cities.metamenth.enums.MeterAccumulationFrequency;
 import ca.concordia.ngci.tools4cities.metamenth.enums.MeterMeasureMode;
 import ca.concordia.ngci.tools4cities.metamenth.enums.MeterType;
 import ca.concordia.ngci.tools4cities.metamenth.enums.OpenSpaceType;
@@ -17,11 +20,16 @@ import ca.concordia.ngci.tools4cities.metamenth.enums.SensorMeasure;
 import ca.concordia.ngci.tools4cities.metamenth.enums.SensorMeasureType;
 import ca.concordia.ngci.tools4cities.metamenth.enums.ZoneType;
 import ca.concordia.ngci.tools4cities.metamenth.interfaces.IPythonEntryPoint;
+import ca.concordia.ngci.tools4cities.metamenth.interfaces.datatypes.IAddress;
 import ca.concordia.ngci.tools4cities.metamenth.interfaces.datatypes.IBinaryMeasure;
 import ca.concordia.ngci.tools4cities.metamenth.interfaces.datatypes.IMeasure;
+import ca.concordia.ngci.tools4cities.metamenth.interfaces.datatypes.IPoint;
 import ca.concordia.ngci.tools4cities.metamenth.interfaces.datatypes.IZone;
 import ca.concordia.ngci.tools4cities.metamenth.interfaces.measureinstruments.IMeter;
 import ca.concordia.ngci.tools4cities.metamenth.interfaces.measureinstruments.ISensorData;
+import ca.concordia.ngci.tools4cities.metamenth.interfaces.measureinstruments.IWeatherData;
+import ca.concordia.ngci.tools4cities.metamenth.interfaces.measureinstruments.IWeatherStation;
+import ca.concordia.ngci.tools4cities.metamenth.interfaces.structure.IBuilding;
 import ca.concordia.ngci.tools4cities.metamenth.interfaces.structure.IFloor;
 import ca.concordia.ngci.tools4cities.metamenth.interfaces.structure.IOpenSpace;
 import ca.concordia.ngci.tools4cities.metamenth.interfaces.structure.IRoom;
@@ -112,6 +120,15 @@ public class TestPythonServer {
     	Assert.assertEquals(zone.getZoneType(), ZoneType.HVAC.getValue());
     }
     
+    @Test 
+    public void testCreateAddress() {
+    	IPoint coordinates =  pythonEntryPoint.createCoordinates(45.4967765, -73.5806159);
+        IAddress address = pythonEntryPoint.createAddress("Montreal", "1400 de Maisonneuve Blvd. W.", "QC", "H3G 1M8", "Canada", coordinates);
+        Assert.assertEquals(address.getState(), "QC");
+        Assert.assertEquals(address.getCity(), "Montreal");
+        Assert.assertEquals(address.getGeocoordinates().toString(), coordinates.toString());
+    }
+    
     @Test
     public void testCreateRoom() {
     	IMeasure measure  =  pythonEntryPoint.createMeasure(MeasurementUnit.SQUARE_METERS.getValue(), 20);
@@ -152,7 +169,20 @@ public class TestPythonServer {
     }
     
     @Test public void testRemoveZoneFromRoom() {
-    	
+    	IZone innerZone = pythonEntryPoint.createZone("HVAC Zone 1", ZoneType.HVAC.getValue());
+   	 	innerZone.setHvacType(HvacType.INTERIOR.getValue());
+   	 	IZone outerZone = pythonEntryPoint.createZone("HVAC Zone 2", ZoneType.HVAC.getValue());
+   	 	outerZone.setHvacType(HvacType.PERIMETER.getValue());
+   	 
+   	 	IMeasure measure  =  pythonEntryPoint.createMeasure(MeasurementUnit.SQUARE_METERS.getValue(), 20);
+        IBinaryMeasure measurement = (IBinaryMeasure) pythonEntryPoint.createMeasurement(measure, "Binary");
+        IRoom room = pythonEntryPoint.createRoom(measurement, "Room 001", RoomType.OFFICE.getValue(), "hei.ies.ies");
+        room.addZone(outerZone);
+        room.addZone(innerZone);
+        
+        room.removeZone(outerZone);
+        Assert.assertNull(room.getZoneByName(outerZone.getName()));
+        Assert.assertEquals(room.getZones().size(), 1);
     }
     
     @Test
@@ -195,7 +225,7 @@ public class TestPythonServer {
    	 	}
    	 	
    	 	Assert.assertEquals(meter.getMeterMeasureByDate("2024-06-10", "2024-06-13").size(), 4);
-   	 	Assert.assertEquals(meter.getMeterMeasureByDate("2024-06-10", null).size(), 9);
+   	 	Assert.assertEquals(meter.getMeterMeasureByDate("2024-06-10", null).size(), 10);
     }
     
     @Test
@@ -321,7 +351,7 @@ public class TestPythonServer {
         IRoom room = pythonEntryPoint.createRoom(roomMeasurement, "Room 001", RoomType.OFFICE.getValue(), "hei.ies.ies");
     	IMeasure floorSize  = pythonEntryPoint.createMeasure(MeasurementUnit.SQUARE_METERS.getValue(), 150);
         IBinaryMeasure floorMeasurement = (IBinaryMeasure) pythonEntryPoint.createMeasurement(floorSize, "Binary");
-        IFloor floor =  pythonEntryPoint.createFloor(floorMeasurement, 1, FloorType.REGULAR.getValue(), floorMeasurement, "First floor of the building", room);
+        IFloor floor =  pythonEntryPoint.createFloor(floorMeasurement, 1, FloorType.REGULAR.getValue(), floorMeasurement, "First floor of the building", room, null);
         
        
         Map<String, Object> roomProperties = new HashMap<String, Object>();
@@ -340,12 +370,12 @@ public class TestPythonServer {
     	IMeasure measure  =  pythonEntryPoint.createMeasure(MeasurementUnit.SQUARE_METERS.getValue(), 20);
     	IBinaryMeasure roomMeasurement = (IBinaryMeasure) pythonEntryPoint.createMeasurement(measure, "Binary");
         IRoom room = pythonEntryPoint.createRoom(roomMeasurement, "Room 001", RoomType.OFFICE.getValue(), "hei.ies.ies");
-    	IMeasure floorSize  = pythonEntryPoint.createMeasure(MeasurementUnit.SQUARE_METERS.getValue(), 150);
-        IBinaryMeasure floorMeasurement = (IBinaryMeasure) pythonEntryPoint.createMeasurement(floorSize, "Binary");
-        IFloor floor =  pythonEntryPoint.createFloor(floorMeasurement, 1, FloorType.REGULAR.getValue(), floorMeasurement, "First floor of the building", room);
         
         IOpenSpace openSpace = pythonEntryPoint.createOpenSpace(roomMeasurement, "Hall 001", OpenSpaceType.CORRIDOR.getValue(), null);
-        floor.addOpenSpace(openSpace);
+        
+        IMeasure floorSize  = pythonEntryPoint.createMeasure(MeasurementUnit.SQUARE_METERS.getValue(), 150);
+        IBinaryMeasure floorMeasurement = (IBinaryMeasure) pythonEntryPoint.createMeasurement(floorSize, "Binary");
+        IFloor floor =  pythonEntryPoint.createFloor(floorMeasurement, 1, FloorType.REGULAR.getValue(), floorMeasurement, "First floor of the building", room, openSpace);
         
         Map<String, Object> openSpaceProperties = new HashMap<String, Object>();
         openSpaceProperties.put("Name", openSpace.getName());
@@ -370,13 +400,14 @@ public class TestPythonServer {
    	 	
    	 	IMeasure floorSize  = pythonEntryPoint.createMeasure(MeasurementUnit.SQUARE_METERS.getValue(), 150);
    	 	IBinaryMeasure floorMeasurement = (IBinaryMeasure) pythonEntryPoint.createMeasurement(floorSize, "Binary");
-   	 	IFloor floor =  pythonEntryPoint.createFloor(floorMeasurement, 1, FloorType.REGULAR.getValue(), floorMeasurement, "First floor of the building", room);
+   	 	IFloor floor =  pythonEntryPoint.createFloor(floorMeasurement, 1, FloorType.REGULAR.getValue(), floorMeasurement, "First floor of the building", room, null);
    	 	
    	 	Assert.assertEquals(floor.getRoomByName(room.getName()).getMeter().toString(), meter.toString());
     	Assert.assertEquals(floor.getRoomById(room.getUID()).toString(), room.toString());
     }
     
-    @Test public void testCreateFloorWithRoomHavingMeterAndSensor() {
+    @Test 
+    public void testCreateFloorWithRoomHavingMeterAndSensor() {
     	IMeasure measure  =  pythonEntryPoint.createMeasure(MeasurementUnit.SQUARE_METERS.getValue(), 20);
         IBinaryMeasure measurement = (IBinaryMeasure) pythonEntryPoint.createMeasurement(measure, "Binary");
         IRoom room = pythonEntryPoint.createRoom(measurement, "Room 001", RoomType.KITCHEN.getValue(), "hei.ies.ies");
@@ -390,7 +421,7 @@ public class TestPythonServer {
         
         IMeasure floorSize  = pythonEntryPoint.createMeasure(MeasurementUnit.SQUARE_METERS.getValue(), 150);
    	 	IBinaryMeasure floorMeasurement = (IBinaryMeasure) pythonEntryPoint.createMeasurement(floorSize, "Binary");
-   	 	IFloor floor =  pythonEntryPoint.createFloor(floorMeasurement, 1, FloorType.BASEMENT.getValue(), floorMeasurement, "First floor of the building", room);
+   	 	IFloor floor =  pythonEntryPoint.createFloor(floorMeasurement, 1, FloorType.BASEMENT.getValue(), floorMeasurement, "First floor of the building", room, null);
    	 	
    	 	Assert.assertEquals(floor.getRoomByName(room.getName()).getTransducer(sensor.getName()).toString(), sensor.toString());
    	 	Assert.assertEquals(floor.getRoomByName(room.getName()).getMeter().toString(), meter.toString());
@@ -398,4 +429,110 @@ public class TestPythonServer {
     	
     }
     
+    @Test
+    public void testCreateWeatherStation() {
+    	IWeatherStation weatherStation = pythonEntryPoint.createWeatherStation("LB WS");
+        ArrayList<IWeatherData> weatherData = new ArrayList<>();
+
+        for (int index = 0; index < 10; index++) {
+            IMeasure weatherDataMeasure = pythonEntryPoint.createMeasure(MeasurementUnit.RELATIVE_HUMIDITY.getValue(), index + 40);
+            IBinaryMeasure relativeHumidity = (IBinaryMeasure) pythonEntryPoint.createMeasurement(weatherDataMeasure, "Binary");
+            relativeHumidity.setMeasureType(DataMeasurementType.RELATIVE_HUMIDITY.getValue());
+            weatherData.add(pythonEntryPoint.createWeatherData(relativeHumidity, null));
+        }
+        
+        weatherStation.addWeatherData(weatherData);
+        
+        LocalDate currentDate = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        String formattedDate = currentDate.format(formatter);
+        Assert.assertEquals(weatherStation.getWeatherData(null).size(), 10);
+        Assert.assertEquals(weatherStation.getWeatherDataByDate(formattedDate, null).size(), 10);
+        Assert.assertEquals(weatherStation.getWeatherData(null).get(0).getData().getMeasurementUnit(), MeasurementUnit.RELATIVE_HUMIDITY.getValue());
+    }
+    
+    @Test 
+    public void testCreateBuildingWithOneFloor() {
+        IMeasure measure  =  pythonEntryPoint.createMeasure(MeasurementUnit.SQUARE_METERS.getValue(), 20);
+        IBinaryMeasure measurement = (IBinaryMeasure) pythonEntryPoint.createMeasurement(measure, "Binary");
+        IRoom room = pythonEntryPoint.createRoom(measurement, "Room 001", RoomType.KITCHEN.getValue(), "hei.ies.ies");
+        
+        IMeasure floorSize  = pythonEntryPoint.createMeasure(MeasurementUnit.SQUARE_METERS.getValue(), 150);
+   	 	IBinaryMeasure floorMeasurement = (IBinaryMeasure) pythonEntryPoint.createMeasurement(floorSize, "Binary");
+   	 	IFloor floor =  pythonEntryPoint.createFloor(floorMeasurement, 1, FloorType.BASEMENT.getValue(), floorMeasurement, "First floor of the building", room, null);
+
+        IMeasure floorAreaMeasure = pythonEntryPoint.createMeasure(MeasurementUnit.SQUARE_METERS.getValue(), 50591.3);
+        IBinaryMeasure buildingFloorArea = (IBinaryMeasure) pythonEntryPoint.createMeasurement(floorAreaMeasure, "Binary");
+        IPoint coordinates =  pythonEntryPoint.createCoordinates(45.4967765, -73.5806159);
+        IAddress address = pythonEntryPoint.createAddress("Montreal", "1400 de Maisonneuve Blvd. W.", "QC", "H3G 1M8", "Canada", coordinates);
+        
+        IMeasure buildingHeightMeasure = pythonEntryPoint.createMeasure(MeasurementUnit.METERS.getValue(), 15);
+        IBinaryMeasure buildingHeight = (IBinaryMeasure) pythonEntryPoint.createMeasurement(buildingHeightMeasure, "Binary");
+    	IBuilding building = pythonEntryPoint.createBuilding(1996, buildingHeight, buildingFloorArea, address, BuildingType.NON_COMMERCIAL.getValue(), floor);
+        IMeter electricityMeter = pythonEntryPoint.createMeter(90, MeasurementUnit.KILOWATTS_PER_HOUR.getValue(), MeterType.ELECTRICITY.getValue(), MeterMeasureMode.AUTOMATIC.getValue());
+        building.addMeter(electricityMeter);
+        IMeter gasMeter = pythonEntryPoint.createMeter(90, MeasurementUnit.CUBIC_METER.getValue(), MeterType.GAS.getValue(), MeterMeasureMode.MANUAL.getValue());
+        gasMeter.setDataAccumulated(true);
+        gasMeter.setAccumulationFrequency(MeterAccumulationFrequency.WEEKLY.getValue());
+        building.addMeter(gasMeter);
+        
+        
+        Assert.assertEquals(building.getFloorById(floor.getUID()).toString(), floor.toString());
+        Assert.assertEquals(building.getFloors(null).size(), 1);
+        Assert.assertEquals(building.getAddress().toString(), address.toString());
+        Assert.assertEquals(building.getFloorByNumber(1).getRooms(null).size(), 1);
+        Assert.assertEquals(building.getMeters(null).size(), 2);
+        Assert.assertEquals(building.getMeterByType(MeterType.GAS.getValue()).size(), 1);
+        Assert.assertEquals(building.getFloorArea().toString(), buildingFloorArea.toString());
+    }
+    
+    @Test
+    public void testCreateBuildingWithFloors() {
+    	IMeasure measure  =  pythonEntryPoint.createMeasure(MeasurementUnit.SQUARE_METERS.getValue(), 20);
+        IBinaryMeasure measurement = (IBinaryMeasure) pythonEntryPoint.createMeasurement(measure, "Binary");
+        IRoom room = pythonEntryPoint.createRoom(measurement, "Room 001", RoomType.KITCHEN.getValue(), "hei.ies.ies");
+        ISensor tempSensor = pythonEntryPoint.createSensor("TMP 01", SensorMeasure.TEMPERATURE.getValue(), MeasurementUnit.DEGREE_CELSIUS.getValue(), SensorMeasureType.THERMO_COUPLE_TYPE_A.getValue(), 900);
+        room.addTransducer(tempSensor);
+         
+        IMeasure osMeasure  =  pythonEntryPoint.createMeasure(MeasurementUnit.SQUARE_METERS.getValue(), 49);
+        IBinaryMeasure osMeasurement = (IBinaryMeasure) pythonEntryPoint.createMeasurement(osMeasure, "Binary");
+        IOpenSpace openSpace = pythonEntryPoint.createOpenSpace(osMeasurement, "Hall 001", OpenSpaceType.CORRIDOR.getValue(), null);
+        ISensor co2Sensor = pythonEntryPoint.createSensor("CO2 01", SensorMeasure.CARBON_DIOXIDE.getValue(), MeasurementUnit.PARTS_PER_MILLION.getValue(), SensorMeasureType.THERMO_COUPLE_TYPE_A.getValue(), 900);
+        openSpace.addTransducer(co2Sensor);
+         
+        IMeasure floorSize  = pythonEntryPoint.createMeasure(MeasurementUnit.SQUARE_METERS.getValue(), 150);
+    	IBinaryMeasure floorMeasurement = (IBinaryMeasure) pythonEntryPoint.createMeasurement(floorSize, "Binary");
+    	IFloor floorOne =  pythonEntryPoint.createFloor(floorMeasurement, 1, FloorType.BASEMENT.getValue(), floorMeasurement, "First floor of the building", room, null);
+    	 
+    	IFloor floorTwo =  pythonEntryPoint.createFloor(floorMeasurement, 2, FloorType.REGULAR.getValue(), floorMeasurement, "Second floor of the building", null, openSpace);
+
+        IMeasure floorAreaMeasure = pythonEntryPoint.createMeasure(MeasurementUnit.SQUARE_METERS.getValue(), 50591.3);
+        IBinaryMeasure buildingFloorArea = (IBinaryMeasure) pythonEntryPoint.createMeasurement(floorAreaMeasure, "Binary");
+        IPoint coordinates =  pythonEntryPoint.createCoordinates(45.4967765, -73.5806159);
+        IAddress address = pythonEntryPoint.createAddress("Montreal", "1400 de Maisonneuve Blvd. W.", "QC", "H3G 1M8", "Canada", coordinates);
+         
+        IMeasure buildingHeightMeasure = pythonEntryPoint.createMeasure(MeasurementUnit.METERS.getValue(), 15);
+        IBinaryMeasure buildingHeight = (IBinaryMeasure) pythonEntryPoint.createMeasurement(buildingHeightMeasure, "Binary");
+     	IBuilding building = pythonEntryPoint.createBuilding(1996, buildingHeight, buildingFloorArea, address, BuildingType.NON_COMMERCIAL.getValue(), floorOne);
+     	building.addFloor(floorTwo);
+        IMeter electricityMeter = pythonEntryPoint.createMeter(90, MeasurementUnit.KILOWATTS_PER_HOUR.getValue(), MeterType.ELECTRICITY.getValue(), MeterMeasureMode.AUTOMATIC.getValue());
+        building.addMeter(electricityMeter);
+        IMeter gasMeter = pythonEntryPoint.createMeter(90, MeasurementUnit.CUBIC_METER.getValue(), MeterType.GAS.getValue(), MeterMeasureMode.MANUAL.getValue());
+        gasMeter.setDataAccumulated(true);
+        gasMeter.setAccumulationFrequency(MeterAccumulationFrequency.WEEKLY.getValue());
+        building.addMeter(gasMeter);
+        
+        
+        Map<String, Object> floorProperties = new HashMap<String, Object>();
+        floorProperties.put("FloorType", FloorType.REGULAR.getValue());
+        
+        Assert.assertEquals(building.getFloors(null).size(), 2);
+        Assert.assertEquals(building.getFloorByNumber(2).toString(), floorTwo.toString());
+        Assert.assertEquals(building.getFloors(floorProperties).size(), 1);
+        Assert.assertEquals(building.getFloorById(floorOne.getUID()).getOpenSpaces(null).size(), 0);
+        Assert.assertEquals(building.getFloorByNumber(2).getRooms(null).size(), 0);
+        Assert.assertEquals(building.getFloorById(floorOne.getUID()).getRooms(null).size(), 1);
+        Assert.assertEquals(building.getFloorByNumber(2).getOpenSpaces(null).size(), 1);
+        Assert.assertEquals(building.getFloorByNumber(1).getRoomByName(room.getName()).getTransducer(tempSensor.getName()).toString(), tempSensor.toString());
+    }
 }

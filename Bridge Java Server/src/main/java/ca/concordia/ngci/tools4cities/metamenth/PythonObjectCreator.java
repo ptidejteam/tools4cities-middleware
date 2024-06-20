@@ -59,7 +59,7 @@ public class PythonObjectCreator {
         
         IMeasure floorSize  = pythonEntryPoint.createMeasure(MeasurementUnit.SQUARE_METERS.getValue(), 150);
         IBinaryMeasure floorMeasurement = (IBinaryMeasure) pythonEntryPoint.createMeasurement(floorSize, "Binary");
-        IFloor floorOne =  pythonEntryPoint.createFloor(measurement, 1, FloorType.REGULAR.getValue(), floorMeasurement, "First floor of the building", roomOne);
+        IFloor floorOne =  pythonEntryPoint.createFloor(measurement, 1, FloorType.REGULAR.getValue(), floorMeasurement, "First floor of the building", roomOne, null);
         
         IPoint coordinates =  pythonEntryPoint.createCoordinates(45.4967765, -73.5806159);
         IAddress address = pythonEntryPoint.createAddress("Montreal", "1400 de Maisonneuve Blvd. W.", "QC", "H3G 1M8", "Canada", coordinates);

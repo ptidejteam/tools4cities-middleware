@@ -7,7 +7,7 @@ public interface IWeatherData {
     String getUID();
     IAbstractMeasure getData();
     void setData(IAbstractMeasure data);
-    String getTimestamp();
+    String getTimeStamp();
     String toString();
     
 }
