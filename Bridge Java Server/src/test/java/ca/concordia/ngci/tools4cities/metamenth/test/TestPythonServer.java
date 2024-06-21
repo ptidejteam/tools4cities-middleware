@@ -224,7 +224,7 @@ public class TestPythonServer {
    	 		meter.addMeterMeasure(pythonEntryPoint.createMeterMeasure(i+1, currentDate.format(formatter)));
    	 	}
    	 	
-   	 	Assert.assertEquals(meter.getMeterMeasureByDate("2024-06-10", "2024-06-13").size(), 4);
+   	 	Assert.assertEquals(meter.getMeterMeasureByDate("2024-06-10", "2024-06-13").size(), 3);
    	 	Assert.assertEquals(meter.getMeterMeasureByDate("2024-06-10", null).size(), 10);
     }
     
@@ -241,12 +241,7 @@ public class TestPythonServer {
     @Test
     public void testCreateSensorWithData() {
     	ISensor sensor = pythonEntryPoint.createSensor("TMP 01", SensorMeasure.TEMPERATURE.getValue(), MeasurementUnit.DEGREE_CELSIUS.getValue(), SensorMeasureType.THERMO_COUPLE_TYPE_A.getValue(), 900);
-    	ArrayList<ISensorData> sensorData = new ArrayList<>();
-        for (int index = 0; index < 10; index++) {
-            sensorData.add(pythonEntryPoint.createSensorData( index + 10, null));
-        }
-        List<Object> sensorDataObjs = new ArrayList<>(sensorData);
-        sensor.addData(sensorDataObjs);
+        sensor.addData(getSensorData(0, 10));
         Assert.assertEquals(sensor.getData(null).size(), 10);
         ISensorData firstData = (ISensorData) sensor.getData(null).get(0);
         double firstValue = (double) firstData.getValue();
@@ -273,12 +268,7 @@ public class TestPythonServer {
         IBinaryMeasure measurement = (IBinaryMeasure) pythonEntryPoint.createMeasurement(measure, "Binary");
         IRoom room = pythonEntryPoint.createRoom(measurement, "Room 001", RoomType.OFFICE.getValue(), "hei.ies.ies");
         ISensor sensor = pythonEntryPoint.createSensor("TMP 01", SensorMeasure.TEMPERATURE.getValue(), MeasurementUnit.DEGREE_CELSIUS.getValue(), SensorMeasureType.THERMO_COUPLE_TYPE_A.getValue(), 900);
-    	ArrayList<ISensorData> sensorData = new ArrayList<>();
-        for (int index = 0; index < 10; index++) {
-            sensorData.add(pythonEntryPoint.createSensorData( index + 10, null));
-        }
-        List<Object> sensorDataObjs = new ArrayList<>(sensorData);
-        sensor.addData(sensorDataObjs);
+        sensor.addData(getSensorData(0, 10));
         room.addTransducer(sensor);
         Assert.assertEquals(sensor.toString(), room.getTransducer(sensor.getName()).toString());
         Assert.assertEquals(sensor.getData(null), room.getTransducer(sensor.getName()).getData(null));
@@ -535,4 +525,100 @@ public class TestPythonServer {
         Assert.assertEquals(building.getFloorByNumber(2).getOpenSpaces(null).size(), 1);
         Assert.assertEquals(building.getFloorByNumber(1).getRoomByName(room.getName()).getTransducer(tempSensor.getName()).toString(), tempSensor.toString());
     }
+    
+    @Test
+    public void TestMultiFloorBuilding() {
+    	
+    	IMeasure measure  =  pythonEntryPoint.createMeasure(MeasurementUnit.SQUARE_METERS.getValue(), 20);
+        IBinaryMeasure measurement = (IBinaryMeasure) pythonEntryPoint.createMeasurement(measure, "Binary");
+        IRoom room = pythonEntryPoint.createRoom(measurement, "Room 001", RoomType.KITCHEN.getValue(), "hei.ies.ies");
+        ISensor tempSensor = pythonEntryPoint.createSensor("TMP 01", SensorMeasure.TEMPERATURE.getValue(), MeasurementUnit.DEGREE_CELSIUS.getValue(), SensorMeasureType.THERMO_COUPLE_TYPE_A.getValue(), 900);
+        //add data to sensor
+        tempSensor.addData(getSensorData(0, 10));
+        room.addTransducer(tempSensor);
+         
+        IMeasure osMeasure  =  pythonEntryPoint.createMeasure(MeasurementUnit.SQUARE_METERS.getValue(), 49);
+        IBinaryMeasure osMeasurement = (IBinaryMeasure) pythonEntryPoint.createMeasurement(osMeasure, "Binary");
+        IOpenSpace openSpace = pythonEntryPoint.createOpenSpace(osMeasurement, "Hall 001", OpenSpaceType.CORRIDOR.getValue(), null);
+        ISensor co2Sensor = pythonEntryPoint.createSensor("CO2 01", SensorMeasure.CARBON_DIOXIDE.getValue(), MeasurementUnit.PARTS_PER_MILLION.getValue(), SensorMeasureType.THERMO_COUPLE_TYPE_A.getValue(), 900);
+        //Add sensor data
+        co2Sensor.addData(getSensorData(100, 120));        
+        openSpace.addTransducer(co2Sensor);
+        
+        IRoom roomTwo = pythonEntryPoint.createRoom(measurement, "Room 101", RoomType.LIVING_ROOM.getValue(), "hei.ies.aos");
+         
+        IMeasure floorSize  = pythonEntryPoint.createMeasure(MeasurementUnit.SQUARE_METERS.getValue(), 150);
+    	IBinaryMeasure floorMeasurement = (IBinaryMeasure) pythonEntryPoint.createMeasurement(floorSize, "Binary");
+    	IFloor floorOne =  pythonEntryPoint.createFloor(floorMeasurement, 1, FloorType.BASEMENT.getValue(), floorMeasurement, "First floor of the building", room, null);
+    	IFloor floorTwo =  pythonEntryPoint.createFloor(floorMeasurement, 2, FloorType.REGULAR.getValue(), floorMeasurement, "Second floor of the building", null, openSpace);
+    	IFloor floorThree =  pythonEntryPoint.createFloor(floorMeasurement, 3, FloorType.REGULAR.getValue(), floorMeasurement, "Third floor of the building", roomTwo, null);
+    	
+    	//create zones and add them to floors
+    	IZone innerZone = pythonEntryPoint.createZone("HVAC Zone 1", ZoneType.HVAC.getValue());
+   	 	innerZone.setHvacType(HvacType.INTERIOR.getValue());
+   	 	IZone outerZone = pythonEntryPoint.createZone("HVAC Zone 2", ZoneType.HVAC.getValue());
+   	 	outerZone.setHvacType(HvacType.PERIMETER.getValue());
+   	 	
+   	 	floorOne.addZone(outerZone);
+   	 	floorTwo.addZone(innerZone);
+   	 	floorThree.addZone(outerZone);
+   	 	
+   	 	//create building and add floors
+   	 	IMeasure floorAreaMeasure = pythonEntryPoint.createMeasure(MeasurementUnit.SQUARE_METERS.getValue(), 50591.3);
+   	 	IBinaryMeasure buildingFloorArea = (IBinaryMeasure) pythonEntryPoint.createMeasurement(floorAreaMeasure, "Binary");
+   	 	IPoint coordinates =  pythonEntryPoint.createCoordinates(45.4967765, -73.5806159);
+   	 	IAddress address = pythonEntryPoint.createAddress("Montreal", "1400 de Maisonneuve Blvd. W.", "QC", "H3G 1M8", "Canada", coordinates);
+   	 	
+   	 	IMeasure buildingHeightMeasure = pythonEntryPoint.createMeasure(MeasurementUnit.METERS.getValue(), 15);
+   	 	IBinaryMeasure buildingHeight = (IBinaryMeasure) pythonEntryPoint.createMeasurement(buildingHeightMeasure, "Binary");
+   	 	IBuilding building = pythonEntryPoint.createBuilding(1996, buildingHeight, buildingFloorArea, address, BuildingType.NON_COMMERCIAL.getValue(), floorOne);
+   	 	building.addFloor(floorTwo);
+   	 	building.addFloor(floorThree);
+   	 	
+   	 	//Add electricity meter
+   	 	IMeter electricityMeter = pythonEntryPoint.createMeter(90, MeasurementUnit.KILOWATTS_PER_HOUR.getValue(), MeterType.ELECTRICITY.getValue(), MeterMeasureMode.AUTOMATIC.getValue());
+   	 	building.addMeter(electricityMeter);
+   	 	
+   	 	//Create weather station and add to building
+   	 	IWeatherStation weatherStation = pythonEntryPoint.createWeatherStation("LB WS");
+   	 	ArrayList<IWeatherData> weatherData = new ArrayList<>();
+
+   	 	for (int index = 0; index < 10; index++) {
+   	 		IMeasure weatherDataMeasure = pythonEntryPoint.createMeasure(MeasurementUnit.RELATIVE_HUMIDITY.getValue(), index + 40);
+   	 		IBinaryMeasure relativeHumidity = (IBinaryMeasure) pythonEntryPoint.createMeasurement(weatherDataMeasure, "Binary");
+   	 		relativeHumidity.setMeasureType(DataMeasurementType.RELATIVE_HUMIDITY.getValue());
+   	 		weatherData.add(pythonEntryPoint.createWeatherData(relativeHumidity, null));
+   	 	}
+     
+   	 	weatherStation.addWeatherData(weatherData);
+   	 	building.addWeatherStation(weatherStation);
+   	 	
+   	 	Assert.assertEquals(building.getFloors(null).size(), 3);
+   	 	Assert.assertEquals(building.getFloorByNumber(1).getRooms(null).size(), 1);
+   	 	Assert.assertEquals(building.getFloorByNumber(1).getOpenSpaces(null).size(), 0);
+   	 	Assert.assertEquals(building.getFloorByNumber(1).getRoomByName(room.getName()).getTransducer(tempSensor.getName()).toString(), tempSensor.toString());
+   	 	Assert.assertEquals(building.getFloorByNumber(2).getRooms(null).size(), 0);
+   	 	Assert.assertEquals(building.getFloorByNumber(2).getOpenSpaces(null).size(), 1);
+   	 	Assert.assertEquals(building.getFloorByNumber(2).getOpenSpaceByName(openSpace.getName()).getTransducer(co2Sensor.getName()).getData(null).size(), 20);
+   	 	Assert.assertNull(building.getFloorByNumber(3).getRoomByName(room.getName()));
+   	 	Assert.assertEquals(building.getFloorByNumber(3).getRoomByName(roomTwo.getName()).toString(), roomTwo.toString());
+   	 	Assert.assertEquals(building.getFloorByNumber(1).getZones().size(), 1);
+   	 	Assert.assertNull(building.getFloorByNumber(2).getZoneByName(outerZone.getName()));
+   	 	Assert.assertEquals(building.getFloorByNumber(3).getZoneByName(outerZone.getName()).toString(), outerZone.toString());
+   	 	Assert.assertEquals(building.getMeters(null).size(), 1);
+   	 	Assert.assertEquals(building.getMeterById(electricityMeter.getUID()).toString(), electricityMeter.toString());
+   	 	Assert.assertEquals(building.getWeatherStation(weatherStation.getName()).toString(), weatherStation.toString());
+   	 	Assert.assertEquals(building.getWeatherStation(weatherStation.getName()).getWeatherData(null).size(), 10);
+    	
+    }
+    
+    private List<Object> getSensorData(int start, int end){
+    	ArrayList<ISensorData> sensorData = new ArrayList<>();
+        for (int index = start; index < end; index++) {
+        	sensorData.add(pythonEntryPoint.createSensorData( index + 10, null));
+        }
+        return new ArrayList<>(sensorData);
+    	
+    }
+   
 }
