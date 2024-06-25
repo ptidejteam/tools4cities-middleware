@@ -1,5 +1,6 @@
 import uuid
 from metamenth.structure.cover import Cover
+from py4j.java_gateway import JavaGateway
 
 
 class Envelope:
@@ -9,8 +10,9 @@ class Envelope:
     Author: Peter Yefi
     Email: peteryefi@gmail.com
     """
-    def __init__(self, gateway):
+    def __init__(self):
         self._UID = str(uuid.uuid4())
+        gateway = JavaGateway()
         self._covers = gateway.jvm.java.util.ArrayList()
 
     def getUID(self) -> str:
@@ -45,7 +47,7 @@ class Envelope:
     def __str__(self):
         cover_details = "\n".join(str(cover) for cover in self._covers)
         return (
-            f"Cover("
+            f"Envelope("
             f"UID: {self.getUID}, "
             f"Layers:\n{cover_details})"
         )

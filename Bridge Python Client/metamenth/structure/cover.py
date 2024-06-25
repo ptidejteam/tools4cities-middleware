@@ -1,5 +1,6 @@
 import uuid
 from metamenth.structure.layer import Layer
+from py4j.java_gateway import JavaGateway
 
 
 class Cover:
@@ -10,12 +11,13 @@ class Cover:
        Email: peteryefi@gmail.com
        """
 
-    def __init__(self, cover_type: str, gateway):
+    def __init__(self, cover_type: str):
         """
         :param cover_type: the type of building cover
         """
         self._UID = str(uuid.uuid4())
         self._cover_type = None
+        gateway = JavaGateway()
         self._layers = gateway.jvm.java.util.ArrayList()  # the various layers in this building cover
 
         # validate cover type

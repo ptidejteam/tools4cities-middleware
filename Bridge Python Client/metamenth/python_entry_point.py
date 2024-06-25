@@ -18,6 +18,10 @@ from metamenth.measure_instruments.sensor_data import SensorData
 from metamenth.measure_instruments.weather_station import WeatherStation
 from metamenth.measure_instruments.weather_data import WeatherData
 from metamenth.datatypes.zone import Zone
+from metamenth.structure.material import Material
+from metamenth.structure.layer import Layer
+from metamenth.structure.cover import Cover
+from metamenth.structure.envelope import Envelope
 
 
 class PythonEntryPoint:
@@ -78,6 +82,21 @@ class PythonEntryPoint:
 
     def createZone(self, name: str, zone_type: str):
         return Zone(name, zone_type)
+
+    def createMaterial(self, desc: str, material_type: str, density: BinaryMeasure, heat_capacity: BinaryMeasure,
+                       thermal_transmittance: BinaryMeasure, thermal_resistance: BinaryMeasure,
+                       solar_heat_gain_coefficient: float):
+        return Material(desc, material_type, density, heat_capacity, thermal_transmittance, thermal_resistance,
+                        solar_heat_gain_coefficient)
+
+    def createLayer(self, height: BinaryMeasure, length: BinaryMeasure, thickness: BinaryMeasure, material: Material):
+        return Layer(height, length, thickness, material)
+
+    def createCover(self, cover_type: str):
+        return Cover(cover_type)
+
+    def createEnvelope(self):
+        return Envelope()
 
     class Java:
         implements = ['ca.concordia.ngci.tools4cities.metamenth.interfaces.PythonEntryPoint']
