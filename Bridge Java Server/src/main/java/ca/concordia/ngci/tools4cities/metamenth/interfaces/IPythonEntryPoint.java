@@ -11,7 +11,11 @@ import ca.concordia.ngci.tools4cities.metamenth.interfaces.measureinstruments.IS
 import ca.concordia.ngci.tools4cities.metamenth.interfaces.measureinstruments.IWeatherData;
 import ca.concordia.ngci.tools4cities.metamenth.interfaces.measureinstruments.IWeatherStation;
 import ca.concordia.ngci.tools4cities.metamenth.interfaces.structure.IBuilding;
+import ca.concordia.ngci.tools4cities.metamenth.interfaces.structure.ICover;
+import ca.concordia.ngci.tools4cities.metamenth.interfaces.structure.IEnvelope;
 import ca.concordia.ngci.tools4cities.metamenth.interfaces.structure.IFloor;
+import ca.concordia.ngci.tools4cities.metamenth.interfaces.structure.ILayer;
+import ca.concordia.ngci.tools4cities.metamenth.interfaces.structure.IMaterial;
 import ca.concordia.ngci.tools4cities.metamenth.interfaces.structure.IOpenSpace;
 import ca.concordia.ngci.tools4cities.metamenth.interfaces.structure.IRoom;
 import ca.concordia.ngci.tools4cities.metamenth.interfaces.transducers.ISensor;
@@ -39,4 +43,8 @@ public interface IPythonEntryPoint {
     IWeatherStation createWeatherStation(String name);
     IWeatherData createWeatherData(IAbstractMeasure data, String timestamp);
     IZone createZone(String name, String zone_type);
+    IMaterial createMaterial(String desc, String materialType, IAbstractMeasure density, IAbstractMeasure heatCapacity, IAbstractMeasure thermalTransmittance, IAbstractMeasure thermalResistance, double solarHeatGainCoefficient);
+    ILayer createLayer(IAbstractMeasure height, IAbstractMeasure length, IAbstractMeasure thickness, IMaterial IAbstractMeasure);
+    ICover createCover(String coverType);
+    IEnvelope createEnvelope();
 }

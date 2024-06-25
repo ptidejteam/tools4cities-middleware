@@ -6,9 +6,11 @@ import org.junit.Before;
 import org.junit.Test;
 
 import ca.concordia.ngci.tools4cities.metamenth.enums.BuildingType;
+import ca.concordia.ngci.tools4cities.metamenth.enums.CoverType;
 import ca.concordia.ngci.tools4cities.metamenth.enums.DataMeasurementType;
 import ca.concordia.ngci.tools4cities.metamenth.enums.FloorType;
 import ca.concordia.ngci.tools4cities.metamenth.enums.HvacType;
+import ca.concordia.ngci.tools4cities.metamenth.enums.MaterialType;
 import ca.concordia.ngci.tools4cities.metamenth.enums.MeasurementUnit;
 import ca.concordia.ngci.tools4cities.metamenth.enums.MeterAccumulationFrequency;
 import ca.concordia.ngci.tools4cities.metamenth.enums.MeterMeasureMode;
@@ -30,7 +32,11 @@ import ca.concordia.ngci.tools4cities.metamenth.interfaces.measureinstruments.IS
 import ca.concordia.ngci.tools4cities.metamenth.interfaces.measureinstruments.IWeatherData;
 import ca.concordia.ngci.tools4cities.metamenth.interfaces.measureinstruments.IWeatherStation;
 import ca.concordia.ngci.tools4cities.metamenth.interfaces.structure.IBuilding;
+import ca.concordia.ngci.tools4cities.metamenth.interfaces.structure.ICover;
+import ca.concordia.ngci.tools4cities.metamenth.interfaces.structure.IEnvelope;
 import ca.concordia.ngci.tools4cities.metamenth.interfaces.structure.IFloor;
+import ca.concordia.ngci.tools4cities.metamenth.interfaces.structure.ILayer;
+import ca.concordia.ngci.tools4cities.metamenth.interfaces.structure.IMaterial;
 import ca.concordia.ngci.tools4cities.metamenth.interfaces.structure.IOpenSpace;
 import ca.concordia.ngci.tools4cities.metamenth.interfaces.structure.IRoom;
 import ca.concordia.ngci.tools4cities.metamenth.interfaces.transducers.ISensor;
@@ -224,8 +230,8 @@ public class TestPythonServer {
    	 		meter.addMeterMeasure(pythonEntryPoint.createMeterMeasure(i+1, currentDate.format(formatter)));
    	 	}
    	 	
-   	 	Assert.assertEquals(meter.getMeterMeasureByDate("2024-06-10", "2024-06-13").size(), 3);
-   	 	Assert.assertEquals(meter.getMeterMeasureByDate("2024-06-10", null).size(), 10);
+   	 	Assert.assertEquals(meter.getMeterMeasureByDate(startDate.format(formatter), startDate.plusDays(2).format(formatter)).size(), 3);
+   	 	Assert.assertEquals(meter.getMeterMeasureByDate(startDate.format(formatter), null).size(), 10);
     }
     
     @Test
@@ -441,6 +447,47 @@ public class TestPythonServer {
         Assert.assertEquals(weatherStation.getWeatherData(null).get(0).getData().getMeasurementUnit(), MeasurementUnit.RELATIVE_HUMIDITY.getValue());
     }
     
+    @Test
+    public void testBuildingEnvelope() {
+    	IMeasure thermalTransmittanceMeasure  =  pythonEntryPoint.createMeasure(MeasurementUnit.WATTS_PER_SQUARE_METER_KELVIN.getValue(), 10);
+        IBinaryMeasure ttmMeasurement = (IBinaryMeasure) pythonEntryPoint.createMeasurement(thermalTransmittanceMeasure, "Binary");
+        
+        IMeasure densityMeasure  =  pythonEntryPoint.createMeasure(MeasurementUnit.KILOGRAM_PER_CUBIC_METER.getValue(), 7.8);
+        IBinaryMeasure densityMeasurement = (IBinaryMeasure) pythonEntryPoint.createMeasurement(densityMeasure, "Binary");
+        
+        IMeasure heatCapacityMeasure  =  pythonEntryPoint.createMeasure(MeasurementUnit.JOULES_PER_KELVIN.getValue(), 12.89);
+        IBinaryMeasure hcMeasurement = (IBinaryMeasure) pythonEntryPoint.createMeasurement(heatCapacityMeasure, "Binary");
+        
+        IMeasure thermalResistanceMeasure  =  pythonEntryPoint.createMeasure(MeasurementUnit.SQUARE_METERS_KELVIN_PER_WATTS.getValue(), 15.898);
+        IBinaryMeasure trMeasurement = (IBinaryMeasure) pythonEntryPoint.createMeasurement(thermalResistanceMeasure, "Binary");
+        
+        //Create material
+        IMaterial material = pythonEntryPoint.createMaterial("Roofing Material", MaterialType.ROOF_ALUMINIUM.getValue(), densityMeasurement, ttmMeasurement, hcMeasurement, trMeasurement, 0.0387);
+        
+        IMeasure lengthMeasure  =  pythonEntryPoint.createMeasure(MeasurementUnit.METERS.getValue(), 30);
+        IBinaryMeasure lengthMeasurement = (IBinaryMeasure) pythonEntryPoint.createMeasurement(lengthMeasure, "Binary");
+        
+        IMeasure thicknessMeasure  =  pythonEntryPoint.createMeasure(MeasurementUnit.METERS.getValue(), 0.35);
+        IBinaryMeasure thicknessMeasurement = (IBinaryMeasure) pythonEntryPoint.createMeasurement(thicknessMeasure, "Binary");
+        
+        //Create roofing layer
+        ILayer layer = pythonEntryPoint.createLayer(lengthMeasurement, lengthMeasurement, thicknessMeasurement, material);
+        
+        //Create a roofing covering
+        ICover cover = pythonEntryPoint.createCover(CoverType.ROOF.getValue());
+        cover.addLayer(layer);
+        
+        //Create envelope with roofing cover only
+        IEnvelope envelope = pythonEntryPoint.createEnvelope();
+        envelope.addCover(cover);
+        
+        Assert.assertEquals(envelope.getCovers().size(), 1);
+        Assert.assertEquals(envelope.getCoverByUID(cover.getUID()).toString(), cover.toString()); 
+        Assert.assertNull(envelope.getCoverByUID(null));
+        Assert.assertEquals(envelope.getCoverByUID(cover.getUID()).getLayerByUID(layer.getUID()).toString(), layer.toString());
+        Assert.assertEquals(envelope.getCoverByUID(cover.getUID()).getLayerByUID(layer.getUID()).getMaterial().toString(), material.toString());
+    }
+    
     @Test 
     public void testCreateBuildingWithOneFloor() {
         IMeasure measure  =  pythonEntryPoint.createMeasure(MeasurementUnit.SQUARE_METERS.getValue(), 20);
@@ -474,6 +521,66 @@ public class TestPythonServer {
         Assert.assertEquals(building.getMeters(null).size(), 2);
         Assert.assertEquals(building.getMeterByType(MeterType.GAS.getValue()).size(), 1);
         Assert.assertEquals(building.getFloorArea().toString(), buildingFloorArea.toString());
+    }
+    
+    @Test
+    public void testCreateBuildingWithRoofingCover() {
+    	IMeasure measure  =  pythonEntryPoint.createMeasure(MeasurementUnit.SQUARE_METERS.getValue(), 20);
+        IBinaryMeasure measurement = (IBinaryMeasure) pythonEntryPoint.createMeasurement(measure, "Binary");
+        IRoom room = pythonEntryPoint.createRoom(measurement, "Room 001", RoomType.KITCHEN.getValue(), "hei.ies.ies");
+         
+        IMeasure floorSize  = pythonEntryPoint.createMeasure(MeasurementUnit.SQUARE_METERS.getValue(), 150);
+    	IBinaryMeasure floorMeasurement = (IBinaryMeasure) pythonEntryPoint.createMeasurement(floorSize, "Binary");
+    	IFloor floor =  pythonEntryPoint.createFloor(floorMeasurement, 1, FloorType.BASEMENT.getValue(), floorMeasurement, "First floor of the building", room, null);
+
+        IMeasure floorAreaMeasure = pythonEntryPoint.createMeasure(MeasurementUnit.SQUARE_METERS.getValue(), 50591.3);
+        IBinaryMeasure buildingFloorArea = (IBinaryMeasure) pythonEntryPoint.createMeasurement(floorAreaMeasure, "Binary");
+        IPoint coordinates =  pythonEntryPoint.createCoordinates(45.4967765, -73.5806159);
+        IAddress address = pythonEntryPoint.createAddress("Montreal", "1400 de Maisonneuve Blvd. W.", "QC", "H3G 1M8", "Canada", coordinates);
+         
+        IMeasure buildingHeightMeasure = pythonEntryPoint.createMeasure(MeasurementUnit.METERS.getValue(), 15);
+        IBinaryMeasure buildingHeight = (IBinaryMeasure) pythonEntryPoint.createMeasurement(buildingHeightMeasure, "Binary");
+     	IBuilding building = pythonEntryPoint.createBuilding(1996, buildingHeight, buildingFloorArea, address, BuildingType.NON_COMMERCIAL.getValue(), floor);
+     	
+     	IMeasure thermalTransmittanceMeasure  =  pythonEntryPoint.createMeasure(MeasurementUnit.WATTS_PER_SQUARE_METER_KELVIN.getValue(), 10);
+        IBinaryMeasure ttmMeasurement = (IBinaryMeasure) pythonEntryPoint.createMeasurement(thermalTransmittanceMeasure, "Binary");
+        
+        IMeasure densityMeasure  =  pythonEntryPoint.createMeasure(MeasurementUnit.KILOGRAM_PER_CUBIC_METER.getValue(), 7.8);
+        IBinaryMeasure densityMeasurement = (IBinaryMeasure) pythonEntryPoint.createMeasurement(densityMeasure, "Binary");
+        
+        IMeasure heatCapacityMeasure  =  pythonEntryPoint.createMeasure(MeasurementUnit.JOULES_PER_KELVIN.getValue(), 12.89);
+        IBinaryMeasure hcMeasurement = (IBinaryMeasure) pythonEntryPoint.createMeasurement(heatCapacityMeasure, "Binary");
+        
+        IMeasure thermalResistanceMeasure  =  pythonEntryPoint.createMeasure(MeasurementUnit.SQUARE_METERS_KELVIN_PER_WATTS.getValue(), 15.898);
+        IBinaryMeasure trMeasurement = (IBinaryMeasure) pythonEntryPoint.createMeasurement(thermalResistanceMeasure, "Binary");
+        
+        //Create material
+        IMaterial material = pythonEntryPoint.createMaterial("Roofing Material", MaterialType.ROOF_ALUMINIUM.getValue(), densityMeasurement, ttmMeasurement, hcMeasurement, trMeasurement, 0.0387);
+        
+        IMeasure lengthMeasure  =  pythonEntryPoint.createMeasure(MeasurementUnit.METERS.getValue(), 30);
+        IBinaryMeasure lengthMeasurement = (IBinaryMeasure) pythonEntryPoint.createMeasurement(lengthMeasure, "Binary");
+        
+        IMeasure thicknessMeasure  =  pythonEntryPoint.createMeasure(MeasurementUnit.METERS.getValue(), 0.35);
+        IBinaryMeasure thicknessMeasurement = (IBinaryMeasure) pythonEntryPoint.createMeasurement(thicknessMeasure, "Binary");
+        
+        //Create roofing layer
+        ILayer layer = pythonEntryPoint.createLayer(lengthMeasurement, lengthMeasurement, thicknessMeasurement, material);
+        
+        //Create a roofing covering
+        ICover cover = pythonEntryPoint.createCover(CoverType.ROOF.getValue());
+        cover.addLayer(layer);
+        
+        //Create envelope with roofing cover only
+        IEnvelope envelope = pythonEntryPoint.createEnvelope();
+        envelope.addCover(cover);
+        
+        building.setEnvelope(envelope);
+        
+        Assert.assertEquals(building.getEnvelope().toString(), envelope.toString());
+        Assert.assertEquals(building.getEnvelope().getCovers().size(), 1);
+        Assert.assertEquals(building.getEnvelope().getCoverByUID(cover.getUID()).getLayerByUID(layer.getUID()).getHeight().toString(), lengthMeasurement.toString());
+        Assert.assertEquals(building.getEnvelope().getCoverByUID(cover.getUID()).getCoverType(), CoverType.ROOF.getValue());
+        Assert.assertEquals(building.getEnvelope().getCoverByUID(cover.getUID()).getLayerByUID(layer.getUID()).getMaterial().toString(), material.toString());
     }
     
     @Test
