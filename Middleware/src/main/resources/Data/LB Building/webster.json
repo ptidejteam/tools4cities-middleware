@@ -9163,6 +9163,13 @@
                                 "data_frequency": 900,
                                 "measure": "Occupancy",
                                 "log_type": "Polling"
+                            },
+                            {
+                                "name": "TEC11.345-00.LB:ROOM TEMP",
+                                "unit": "Degree celsius",
+                                "data_frequency": 900,
+                                "measure": "Temperature",
+                                "log_type": "Polling"
                             }
                         ],
                         "zones": [],
@@ -9188,7 +9195,15 @@
                     },
                     {
                         "meter": {},
-                        "sensors": [],
+                        "sensors": [
+                            {
+                                "name": "TEC.345-03.LB:ROOM TEMP",
+                                "unit": "Degree celsius",
+                                "data_frequency": 900,
+                                "measure": "Temperature",
+                                "log_type": "Polling"
+                            }
+                        ],
                         "zones": [],
                         "location": "",
                         "area": {
@@ -9224,7 +9239,15 @@
                     },
                     {
                         "meter": {},
-                        "sensors": [],
+                        "sensors": [
+                            {
+                                "name": "TEC10.350-00.LB:ROOM TEMP",
+                                "unit": "Degree celsius",
+                                "data_frequency": 900,
+                                "measure": "Temperature",
+                                "log_type": "Polling"
+                            }
+                        ],
                         "zones": [],
                         "location": "",
                         "area": {
@@ -9236,7 +9259,15 @@
                     },
                     {
                         "meter": {},
-                        "sensors": [],
+                        "sensors": [
+                            {
+                                "name": "TEC.351-00.LB:ROOM TEMP",
+                                "unit": "Degree celsius",
+                                "data_frequency": 900,
+                                "measure": "Temperature",
+                                "log_type": "Polling"
+                            }
+                        ],
                         "zones": [],
                         "location": "",
                         "area": {
@@ -9248,7 +9279,15 @@
                     },
                     {
                         "meter": {},
-                        "sensors": [],
+                        "sensors": [
+                            {
+                                "name": "TEC.353-00.LB:ROOM TEMP",
+                                "unit": "Degree celsius",
+                                "data_frequency": 900,
+                                "measure": "Temperature",
+                                "log_type": "Polling"
+                            }
+                        ],
                         "zones": [],
                         "location": "",
                         "area": {
@@ -9296,7 +9335,15 @@
                     },
                     {
                         "meter": {},
-                        "sensors": [],
+                        "sensors": [
+                            {
+                                "name": "TEC.359-00.LB:ROOM TEMP",
+                                "unit": "Degree celsius",
+                                "data_frequency": 900,
+                                "measure": "Temperature",
+                                "log_type": "Polling"
+                            }
+                        ],
                         "zones": [],
                         "location": "",
                         "area": {
@@ -9320,7 +9367,22 @@
                     },
                     {
                         "meter": {},
-                        "sensors": [],
+                        "sensors": [
+                            {
+                                "name": "TEC2.361-00.LB:ROOM TEMP",
+                                "unit": "Degree celsius",
+                                "data_frequency": 900,
+                                "measure": "Temperature",
+                                "log_type": "Polling"
+                            },
+                            {
+                                "name": "TEC1.361-00.LB:ROOM TEMP",
+                                "unit": "Degree celsius",
+                                "data_frequency": 900,
+                                "measure": "Temperature",
+                                "log_type": "Polling"
+                            }
+                        ],
                         "zones": [],
                         "location": "",
                         "area": {
@@ -9332,14 +9394,22 @@
                     },
                     {
                         "meter": {},
-                        "sensors": [],
+                        "sensors": [
+                            {
+                                "name": "TEC.362-00.LB:ROOM TEMP",
+                                "unit": "Degree celsius",
+                                "data_frequency": 900,
+                                "measure": "Temperature",
+                                "log_type": "Polling"
+                            }
+                        ],
                         "zones": [],
                         "location": "",
                         "area": {
                             "value": 94.81,
                             "unit": "meters square"
                         },
-                        "room_type": "Classrooms",
+                        "room_type": "Seminar room",
                         "name": "0362-00"
                     },
                     {
@@ -14716,6 +14786,13 @@
                                 "data_frequency": 900,
                                 "measure": "Occupancy",
                                 "log_type": "Polling"
+                            },
+                            {
+                                "name": "TEC11.385-00.LB:ROOM TEMP",
+                                "unit": "Degree celsius",
+                                "data_frequency": 900,
+                                "measure": "Temperature",
+                                "log_type": "Polling"
                             }
                         ],
                         "zones": [],
@@ -14827,7 +14904,15 @@
                     },
                     {
                         "meter": {},
-                        "sensors": [],
+                        "sensors": [
+                            {
+                                "name": "TEC1.390-00.LB:ROOM TEMP",
+                                "unit": "Degree celsius",
+                                "data_frequency": 900,
+                                "measure": "Temperature",
+                                "log_type": "Polling"
+                            }
+                        ],
                         "zones": [],
                         "location": "",
                         "area": {

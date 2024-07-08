@@ -6,7 +6,11 @@ public enum RoomType {
     KITCHEN("Kitchen"),
     BATHROOM("Bathroom"),
     OFFICE("Office"),
-    STUDY_ROOM("Study Room");
+    STUDY_ROOM("Study Room"),
+    CLASS_ROOM("Class Room"),
+    LIBRARY("Library"),
+    FOOD_SERVICES("Food Services"),
+	SEMINAR_ROOM("Seminar Room");
 
     private final String value;
 
