@@ -38,7 +38,6 @@ class StructureEntitySearch:
         return self.searchStructureEntity(entity_list, 'Name', name)
 
     def searchByNumber(self, entity_list, number):
-        print('caasss')
         """
         search structures by name
         :param entity_list: the list of entity to search for a particular entity

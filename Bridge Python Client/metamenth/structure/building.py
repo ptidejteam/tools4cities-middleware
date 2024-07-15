@@ -101,7 +101,6 @@ class Building:
             raise ValueError("address must be of type Address")
 
     def getBuildingType(self) -> str:
-        print('Are you invoked...')
         return self._building_type
 
     def setBuildingType(self, value: str):
@@ -176,7 +175,6 @@ class Building:
         pascal casing, e.g., {'Number': 1}
         :return:
         """
-        print('are you invoked')
         return self._structure_entity_search.search(self._floors, search_term)
 
     def getMeterById(self, uid: str) -> Meter:
