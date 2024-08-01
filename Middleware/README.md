@@ -24,7 +24,7 @@ The purpose of the Tools4Cities Middleware is to enable users to perform operati
 ## How do I set it up?
 
 - Open the terminal and check Java installation by typing "java --version". If Java is set up correctly, you should see the Java version printed on the terminal.
-- Open Eclipse, right-click the left-side menu, and select Import > Maven > Existing Maven Projects.
+- Open Eclipse. On the left-side menu, select Import > Maven > Existing Maven Projects.
 - Select project directory: tools4cities-middleware.
 - Click "Finish" and wait for the project to load.
 - After loading, right-click the "middleware" folder, and select Maven > Update Project.
