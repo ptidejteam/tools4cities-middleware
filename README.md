@@ -7,7 +7,7 @@ Tools4Cities Middleware allows users to fetch, transform, and process data from 
 
 ## What is it?
 
-TODO
+Please check the README.md inside each folder for further information. More detailed documentation will come in the future.
 
 ## Who do I talk to?
 
