@@ -6,7 +6,7 @@ public interface IConsumer<E> {
 	// TODO Rename for a better name. more in line with the Observer DP 
 	void newDataAvailable(List<?> data);
 	
-	E getResults();
+	List<E> getResults();
 
 
 }

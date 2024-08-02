@@ -1,5 +1,6 @@
 package ca.concordia.ngci.tools4cities.middleware.consumers;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -8,35 +9,33 @@ import ca.concordia.ngci.tools4cities.middleware.middleware.AbstractConsumer;
 import ca.concordia.ngci.tools4cities.middleware.middleware.IConsumer;
 import ca.concordia.ngci.tools4cities.middleware.middleware.IOperation;
 import ca.concordia.ngci.tools4cities.middleware.middleware.IProducer;
+import ca.concordia.ngci.tools4cities.middleware.operations.FilterOperation;
 
 public class CSVConsumer extends AbstractConsumer<String> implements IConsumer<String> {
 
-	private String results;
-	private Boolean ignoreHeader = true; 
+	private List<String> results;
 
 	public CSVConsumer(final Set<IProducer<String>> setOfProducers) {
 		super(setOfProducers);
 	}
 
 	@Override
-	public String getResults() {
+	public List<String> getResults() {
 		return results;
 	}
 
 	@Override
 	public final void newDataAvailable(List<?> data) {
-		int i = 1;
-		Iterator<?> iterator = data.iterator();
-		while (iterator.hasNext()) {
-			//if (i++ == 1 && ignoreHeader) {
-			//	iterator.next();
-			//	continue;		
-			//}
-			// Retrieve the next element
-			String item = (String) iterator.next();
-			this.results += item;
+		this.results = new ArrayList<>();
+		IOperation filtering = new FilterOperation("H1B", false);
+		try {
+			List<String> processedItems = (List<String>) filtering.perform(data);
+			this.results.addAll(processedItems);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-
+		
 	}
 
 }
