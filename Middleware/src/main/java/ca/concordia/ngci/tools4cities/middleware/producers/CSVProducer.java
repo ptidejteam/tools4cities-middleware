@@ -9,21 +9,28 @@ import java.util.Scanner;
 import ca.concordia.ngci.tools4cities.middleware.middleware.AbstractProducer;
 import ca.concordia.ngci.tools4cities.middleware.middleware.IProducer;
 
-public class CSVProducer extends AbstractProducer<List<String>>
-		implements IProducer<List<String>> {
+public class CSVProducer extends AbstractProducer<String> implements IProducer<String> {
+	private String filePath;
+	
+
+	public CSVProducer(String filePath) {
+		this.filePath = filePath;
+
+	}
 
 	@Override
-	public List<String> fetchData() throws FileNotFoundException {
+	public void fetchData() throws FileNotFoundException {
 		// Read data from CSV file
 		final List<String> list = new ArrayList<String>();
-		final Scanner sc = new Scanner(
-				new File("C:\\Users\\si_ejaz\\Desktop\\Data\\Data.csv"));
+		
+		final Scanner sc = new Scanner(new File(this.filePath));
 		sc.useDelimiter(",");
 
 		while (sc.hasNext()) {
 			list.add(sc.next());
 		}
 		sc.close();
-		return list;
+
+		this.notifyObservers(list);
 	}
 }
