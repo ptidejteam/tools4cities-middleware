@@ -4,7 +4,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-// TODO Fix the Java generics warning
+/**
+ * This is an abstract consumer implementing the observer pattern.
+ */
 public abstract class AbstractConsumer<E> implements IConsumer<E> {
 
 	public AbstractConsumer(final Set<IProducer<E>> setOfProducers) {
@@ -23,7 +25,7 @@ public abstract class AbstractConsumer<E> implements IConsumer<E> {
 
 	@Override
 	public void newDataAvailable(List<?> data) {
-		System.out.println("Implement it");
+		throw new UnsupportedOperationException("Not implemented.");
 	}
 
 }

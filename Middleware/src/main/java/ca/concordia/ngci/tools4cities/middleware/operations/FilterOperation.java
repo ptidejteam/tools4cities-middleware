@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 import ca.concordia.ngci.tools4cities.middleware.middleware.IOperation;
 
 public class FilterOperation implements IOperation {
-	String filterBy;
+	String filterBy = "";
 	Boolean exactlyEqual = false;
 	
 	public FilterOperation(String filterBy, Boolean exactlyEqual) {
