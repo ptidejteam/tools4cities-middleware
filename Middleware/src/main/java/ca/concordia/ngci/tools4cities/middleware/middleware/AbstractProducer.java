@@ -3,7 +3,9 @@ package ca.concordia.ngci.tools4cities.middleware.middleware;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
+import java.net.http.HttpRequest.BodyPublisher;
 import java.net.http.HttpRequest.BodyPublishers;
+import java.net.http.HttpRequest.Builder;
 import java.net.http.HttpResponse;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -11,10 +13,14 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map.Entry;
+
+import com.google.gson.Gson;
 
 /**
- * This is an abstract producer implementation containing fetch operation which can be used by any producer.
- * It also implements the Observer pattern to asynchronously notify consumers that data is ready to be consumed.
+ * This is an abstract producer implementation containing fetch operation which
+ * can be used by any producer. It also implements the Observer pattern to
+ * asynchronously notify consumers that data is ready to be consumed.
  */
 public abstract class AbstractProducer<E> implements IProducer<E> {
 	protected String filePath;
@@ -39,7 +45,6 @@ public abstract class AbstractProducer<E> implements IProducer<E> {
 			e.printStackTrace();
 		}
 	}
-	
 
 	/**
 	 * Fetch file via HTTP or filesystem depending on whether it is a path or URL
@@ -47,9 +52,9 @@ public abstract class AbstractProducer<E> implements IProducer<E> {
 	protected String fetchFromPath() throws Exception {
 		if (this.filePath.startsWith("http")) {
 			return this.doHTTPRequest();
-		} 
+		}
 		return this.readFile();
-		
+
 	}
 
 	/**
@@ -57,26 +62,50 @@ public abstract class AbstractProducer<E> implements IProducer<E> {
 	 */
 	protected String doHTTPRequest() throws Exception {
 		HttpRequest request;
+		BodyPublisher requestBody;
 		URI endpointURI = new URI(this.filePath);
+		Builder requestBuilder = HttpRequest.newBuilder().uri(endpointURI);
 		HttpClient client = HttpClient.newHttpClient();
 
-        if ("POST".equalsIgnoreCase(fileOptions.method) ) {
-            request = HttpRequest.newBuilder()
-                    .uri(endpointURI)
-                    .POST(BodyPublishers.ofString(this.fileOptions.requestBody))
-                    .header("Content-Type", this.fileOptions.contentType)
-                    .build();
-        } else if ("GET".equalsIgnoreCase(this.fileOptions.method)) {
-            request = HttpRequest.newBuilder()
-                    .uri(endpointURI)
-                    .GET()
-                    .build();
-        } else {
-            throw new IllegalArgumentException("Unsupported method: " + this.fileOptions.method);
-        }
+		switch (this.fileOptions.method) {
+		case "GET":
+			requestBuilder.GET();
+			break;
+		case "HEAD":
+			requestBuilder.HEAD();
+			break;
+		case "DELETE":
+			requestBuilder.DELETE();
+			break;
+		case "POST":
+			requestBody = BodyPublishers.ofString(this.fileOptions.requestBody);
+			requestBuilder.POST(requestBody);
+			break;
+		case "PUT":
+			requestBody = BodyPublishers.ofString(this.fileOptions.requestBody);
+			requestBuilder.PUT(requestBody);
+			break;
+		default:
+			throw new IllegalArgumentException("Unsupported method: " + this.fileOptions.method);
+		}
 
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        return response.body();
+		// add headers to builder, if any
+		if (this.fileOptions.headers != null && !this.fileOptions.headers.isEmpty()) {
+			for (Entry<String, String> header : this.fileOptions.headers.entrySet()) {
+				requestBuilder.header(header.getKey(), header.getValue());
+			}
+		}
+		System.out.println(this.fileOptions.headers);
+		request = requestBuilder.build();
+
+		HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+		System.out.println(response.statusCode());
+		
+		if (this.fileOptions.returnHeaders) {
+			Gson gson = new Gson();
+			return gson.toJson(response.headers().map());
+		}
+		return response.body();
 	}
 
 	/**

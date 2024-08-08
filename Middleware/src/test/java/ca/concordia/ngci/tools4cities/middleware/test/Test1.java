@@ -74,7 +74,6 @@ public class Test1 {
 	public void testJSON() {
 		final RequestOptions requestOptions = new RequestOptions();
 		requestOptions.method = "GET";
-		requestOptions.contentType = "application/json";
 
 		String limitRecordCount = "100";
 		String url = "https://www.donneesquebec.ca/recherche/api/3/action/datastore_search";
@@ -94,7 +93,7 @@ public class Test1 {
 		JsonArray records = result.get("records").getAsJsonArray();
 
 		// given limitRecordCount=100, there should be 100 records
-		System.out.println(records.get(1).getAsJsonObject().get("NB_VEH_IMPLIQUES_ACCDN"));
+//		System.out.println(records.get(1).getAsJsonObject().get("NB_VEH_IMPLIQUES_ACCDN"));
 		Assertions.assertEquals(100, records.size());
 	}
 

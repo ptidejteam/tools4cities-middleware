@@ -5,6 +5,9 @@ import java.util.stream.Collectors;
 
 import ca.concordia.ngci.tools4cities.middleware.middleware.IOperation;
 
+/**
+ * This operation does string list filtering in two modes: exact (equals) or partial (contains) string match
+ */
 public class FilterOperation implements IOperation {
 	String filterBy = "";
 	Boolean exactlyEqual = false;
