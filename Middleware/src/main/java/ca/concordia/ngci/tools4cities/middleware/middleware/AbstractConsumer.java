@@ -16,9 +16,8 @@ public abstract class AbstractConsumer<E> implements IConsumer<E> {
 			producer.addObserver(this);
 			try {
 				producer.fetchData();
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			} catch (Exception ex) {
+				System.out.println(ex);
 			}
 		}
 	}
