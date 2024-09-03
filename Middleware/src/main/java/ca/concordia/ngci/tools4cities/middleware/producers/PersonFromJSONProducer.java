@@ -10,38 +10,11 @@ import com.google.gson.reflect.TypeToken;
 
 import ca.concordia.ngci.tools4cities.middleware.middleware.AbstractProducer;
 import ca.concordia.ngci.tools4cities.middleware.middleware.IProducer;
-import ca.concordia.ngci.tools4cities.middleware.producers.PersonFromJSONProducer.Person;
+import ca.concordia.ngci.tools4cities.middleware.middleware.Person;
 
 // TODO This Particular JSON producer should be a subclass of a general JSON producer
 public class PersonFromJSONProducer extends AbstractProducer<Person>
 		implements IProducer<Person> {
-
-	public static class Person { 
-		private String name;
-		private int age;
-		private String city;
-
-		public Person(String name, int age, String city) {
-			this.name = name;
-			this.age = age;
-			this.city = city;
-		}
-
-		public int getAge() {
-			return this.age;
-		}
-
-		public String getName() {
-			return this.name;
-		}
-
-		@Override
-		public String toString() {
-			return "Person [name=" + name + ", age=" + age + ", city=" + city
-					+ "]";
-		}
-
-	}
 
 	private final Gson gson = new Gson();
 
