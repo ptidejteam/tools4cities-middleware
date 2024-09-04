@@ -18,7 +18,7 @@ import ca.concordia.ngci.tools4cities.middleware.middleware.RequestOptions;
 import ca.concordia.ngci.tools4cities.middleware.middleware.IConsumer;
 import ca.concordia.ngci.tools4cities.middleware.middleware.IProducer;
 
-public class Test1 {
+public class TestCSVJSON {
 
 	@Test
 	public void testCSVFilesystem() {

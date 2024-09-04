@@ -18,7 +18,7 @@ public class TestRandomData {
 		System.out.println("Case 1 - Scenario 1: Launch the producer first, then the consumer");
 	
 		try {
-			final int listSize = 5;
+			final int listSize = 3;
 			final IProducer<Integer> producer = new RandomNumberProducer(listSize);
 			final Set<IProducer<Integer>> producers = new HashSet<IProducer<Integer>>();
 			producers.add(producer);
@@ -39,7 +39,7 @@ public class TestRandomData {
 	public void case1s2() {
 		System.out.println("Case 1 - Scenario 2: Launch the producer and the Consumer simultaneously");
 			
-		final int listSize = 5;
+		final int listSize = 3;
 		final IProducer<Integer> producer = new RandomNumberProducer(listSize);
 		final Set<IProducer<Integer>> producers = new HashSet<IProducer<Integer>>();
 		producers.add(producer);

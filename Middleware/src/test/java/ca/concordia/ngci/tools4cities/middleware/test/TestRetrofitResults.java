@@ -41,8 +41,8 @@ public class TestRetrofitResults {
 			System.out.println("CityLayers env file is missing from Middleware folder");
 		}
 
-		String startURL = "https://nextgenerations-cities.encs.concordia.ca/api/v1.4/session/start";
-		String retrofitURL = "https://nextgenerations-cities.encs.concordia.ca/api/v1.4/persistence/full-retrofit-results";
+		String startURL = "https://ngci.encs.concordia.ca/api/v1.4/session/start";
+		String retrofitURL = "https://ngci.encs.concordia.ca/api/v1.4/persistence/full-retrofit-results";
 
 		RequestOptions startOptions = new RequestOptions();
 		startOptions.method = "PUT";
