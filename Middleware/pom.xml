@@ -6,9 +6,7 @@
 	<artifactId>Middleware</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>Middleware</name>
-	<description>Code accompanying the JUnit 5 Basics course on Java Brains (javabrains.io)</description>
-
-
+	<description>Tools4Cities Middleware allows users to fetch, transform, and process data from various sources using Producers, Operations, and Consumers.</description>
 
 	<properties>
 		<maven.compiler.target>11</maven.compiler.target>
