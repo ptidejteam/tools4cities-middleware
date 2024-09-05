@@ -12,11 +12,16 @@ import ca.concordia.ngci.tools4cities.middleware.middleware.AbstractProducer;
 import ca.concordia.ngci.tools4cities.middleware.middleware.IProducer;
 import ca.concordia.ngci.tools4cities.middleware.producers.PersonFromJSONProducer.Person;
 
-// TODO This Particular JSON producer should be a subclass of a general JSON producer
-public class PersonFromJSONProducer extends AbstractProducer<List<Person>>
-		implements IProducer<List<Person>> {
+/**
+ * This producer generates instances of Person, which are loaded from a JSON file.
+ * This is an older producer implementation which does not use the JSONProducer (but could).
+ */
+public class PersonFromJSONProducer extends AbstractProducer<Person>
+		implements IProducer<Person> {
 
-	public static class Person {
+	private final Gson gson = new Gson();
+	
+	public class Person { 
 		private String name;
 		private int age;
 		private String city;
@@ -43,24 +48,17 @@ public class PersonFromJSONProducer extends AbstractProducer<List<Person>>
 
 	}
 
-	private final Gson gson = new Gson();
-
 	public PersonFromJSONProducer() {
 	}
 
 	@Override
-	public List<Person> fetchData() throws IOException {
+	public void fetchData() throws IOException {
 		final String json = Files
 				.readString(Paths.get("src/main/resources/Data/person.json"));
 		final List<Person> data = gson.fromJson(json,
 				new TypeToken<List<Person>>() {
 				}.getType());
-		return data;
+		this.notifyObservers(data);
 	}
 
-	//	public void sendData() {
-	//		for (Person person : data) {
-	//			consumer.consumeData(person);
-	//		}
-	//	}
 }

@@ -1,29 +1,30 @@
 package ca.concordia.ngci.tools4cities.middleware.producers;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Scanner;
-
 import ca.concordia.ngci.tools4cities.middleware.middleware.AbstractProducer;
+import ca.concordia.ngci.tools4cities.middleware.middleware.RequestOptions;
 import ca.concordia.ngci.tools4cities.middleware.middleware.IProducer;
 
-public class CSVProducer extends AbstractProducer<List<String>>
-		implements IProducer<List<String>> {
+/**
+ * This producer can load CSV from a file or remotely via an HTTP request.
+ */
+public class CSVProducer extends AbstractProducer<String> implements IProducer<String> {
+
+	public CSVProducer(String filePath, RequestOptions fileOptions) {
+		this.filePath = filePath;
+		this.fileOptions = fileOptions;
+	}
 
 	@Override
-	public List<String> fetchData() throws FileNotFoundException {
-		// Read data from CSV file
-		final List<String> list = new ArrayList<String>();
-		final Scanner sc = new Scanner(
-				new File("C:\\Users\\si_ejaz\\Desktop\\Data\\Data.csv"));
-		sc.useDelimiter(",");
-
-		while (sc.hasNext()) {
-			list.add(sc.next());
-		}
-		sc.close();
-		return list;
+	public void fetchData() throws Exception {
+		final String csvString = this.fetchFromPath();
+		
+		// split CSV string by line, add lines to the list
+		final List<String> csvLines = new ArrayList<String>();
+		csvLines.addAll(Arrays.asList(csvString.split(System.lineSeparator())));
+		
+		this.notifyObservers(csvLines);
 	}
 }

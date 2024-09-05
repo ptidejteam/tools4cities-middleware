@@ -3,8 +3,8 @@ package ca.concordia.ngci.tools4cities.middleware.middleware;
 import java.util.Queue;
 import java.util.Set;
 
-// TODO Allow as many consumers and producers at run-time
-// TODO Make the Middleware a Singleton
+// TODO: Allow as many consumers and producers at run-time
+// TODO: Make the Middleware a Singleton
 
 public class Middleware {
 	public Middleware() {
