@@ -9,7 +9,8 @@ import ca.concordia.ngci.tools4cities.middleware.middleware.IConsumer;
 import ca.concordia.ngci.tools4cities.middleware.middleware.IProducer;
 
 /**
- * The IntegerConsumer consumes any producers which return Integer values (e.g., RandomNumberProducer). It was created with the purpose of testing the producers and consumers by using random numbers.
+ * The IntegerConsumer consumes any producers which return Integer values (e.g., RandomNumberProducer). 
+ * It was created with the purpose of testing the producers and consumers by using random numbers.
  */
 public class IntegerConsumer extends AbstractConsumer<Integer> implements IConsumer<Integer> {
 
