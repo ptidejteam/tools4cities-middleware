@@ -37,7 +37,7 @@ public class CSVFilterConsumer extends AbstractConsumer<String> implements ICons
 			List<String> processedItems = (List<String>) filtering.perform(data);
 			this.results.addAll(processedItems);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
+			// TODO: Auto-generated catch block
 			e.printStackTrace();
 		}
 		
