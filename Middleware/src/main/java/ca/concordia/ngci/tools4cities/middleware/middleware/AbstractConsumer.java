@@ -23,7 +23,7 @@ public abstract class AbstractConsumer<E> implements IConsumer<E> {
 	}
 
 	@Override
-	public void newDataAvailable(List<?> data) {
+	public void newDataAvailable(List<E> data) {
 		throw new UnsupportedOperationException("Not implemented.");
 	}
 

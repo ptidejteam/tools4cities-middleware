@@ -8,6 +8,9 @@ import ca.concordia.ngci.tools4cities.middleware.middleware.AbstractConsumer;
 import ca.concordia.ngci.tools4cities.middleware.middleware.IConsumer;
 import ca.concordia.ngci.tools4cities.middleware.middleware.IProducer;
 
+/**
+ * The OccupancyConsumer consumes Occupancy producers and merge results from all of them in the same ArrayList.
+ */
 public class OccupancyConsumer extends AbstractConsumer<String> implements IConsumer<String> {
 
 	private ArrayList<String> results;
@@ -22,7 +25,7 @@ public class OccupancyConsumer extends AbstractConsumer<String> implements ICons
 	}
 
 	@Override
-	public final void newDataAvailable(List<?> data) {
+	public final void newDataAvailable(List<String> data) {
 		this.results = new ArrayList<String>();
 		this.results.addAll((ArrayList<String>) data);
 	}

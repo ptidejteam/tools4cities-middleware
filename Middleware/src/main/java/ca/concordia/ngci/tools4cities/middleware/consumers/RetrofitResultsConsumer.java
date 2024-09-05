@@ -15,7 +15,8 @@ import ca.concordia.ngci.tools4cities.middleware.middleware.IProducer;
 import ca.concordia.ngci.tools4cities.middleware.operations.AverageOperation;
 
 /**
- * TODO
+ * This RetrofitResultsConsumer consumes retrofit JSON data fetched from the Hub API for a certain number of buildings.
+ * This consumer iterates over the results, extracts the monthly_cooling_demand and computes the average energy consumption by building.
  */
 public class RetrofitResultsConsumer extends AbstractConsumer<JsonObject> implements IConsumer<JsonObject> {
 
@@ -31,7 +32,7 @@ public class RetrofitResultsConsumer extends AbstractConsumer<JsonObject> implem
 	}
 
 	@Override
-	public final void newDataAvailable(List<?> data) {
+	public final void newDataAvailable(List<JsonObject> data) {
 		this.results = new ArrayList<JsonObject>();
 		ArrayList<JsonArray> coolDemandBuildings = new ArrayList<JsonArray>();
 
@@ -53,7 +54,7 @@ public class RetrofitResultsConsumer extends AbstractConsumer<JsonObject> implem
 			this.results.add(building);
 			
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
+			// TODO: Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

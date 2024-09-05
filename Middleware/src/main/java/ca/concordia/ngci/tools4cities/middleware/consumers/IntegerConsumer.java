@@ -25,7 +25,7 @@ public class IntegerConsumer extends AbstractConsumer<Integer> implements IConsu
 	}
 
 	@Override
-	public final void newDataAvailable(List<?> data) {
+	public final void newDataAvailable(List<Integer> data) {
 		this.results = new ArrayList<Integer>();
 		this.results.addAll((ArrayList<Integer>) data);
 	}

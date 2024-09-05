@@ -27,7 +27,7 @@ public class JSONConsumer extends AbstractConsumer<JsonObject> implements IConsu
 	}
 
 	@Override
-	public final void newDataAvailable(List<?> data) {
+	public final void newDataAvailable(List<JsonObject> data) {
 		this.results = new ArrayList<JsonObject>();
 		this.results.addAll((ArrayList<JsonObject>) data);
 	}

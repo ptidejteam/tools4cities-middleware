@@ -8,6 +8,10 @@ import java.util.Random;
 import ca.concordia.ngci.tools4cities.middleware.middleware.AbstractProducer;
 import ca.concordia.ngci.tools4cities.middleware.middleware.IProducer;
 
+/**
+ * This producer generates random sequences of occupancy strings, either "occupied" or "vacant".
+ * It simulates an occupancy sensor that, for example, would tell you whether there is a person in a room or not.
+ */
 public class OccupancyProducer extends AbstractProducer<String>
 		implements IProducer<String> {
 

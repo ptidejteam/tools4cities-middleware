@@ -20,6 +20,8 @@ import ca.concordia.ngci.tools4cities.middleware.consumers.RetrofitResultsConsum
 import ca.concordia.ngci.tools4cities.middleware.middleware.IProducer;
 import ca.concordia.ngci.tools4cities.middleware.middleware.RequestOptions;
 
+// This test shows how would you connect to the Hub API and fetch data from it via middleware
+// IMPORTANT: in order for this test to pass, you must inform valid Hub API credentials in an env.json file.
 public class TestRetrofitResults {
 
 	ArrayList<JsonObject> credentials = null;

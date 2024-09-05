@@ -27,7 +27,7 @@ public class CSVFilterConsumer extends AbstractConsumer<String> implements ICons
 	}
 
 	@Override
-	public final void newDataAvailable(List<?> data) {
+	public final void newDataAvailable(List<String> data) {
 		this.results = new ArrayList<>();
 		
 		// filter by postal code prefix

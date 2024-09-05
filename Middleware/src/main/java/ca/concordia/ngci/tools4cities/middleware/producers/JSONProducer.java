@@ -10,7 +10,7 @@ import ca.concordia.ngci.tools4cities.middleware.middleware.RequestOptions;
 import ca.concordia.ngci.tools4cities.middleware.middleware.IProducer;
 
 /**
- * This producer can load JSON from a file or remotely via an HTTP request
+ * This producer can load JSON from a file or remotely via an HTTP request.
  */
 public class JSONProducer extends AbstractProducer<JsonObject> implements IProducer<JsonObject> {
 

@@ -25,7 +25,7 @@ import com.google.gson.Gson;
 public abstract class AbstractProducer<E> implements IProducer<E> {
 	protected String filePath;
 	protected RequestOptions fileOptions;
-	private final List<IConsumer<?>> listOfConsumers = new ArrayList<>();
+	private final List<IConsumer<E>> listOfConsumers = new ArrayList<>();
 
 	@Override
 	public final void addObserver(final IConsumer<E> aConsumer) {
@@ -35,9 +35,9 @@ public abstract class AbstractProducer<E> implements IProducer<E> {
 	@Override
 	public final void notifyObservers(final List<E> results) {
 		try {
-			for (final Iterator<IConsumer<?>> iterator = this.listOfConsumers.iterator(); iterator.hasNext();) {
+			for (final Iterator<IConsumer<E>> iterator = this.listOfConsumers.iterator(); iterator.hasNext();) {
 
-				final IConsumer<?> consumer = iterator.next();
+				final IConsumer<E> consumer = iterator.next();
 				consumer.newDataAvailable(results);
 			}
 
@@ -54,7 +54,6 @@ public abstract class AbstractProducer<E> implements IProducer<E> {
 			return this.doHTTPRequest();
 		}
 		return this.readFile();
-
 	}
 
 	/**
@@ -67,23 +66,18 @@ public abstract class AbstractProducer<E> implements IProducer<E> {
 		Builder requestBuilder = HttpRequest.newBuilder().uri(endpointURI);
 		HttpClient client = HttpClient.newHttpClient();
 
+		// we support idempotent HTTP methods only to avoid unexpected side effects
+		// the only exception is POST, but we must support it because it is used in several REST APIs
 		switch (this.fileOptions.method) {
-		case "GET":
-			requestBuilder.GET();
-			break;
 		case "HEAD":
 			requestBuilder.HEAD();
 			break;
-		case "DELETE":
-			requestBuilder.DELETE();
+		case "GET":
+			requestBuilder.GET();
 			break;
 		case "POST":
 			requestBody = BodyPublishers.ofString(this.fileOptions.requestBody);
 			requestBuilder.POST(requestBody);
-			break;
-		case "PUT":
-			requestBody = BodyPublishers.ofString(this.fileOptions.requestBody);
-			requestBuilder.PUT(requestBody);
 			break;
 		default:
 			throw new IllegalArgumentException("Unsupported method: " + this.fileOptions.method);
