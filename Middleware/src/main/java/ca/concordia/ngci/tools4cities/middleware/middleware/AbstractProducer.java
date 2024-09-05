@@ -66,8 +66,8 @@ public abstract class AbstractProducer<E> implements IProducer<E> {
 		Builder requestBuilder = HttpRequest.newBuilder().uri(endpointURI);
 		HttpClient client = HttpClient.newHttpClient();
 
-		// we support idempotent HTTP methods only to avoid unexpected side effects
-		// the only exception is POST, but we must support it because it is used in several REST APIs
+		// TODO: we should support idempotent HTTP methods only to avoid unexpected side effects (e.g. a producer changing data in the API)
+		// for now, I kept support to PUT and POST because they are needed for Hub API auth
 		switch (this.fileOptions.method) {
 		case "HEAD":
 			requestBuilder.HEAD();
@@ -78,6 +78,10 @@ public abstract class AbstractProducer<E> implements IProducer<E> {
 		case "POST":
 			requestBody = BodyPublishers.ofString(this.fileOptions.requestBody);
 			requestBuilder.POST(requestBody);
+			break;
+		case "PUT":
+			requestBody = BodyPublishers.ofString(this.fileOptions.requestBody);
+			requestBuilder.PUT(requestBody);
 			break;
 		default:
 			throw new IllegalArgumentException("Unsupported method: " + this.fileOptions.method);
