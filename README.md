@@ -12,3 +12,5 @@ Please check the README.md inside each folder for further information. More deta
 ## Who do I talk to?
 
 Project manager: gabriel.cavalheiroullmann at concordia.ca
+
+Write something
