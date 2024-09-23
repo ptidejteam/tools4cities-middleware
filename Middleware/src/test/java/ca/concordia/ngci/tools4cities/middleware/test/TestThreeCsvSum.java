@@ -12,9 +12,9 @@ public class TestThreeCsvSum {
     @Test
     public void testThreeCsvSum() {
         // Create producers for three CSV files, each extracting values from the 4th column
-        final IProducer<String> producer1 = new ThreeCsvProducer("./src/main/resources/Conso1.csv", null, 3);
-        final IProducer<String> producer2 = new ThreeCsvProducer("./src/main/resources/Conso2.csv"", null, 3);
-        final IProducer<String> producer3 = new ThreeCsvProducer("./src/main/resources/Conso3.csv"", null, 3);
+        final IProducer<String> producer1 = new EnergyConsumptionProducer("./src/main/resources/Conso1.csv", null, 3);
+        final IProducer<String> producer2 = new EnergyConsumptionProducer("./src/main/resources/Conso2.csv"", null, 3);
+        final IProducer<String> producer3 = new EnergyConsumptionProducer("./src/main/resources/Conso3.csv"", null, 3);
 
         final Set<IProducer<String>> producers = new HashSet<>();
         producers.add(producer1);
@@ -22,7 +22,7 @@ public class TestThreeCsvSum {
         producers.add(producer3);
 
         // Create the consumer
-        final ThreeCsvSumConsumer consumer = new ThreeCsvSumConsumer(producers);
+        final EnergyConsumptionConsumer consumer = new EnergyConsumptionConsumer(producers);
 
         // Trigger data fetch
         try {
