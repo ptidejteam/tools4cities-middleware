@@ -37,7 +37,6 @@ public class TestThreeCsvSum {
         Double expectedSum = 668.0; 
         
         Assertions.assertEquals(expectedSum, consumer.getSum());
-        //System.out.print(consumer.getSum());
         
     }    
     
