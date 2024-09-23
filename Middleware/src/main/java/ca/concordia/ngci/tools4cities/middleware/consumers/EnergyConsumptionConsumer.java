@@ -24,7 +24,7 @@ public class EnergyConsumptionConsumer extends AbstractConsumer<String> implemen
     @Override
     public void newDataAvailable(List<String> data) {
         this.results = new ArrayList<>(data);
-        calculateSum(); // Triggers sum calculation after receiving data
+        calculateSum();
     }
 
     private void calculateSum() {
@@ -32,7 +32,7 @@ public class EnergyConsumptionConsumer extends AbstractConsumer<String> implemen
             try {
                 sum += Double.parseDouble(value);
             } catch (NumberFormatException e) {
-                System.err.println("Invalid number format: " + value); // Skip invalid values
+                System.err.println("Invalid number format: " + value);
             }
         }
     }
