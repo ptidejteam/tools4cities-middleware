@@ -8,12 +8,11 @@ import ca.concordia.ngci.tools4cities.middleware.middleware.AbstractProducer;
 import ca.concordia.ngci.tools4cities.middleware.middleware.IProducer;
 import ca.concordia.ngci.tools4cities.middleware.middleware.RequestOptions;
 
-public class ThreeCsvProducer extends AbstractProducer<String> implements IProducer<String> {
+public class EnergyConsumptionProducer extends AbstractProducer<String> implements IProducer<String> {
 
 	private final int columnIndex;
-    //private boolean fileProcessed = false;	I added it for debugging purposes
 
-    public ThreeCsvProducer(String filePath, RequestOptions fileOptions, int columnIndex) {
+    public EnergyConsumptionProducer(String filePath, RequestOptions fileOptions, int columnIndex) {
         this.filePath = filePath;
         this.fileOptions = fileOptions;
         this.columnIndex = columnIndex;
@@ -37,15 +36,7 @@ public class ThreeCsvProducer extends AbstractProducer<String> implements IProdu
             throw new RuntimeException("Error reading CSV file", e);
         }
     }
-    
-    
-
-    /* @Override
-    protected String fetchFromPath() throws Exception {
-        System.out.println("Reading file from path: " + filePath);
-        return new String(Files.readAllBytes(Paths.get(filePath)));
-    } */
-    
+	
     /**
      * Manually parse the CSV string and extract values from the specified column.
      */
