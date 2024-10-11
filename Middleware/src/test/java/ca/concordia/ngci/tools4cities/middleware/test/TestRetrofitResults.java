@@ -79,11 +79,21 @@ public class TestRetrofitResults {
 			thread1.start();
 			thread1.join();
 
+			// Debugging if credentials is properly populated
+			if (this.credentials != null && !this.credentials.isEmpty()) {
+			    JsonObject startResponseHeaders = this.credentials.get(0);
+			    retrofitOptions.addToHeaders("token", startResponseHeaders.get("token").getAsString());
+			    retrofitOptions.addToHeaders("session-id", startResponseHeaders.get("session_id").getAsString());
+			    System.out.println(startResponseHeaders.get("token").getAsString());
+			} else {
+			    System.out.println("Error: credentials is null or empty");
+			}
+			
 			// add token and session id returned from session opening
-			JsonObject startResponseHeaders = this.credentials.get(0);
+		/*	JsonObject startResponseHeaders = this.credentials.get(0);
 			retrofitOptions.addToHeaders("token", startResponseHeaders.get("token").getAsString());
 			retrofitOptions.addToHeaders("session-id", startResponseHeaders.get("session_id").getAsString());
-			System.out.println(startResponseHeaders.get("token").getAsString());
+			System.out.println(startResponseHeaders.get("token").getAsString());  */
 
 			final IProducer<JsonObject> producer = new JSONProducer(retrofitURL, retrofitOptions);
 			final Set<IProducer<JsonObject>> producers = new HashSet<IProducer<JsonObject>>();

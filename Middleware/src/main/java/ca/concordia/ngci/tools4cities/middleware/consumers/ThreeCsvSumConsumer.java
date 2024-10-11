@@ -6,12 +6,12 @@ import ca.concordia.ngci.tools4cities.middleware.middleware.AbstractConsumer;
 import ca.concordia.ngci.tools4cities.middleware.middleware.IConsumer;
 import ca.concordia.ngci.tools4cities.middleware.middleware.IProducer;
 
-public class EnergyConsumptionConsumer extends AbstractConsumer<String> implements IConsumer<String> {
+public class ThreeCsvSumConsumer extends AbstractConsumer<String> implements IConsumer<String> {
 
 	private List<String> results;
     private Double sum;
 
-    public EnergyConsumptionConsumer(Set<IProducer<String>> setOfProducers) {
+    public ThreeCsvSumConsumer(Set<IProducer<String>> setOfProducers) {
         super(setOfProducers);
         sum = 0.0;
     }
@@ -24,7 +24,7 @@ public class EnergyConsumptionConsumer extends AbstractConsumer<String> implemen
     @Override
     public void newDataAvailable(List<String> data) {
         this.results = new ArrayList<>(data);
-        calculateSum();
+        calculateSum(); // Triggers sum calculation after receiving data
     }
 
     private void calculateSum() {
@@ -32,7 +32,7 @@ public class EnergyConsumptionConsumer extends AbstractConsumer<String> implemen
             try {
                 sum += Double.parseDouble(value);
             } catch (NumberFormatException e) {
-                System.err.println("Invalid number format: " + value);
+                System.err.println("Invalid number format: " + value); // Skip invalid values
             }
         }
     }

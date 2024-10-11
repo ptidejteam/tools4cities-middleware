@@ -8,17 +8,18 @@ import ca.concordia.ngci.tools4cities.middleware.middleware.AbstractProducer;
 import ca.concordia.ngci.tools4cities.middleware.middleware.IProducer;
 import ca.concordia.ngci.tools4cities.middleware.middleware.RequestOptions;
 
-public class EnergyConsumptionProducer extends AbstractProducer<String> implements IProducer<String> {
+public class ThreeCsvProducer extends AbstractProducer<String> implements IProducer<String> {
 
 	private final int columnIndex;
+    //private boolean fileProcessed = false;	I added it for debugging purposes
 
-    public EnergyConsumptionProducer(String filePath, RequestOptions fileOptions, int columnIndex) {
+    public ThreeCsvProducer(String filePath, RequestOptions fileOptions, int columnIndex) {
         this.filePath = filePath;
         this.fileOptions = fileOptions;
         this.columnIndex = columnIndex;
     }
 
-    public EnergyConsumptionProducer(String filePath, int columnIndex) {
+    public ThreeCsvProducer(String filePath, int columnIndex) {
     	this(filePath, null, columnIndex);
     }
 
@@ -36,23 +37,28 @@ public class EnergyConsumptionProducer extends AbstractProducer<String> implemen
             throw new RuntimeException("Error reading CSV file", e);
         }
     }
-	
+    
+    /**
+     * Manually parse the CSV string and extract values from the specified column.
+     */
     private List<String> parseCsvManually(String csvString) {
         List<String> columnValues = new ArrayList<>();
 
+        // Split CSV content by line
         String[] lines = csvString.split("\\R");  // Matches any line separator
 
+        // Ensure that the file has at least 4 lines
         if (lines.length > 3) {
+            // Extract value from the 4th line
             String[] values = lines[3].split(","); // Line index 3 corresponds to the 4th line (0-based index)
             
+            // Safely get the value from the desired column index
             if (values.length > columnIndex) {
                 columnValues.add(values[columnIndex].trim());
             }
         }
 
-        return columnValues; 
+        return columnValues; // Return the string representation of the column values from the 4th line
     }
-
-
         
 }

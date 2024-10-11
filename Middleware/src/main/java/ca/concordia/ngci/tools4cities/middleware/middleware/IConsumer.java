@@ -8,4 +8,7 @@ public interface IConsumer<E> {
 	
 	List<E> getResults();
 	
+	// New method to get an integer result
+    //Integer getIntegerResult();
+	
 }

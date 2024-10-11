@@ -12,9 +12,9 @@ public class TestThreeCsvSum {
     @Test
     public void testThreeCsvSum() {
         // Create producers for three CSV files, each extracting values from the 4th column
-        final IProducer<String> producer1 = new EnergyConsumptionProducer("./src/main/resources/Conso1.csv", null, 3);
-        final IProducer<String> producer2 = new EnergyConsumptionProducer("./src/main/resources/Conso2.csv"", null, 3);
-        final IProducer<String> producer3 = new EnergyConsumptionProducer("./src/main/resources/Conso3.csv"", null, 3);
+        final IProducer<String> producer1 = new ThreeCsvProducer("/home/zongo/Documents/ConcordiaLabs/Workspace/Tools4Cities-Middleware/Conso_Moy_RTA_SCIAN_CI.csv", null, 3);
+        final IProducer<String> producer2 = new ThreeCsvProducer("/home/zongo/Documents/ConcordiaLabs/Workspace/Tools4Cities-Middleware/Conso_Moy_RTA_SCIAN_Energir_RES.csv", null, 3);
+        final IProducer<String> producer3 = new ThreeCsvProducer("/home/zongo/Documents/ConcordiaLabs/Workspace/Tools4Cities-Middleware/DonneesMTL_Short.csv", null, 3);
 
         final Set<IProducer<String>> producers = new HashSet<>();
         producers.add(producer1);
@@ -22,7 +22,7 @@ public class TestThreeCsvSum {
         producers.add(producer3);
 
         // Create the consumer
-        final EnergyConsumptionConsumer consumer = new EnergyConsumptionConsumer(producers);
+        final ThreeCsvSumConsumer consumer = new ThreeCsvSumConsumer(producers);
 
         // Trigger data fetch
         try {
@@ -33,9 +33,11 @@ public class TestThreeCsvSum {
             e.printStackTrace();
         }
 
+        // Testing with the actual expected sum for data extracted from the 4th line of the 4th column of each csv file
         Double expectedSum = 668.0; 
         
         Assertions.assertEquals(expectedSum, consumer.getSum());
+        //System.out.print(consumer.getSum());
         
     }    
     
