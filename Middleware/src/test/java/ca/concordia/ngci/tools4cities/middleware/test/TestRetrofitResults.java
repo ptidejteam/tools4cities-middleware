@@ -7,6 +7,9 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
+
+import org.junit.Ignore;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -20,8 +23,13 @@ import ca.concordia.ngci.tools4cities.middleware.consumers.RetrofitResultsConsum
 import ca.concordia.ngci.tools4cities.middleware.middleware.IProducer;
 import ca.concordia.ngci.tools4cities.middleware.middleware.RequestOptions;
 
-// This test shows how would you connect to the Hub API and fetch data from it via middleware
-// IMPORTANT: in order for this test to pass, you must inform valid Hub API credentials in an env.json file.
+/**
+ * This test shows how would you connect to the Hub API and fetch data from it via middleware.
+ * IMPORTANT: in order for this test to run and pass, you MUST:
+ * 1. Inform valid Hub API credentials in an env.json file
+ * 2. Remove the @Disabled annotation
+ */
+@Disabled 
 public class TestRetrofitResults {
 
 	ArrayList<JsonObject> credentials = null;
