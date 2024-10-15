@@ -7,12 +7,12 @@ import ca.concordia.ngci.tools4cities.middleware.middleware.IConsumer;
 import ca.concordia.ngci.tools4cities.middleware.middleware.IProducer;
 
 
-public class EnergyConsumptionConsumer extends AbstractConsumer<String> implements IConsumer<String> {
+public class PeriodEnergyConsumptionConsumer extends AbstractConsumer<String> implements IConsumer<String> {
 	
 	private List<String> results;
     private Map<String, Map<Integer, Double>> postalCodeEnergyConsumption; // To store postal codes and their total consumption per month
 
-    public EnergyConsumptionConsumer(Set<IProducer<String>> setOfProducers) {
+    public PeriodEnergyConsumptionConsumer(Set<IProducer<String>> setOfProducers) {
         super(setOfProducers);
         postalCodeEnergyConsumption = new HashMap<>();
     }
