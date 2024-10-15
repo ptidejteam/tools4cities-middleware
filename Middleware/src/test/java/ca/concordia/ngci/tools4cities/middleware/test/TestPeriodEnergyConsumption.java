@@ -14,7 +14,7 @@ public class TestPeriodEnergyConsumption {
 	@Test
     public void testEnergyConsumptionForGivenMonths() {
 		// Create producer to read energy consumption data for January (third column, index 2) and March (fifth column, index 4)
-	    final IProducer<String> producer = new EnergyConsumptionProducer(
+	    final IProducer<String> producer = new PeriodEnergyConsumptionProducer(
 	        "./src/test/data/PeriodEnergyConsumptionData.csv", 
 	        null, // Optional config, can remain null
 	        1,    // Index for January (third column)
@@ -27,7 +27,7 @@ public class TestPeriodEnergyConsumption {
 	    producers.add(producer);
 
 	    // Create the consumer
-	    final EnergyConsumptionConsumer consumer = new EnergyConsumptionConsumer(producers);
+	    final PeriodEnergyConsumptionConsumer consumer = new PeriodEnergyConsumptionConsumer(producers);
 
 	    // Trigger data fetch
 	    try {
