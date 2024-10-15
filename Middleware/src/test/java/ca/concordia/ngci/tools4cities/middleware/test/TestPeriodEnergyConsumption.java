@@ -9,7 +9,7 @@ import ca.concordia.ngci.tools4cities.middleware.consumers.EnergyConsumptionCons
 import ca.concordia.ngci.tools4cities.middleware.middleware.IProducer;
 
 
-public class TestEnergyConsumption {
+public class TestPeriodEnergyConsumption {
 
 	@Test
     public void testEnergyConsumptionForGivenMonths() {
