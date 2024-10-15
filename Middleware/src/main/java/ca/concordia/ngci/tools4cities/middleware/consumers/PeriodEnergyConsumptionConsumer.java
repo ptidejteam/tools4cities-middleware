@@ -35,10 +35,6 @@ public class PeriodEnergyConsumptionConsumer extends AbstractConsumer<String> im
                 String postalCode = parts[0].trim();
                 int month = Integer.parseInt(parts[1].trim()); // Extract month as an integer (1 for January, 3 for March)
                 Double consumption = Double.parseDouble(parts[2].trim()); // Extract consumption
-                
-             // Debugging: Print the values being processed
-                System.out.println("Processing: PostalCode=" + postalCode + ", Month=" + month + ", Consumption=" + consumption);
-
 
                 // Always initialize, got a Nullpointer error because of missing initialization
                 if (postalCodeEnergyConsumption == null) {
@@ -49,10 +45,6 @@ public class PeriodEnergyConsumptionConsumer extends AbstractConsumer<String> im
                     postalCodeEnergyConsumption
                         .computeIfAbsent(postalCode, k -> new HashMap<>())
                         .merge(month, consumption, Double::sum);
-                    
-                 // Debugging: Print the current sum after merging
-                    System.out.println("Updated sum for PostalCode=" + postalCode + ", Month=" + month + ": " 
-                        + postalCodeEnergyConsumption.get(postalCode).get(month));
                 }
             } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
                 System.err.println("Invalid input format: " + entry);
