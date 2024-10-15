@@ -8,19 +8,19 @@ import ca.concordia.ngci.tools4cities.middleware.middleware.AbstractProducer;
 import ca.concordia.ngci.tools4cities.middleware.middleware.IProducer;
 import ca.concordia.ngci.tools4cities.middleware.middleware.RequestOptions;
 
-public class EnergyConsumptionProducer extends AbstractProducer<String> implements IProducer<String> {
+public class PeriodEnergyConsumptionProducer extends AbstractProducer<String> implements IProducer<String> {
 
 	    private final int startMonthIndex;  // For example, 1 for January (1-based index)
 	    private final int endMonthIndex;    // For example, 3 for March (1-based index)
 
-	    public EnergyConsumptionProducer(String filePath, RequestOptions fileOptions, int startMonthIndex, int endMonthIndex) {
+	    public PeriodEnergyConsumptionProducer(String filePath, RequestOptions fileOptions, int startMonthIndex, int endMonthIndex) {
 	        this.filePath = filePath;
 	        this.fileOptions = fileOptions;
 	        this.startMonthIndex = startMonthIndex;
 	        this.endMonthIndex = endMonthIndex;
 	    }
 	    
-	    public EnergyConsumptionProducer(String filePath, int startMonthIndex, int endMonthIndex) {
+	    public PeriodEnergyConsumptionProducer(String filePath, int startMonthIndex, int endMonthIndex) {
 	        this(filePath, null, startMonthIndex, endMonthIndex);
 	    }
 
