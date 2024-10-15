@@ -4,8 +4,8 @@ import java.util.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import ca.concordia.ngci.tools4cities.middleware.producers.EnergyConsumptionProducer;
-import ca.concordia.ngci.tools4cities.middleware.consumers.EnergyConsumptionConsumer;
+import ca.concordia.ngci.tools4cities.middleware.producers.PeriodEnergyConsumptionProducer;
+import ca.concordia.ngci.tools4cities.middleware.consumers.PeriodEnergyConsumptionConsumer;
 import ca.concordia.ngci.tools4cities.middleware.middleware.IProducer;
 
 
