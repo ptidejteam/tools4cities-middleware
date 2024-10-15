@@ -26,17 +26,13 @@ public class PeriodEnergyConsumptionProducer extends AbstractProducer<String> im
 
 	    @Override
 	    public void fetchData() throws Exception {
-	        // For debugging purposes
-	    	System.out.println("Fetching energy consumption data from: " + filePath);
-
+	        
 	        try {
 	        	final String csvString = this.fetchFromPath();
 	        	System.out.println("Read CSV data: " + csvString);
 	            final List<String> csvLines = parseCsvManually(csvString);
 	            
 	            this.notifyObservers(csvLines); // To notify observers with the filtered data
-	            // Debug print to show the lines being sent
-	            System.out.println("Data fetched: " + csvLines);
 	            
 	        } catch (IOException e) {
 	            throw new RuntimeException("Error reading CSV file", e);
