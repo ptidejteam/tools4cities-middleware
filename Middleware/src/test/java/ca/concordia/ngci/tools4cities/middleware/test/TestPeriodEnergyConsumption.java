@@ -15,7 +15,7 @@ public class TestPeriodEnergyConsumption {
     public void testEnergyConsumptionForGivenMonths() {
 		// Create producer to read energy consumption data for January (third column, index 2) and March (fifth column, index 4)
 	    final IProducer<String> producer = new EnergyConsumptionProducer(
-	        "/home/zongo/Documents/ConcordiaLabs/City-Layer-Data/Conso_Moy_RTA_SCIAN_Energir_RES.csv", 
+	        "./src/test/data/PeriodEnergyConsumptionData.csv", 
 	        null, // Optional config, can remain null
 	        1,    // Index for January (third column)
 	        3     // Index for March (fifth column)
