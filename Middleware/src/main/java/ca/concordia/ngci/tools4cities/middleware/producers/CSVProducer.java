@@ -44,24 +44,3 @@ public class CSVProducer extends AbstractProducer<String> implements IProducer<S
         return new String(Files.readAllBytes(Paths.get(filePath)));
     }
 }
-/* private List<String> filePaths;
-
-public ThreeCsvProducer(List<String> filePaths, RequestOptions fileOptions) {
-    this.filePaths = filePaths;
-    this.fileOptions = fileOptions;
-}
-
-@Override
-public void fetchData() throws Exception {
-    List<String> allCSVLines = new ArrayList<>();
-    
-    for (String filePath : filePaths) {
-        // Read the entire file as a single string
-        String csvContent = new String(Files.readAllBytes(Paths.get(filePath)));
-        allCSVLines.add(csvContent);
-    }
-
-    // Notify consumers with all CSV data combined
-    this.notifyObservers(allCSVLines);
-}
-*/
