@@ -46,14 +46,14 @@ public class TestPeriodEnergyConsumption {
 	    expectedValuesMarch.put(3, 11286.0); // Expected value for March (index 4)
 
 	    // Assert for January
-	    Double actualJanuarySum = actualConsumption.get("G2A") != null ? actualConsumption.get("G2A").get(1) : null;
+	    Double actualJanuarySum = actualConsumption.get("H1A") != null ? actualConsumption.get("H1A").get(1) : null;
 	    Assertions.assertEquals(expectedValuesJanuary.get(1), actualJanuarySum, 
 	        String.format("Assertion failed for G2A in January: expected %f but was %f", expectedValuesJanuary.get(1), actualJanuarySum));
 
 	    // Assert for March
-	    Double actualMarchSum = actualConsumption.get("G2A") != null ? actualConsumption.get("G2A").get(3) : null;
+	    Double actualMarchSum = actualConsumption.get("H1A") != null ? actualConsumption.get("H1A").get(3) : null;
 	    Assertions.assertEquals(expectedValuesMarch.get(3), actualMarchSum, 
-	        String.format("Assertion failed for G2A in March: expected %f but was %f", expectedValuesMarch.get(3), actualMarchSum));
+	        String.format("Assertion failed for H1A in March: expected %f but was %f", expectedValuesMarch.get(3), actualMarchSum));
 
 	    // Print actual consumption for verification
 	    System.out.println("Actual Energy Consumption per Postal Code: " + actualConsumption);
