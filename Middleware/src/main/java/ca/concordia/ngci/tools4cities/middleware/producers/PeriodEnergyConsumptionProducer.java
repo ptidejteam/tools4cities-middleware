@@ -49,7 +49,7 @@ public class PeriodEnergyConsumptionProducer extends AbstractProducer<String> im
 		        String[] values = lines[i].split(",");
 		        String postalCode = values[1];
 
-		        if (postalCode.equals("G2A")) {
+		        if (postalCode.equals("H1A")) {
 		            // Get January's consumption
 		            if (values.length > 4) { // Ensure there are enough columns to be able to fetch data from the third column of my file
 		                double januaryConsumption = Double.parseDouble(values[4].trim());
