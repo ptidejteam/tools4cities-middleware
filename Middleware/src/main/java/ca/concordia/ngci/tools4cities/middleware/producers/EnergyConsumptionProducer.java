@@ -8,18 +8,18 @@ import ca.concordia.ngci.tools4cities.middleware.middleware.AbstractProducer;
 import ca.concordia.ngci.tools4cities.middleware.middleware.IProducer;
 import ca.concordia.ngci.tools4cities.middleware.middleware.RequestOptions;
 
-public class ThreeCsvProducer extends AbstractProducer<String> implements IProducer<String> {
+public class EnergyConsumptionProducer extends AbstractProducer<String> implements IProducer<String> {
 
 	private final int columnIndex;
     //private boolean fileProcessed = false;	I added it for debugging purposes
 
-    public ThreeCsvProducer(String filePath, RequestOptions fileOptions, int columnIndex) {
+    public EnergyConsumptionProducer(String filePath, RequestOptions fileOptions, int columnIndex) {
         this.filePath = filePath;
         this.fileOptions = fileOptions;
         this.columnIndex = columnIndex;
     }
 
-    public ThreeCsvProducer(String filePath, int columnIndex) {
+    public EnergyConsumptionProducer(String filePath, int columnIndex) {
     	this(filePath, null, columnIndex);
     }
 
