@@ -10,11 +10,11 @@ import ca.concordia.ngci.tools4cities.middleware.middleware.IProducer;
 public class TestEnergyConsumption {
 
     @Test
-    public void testThreeCsvSum() {
+    public void TestEnergyConsumption() {
         // Create producers for three CSV files, each extracting values from the 4th column
-        final IProducer<String> producer1 = new ThreeCsvProducer("/home/zongo/Documents/ConcordiaLabs/Workspace/Tools4Cities-Middleware/Conso_Moy_RTA_SCIAN_CI.csv", null, 3);
-        final IProducer<String> producer2 = new ThreeCsvProducer("/home/zongo/Documents/ConcordiaLabs/Workspace/Tools4Cities-Middleware/Conso_Moy_RTA_SCIAN_Energir_RES.csv", null, 3);
-        final IProducer<String> producer3 = new ThreeCsvProducer("/home/zongo/Documents/ConcordiaLabs/Workspace/Tools4Cities-Middleware/DonneesMTL_Short.csv", null, 3);
+        final IProducer<String> producer1 = new EnergyConsumptionProducer(".src/test/data/Mock_data_1.csv", null, 3);
+        final IProducer<String> producer2 = new EnergyConsumptionProducer(".src/test/data/Mock_data_2.csv", null, 3);
+        final IProducer<String> producer3 = new EnergyConsumptionProducer(".src/test/data/Mock_data_3.csv", null, 3);
 
         final Set<IProducer<String>> producers = new HashSet<>();
         producers.add(producer1);
