@@ -41,7 +41,7 @@ public class PeriodEnergyConsumptionConsumer extends AbstractConsumer<String> im
                     postalCodeEnergyConsumption = new HashMap<>();
                 }
                 // Only consider postal code H1B for months January (1) and March (3)
-                if ("G2A".equals(postalCode) && (month == 1 || month == 3)) {
+                if ("H1A".equals(postalCode) && (month == 1 || month == 3)) {
                     postalCodeEnergyConsumption
                         .computeIfAbsent(postalCode, k -> new HashMap<>())
                         .merge(month, consumption, Double::sum);
