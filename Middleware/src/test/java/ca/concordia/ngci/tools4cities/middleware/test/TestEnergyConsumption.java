@@ -22,7 +22,7 @@ public class TestEnergyConsumption {
         producers.add(producer3);
 
         // Create the consumer
-        final ThreeCsvSumConsumer consumer = new ThreeCsvSumConsumer(producers);
+        final EnergyConsumptionConsumer consumer = new EnergyConsumptionConsumer(producers);
 
         // Trigger data fetch
         try {
@@ -34,10 +34,9 @@ public class TestEnergyConsumption {
         }
 
         // Testing with the actual expected sum for data extracted from the 4th line of the 4th column of each csv file
-        Double expectedSum = 668.0; 
+       // Double expectedSum = 668.0; 
         
         Assertions.assertEquals(expectedSum, consumer.getSum());
-        //System.out.print(consumer.getSum());
         
     }    
     
