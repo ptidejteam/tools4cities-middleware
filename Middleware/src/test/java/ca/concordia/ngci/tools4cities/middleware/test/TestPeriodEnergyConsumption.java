@@ -48,7 +48,7 @@ public class TestPeriodEnergyConsumption {
 	    // Assert for January
 	    Double actualJanuarySum = actualConsumption.get("H1A") != null ? actualConsumption.get("H1A").get(1) : null;
 	    Assertions.assertEquals(expectedValuesJanuary.get(1), actualJanuarySum, 
-	        String.format("Assertion failed for G2A in January: expected %f but was %f", expectedValuesJanuary.get(1), actualJanuarySum));
+	        String.format("Assertion failed for H1A in January: expected %f but was %f", expectedValuesJanuary.get(1), actualJanuarySum));
 
 	    // Assert for March
 	    Double actualMarchSum = actualConsumption.get("H1A") != null ? actualConsumption.get("H1A").get(3) : null;
