@@ -3,11 +3,11 @@ package ca.concordia.ngci.tools4cities.middleware.test;
 import java.util.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import ca.concordia.ngci.tools4cities.middleware.producers.ThreeCsvProducer;
-import ca.concordia.ngci.tools4cities.middleware.consumers.ThreeCsvSumConsumer;
+import ca.concordia.ngci.tools4cities.middleware.producers.EnergyConsumptionProducer;
+import ca.concordia.ngci.tools4cities.middleware.consumers.EnergyConsumptionConsumer;
 import ca.concordia.ngci.tools4cities.middleware.middleware.IProducer;
 
-public class TestThreeCsvSum {
+public class TestEnergyConsumption {
 
     @Test
     public void testThreeCsvSum() {
