@@ -52,13 +52,13 @@ public class PeriodEnergyConsumptionProducer extends AbstractProducer<String> im
 		        if (postalCode.equals("H1A")) {
 		            // Get January's consumption
 		            if (values.length > 4) { // Ensure there are enough columns to be able to fetch data from the third column of my file
-		                double januaryConsumption = Double.parseDouble(values[4].trim());
+		                double januaryConsumption = Double.parseDouble(values[2].trim());
 		                filteredValues.add(postalCode + ":1:" + januaryConsumption); // Use "1" for January
 		            }
 
 		            // Get March's consumption
 		            if (values.length > 6) { // Ensure there are enough columns to be able to fetch data from the fifth column of my file
-		                double marchConsumption = Double.parseDouble(values[6].trim());
+		                double marchConsumption = Double.parseDouble(values[4].trim());
 		                filteredValues.add(postalCode + ":3:" + marchConsumption); // Use "3" for March
 		            }
 		        }
