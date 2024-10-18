@@ -79,7 +79,7 @@ public class TestCSVJSON {
 		String url = "https://www.donneesquebec.ca/recherche/api/3/action/datastore_search";
 		String queryString = "?resource_id=05deae93-d9fc-4acb-9779-e0942b5e962f&limit=" + limitRecordCount;
 
-		// produce road collision data from Donées Québec
+		// produce road collision data from Données Québec
 		final IProducer<JsonObject> producer = new JSONProducer(url + queryString, requestOptions);
 		final Set<IProducer<JsonObject>> producers = new HashSet<IProducer<JsonObject>>();
 		producers.add(producer);

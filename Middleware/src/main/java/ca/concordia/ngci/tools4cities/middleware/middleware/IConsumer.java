@@ -7,6 +7,5 @@ public interface IConsumer<E> {
 	void newDataAvailable(List<E> data);
 	
 	List<E> getResults();
-
-
+		
 }
