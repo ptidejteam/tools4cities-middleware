@@ -47,7 +47,7 @@ public class PeriodEnergyConsumptionProducer extends AbstractProducer<String> im
 
 		    for (int i = 1; i < lines.length; i++) {
 		        String[] values = lines[i].split(",");
-		        String postalCode = values[1];
+		        String postalCode = values[0];
 
 		        if (postalCode.equals("H1A")) {
 		            // Get January's consumption
