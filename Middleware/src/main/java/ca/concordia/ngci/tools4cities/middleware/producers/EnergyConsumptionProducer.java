@@ -27,7 +27,7 @@ public class EnergyConsumptionProducer extends AbstractProducer<String> implemen
         System.out.println("Fetching data from: " + filePath);
 
         try {
-            final String csvString = this.fetchFromPath();
+            final String csvString = new String(this.fetchFromPath());
             final List<String> csvLines = parseCsvManually(csvString);
             this.notifyObservers(csvLines);
         } catch (IOException e) {
