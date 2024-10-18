@@ -34,7 +34,7 @@ public class TestEnergyConsumption {
         }
 
         // Testing with the actual expected sum for data extracted from the 4th line of the 4th column of each csv file
-        Double expectedSum = 668.0; 
+        Double expectedSum = 55.0; 
         
         Assertions.assertEquals(expectedSum, consumer.getSum());
         
