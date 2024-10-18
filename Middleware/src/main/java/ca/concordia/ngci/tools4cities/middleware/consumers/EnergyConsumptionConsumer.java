@@ -9,7 +9,7 @@ import ca.concordia.ngci.tools4cities.middleware.middleware.IProducer;
 public class EnergyConsumptionConsumer extends AbstractConsumer<String> implements IConsumer<String> {
 
 	private List<String> results;
-    private Double sum;
+    private double sum;
 
     public EnergyConsumptionConsumer(Set<IProducer<String>> setOfProducers) {
         super(setOfProducers);

@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.junit.Ignore;
+
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -40,8 +40,7 @@ public class TestRetrofitResults {
 		JsonObject jsonEnv = null;
 		Path path = Paths.get("env.json").toAbsolutePath();
 		
-		// load CityLayers env.json file from the project root
-		// it contains credentials to the hub api
+		// load CityLayers env.json file from the project root, it contains credentials to the Hub API
 		try {
 			String envVariables = new String(Files.readAllBytes(path));
 			final JsonElement jsonElement = JsonParser.parseString(envVariables);
@@ -87,7 +86,7 @@ public class TestRetrofitResults {
 			thread1.start();
 			thread1.join();
 
-			// Debugging if credentials is properly populated
+			// add token and session id returned from session opening
 			if (this.credentials != null && !this.credentials.isEmpty()) {
 			    JsonObject startResponseHeaders = this.credentials.get(0);
 			    retrofitOptions.addToHeaders("token", startResponseHeaders.get("token").getAsString());
@@ -96,12 +95,6 @@ public class TestRetrofitResults {
 			} else {
 			    System.out.println("Error: credentials is null or empty");
 			}
-			
-			// add token and session id returned from session opening
-		/*	JsonObject startResponseHeaders = this.credentials.get(0);
-			retrofitOptions.addToHeaders("token", startResponseHeaders.get("token").getAsString());
-			retrofitOptions.addToHeaders("session-id", startResponseHeaders.get("session_id").getAsString());
-			System.out.println(startResponseHeaders.get("token").getAsString());  */
 
 			final IProducer<JsonObject> producer = new JSONProducer(retrofitURL, retrofitOptions);
 			final Set<IProducer<JsonObject>> producers = new HashSet<IProducer<JsonObject>>();
