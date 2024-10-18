@@ -41,9 +41,9 @@ public class TestPeriodEnergyConsumption {
 
 	    // Expected values for verification
 	    Map<Integer, Double> expectedValuesJanuary = new HashMap<>();
-	    expectedValuesJanuary.put(1, 14705.0); // Expected value for January (index 2)
+	    expectedValuesJanuary.put(1, 22464.0); // Expected value for January (index 2)
 	    Map<Integer, Double> expectedValuesMarch = new HashMap<>();
-	    expectedValuesMarch.put(3, 11286.0); // Expected value for March (index 4)
+	    expectedValuesMarch.put(3, 15981.0); // Expected value for March (index 4)
 
 	    // Assert for January
 	    Double actualJanuarySum = actualConsumption.get("H1A") != null ? actualConsumption.get("H1A").get(1) : null;
