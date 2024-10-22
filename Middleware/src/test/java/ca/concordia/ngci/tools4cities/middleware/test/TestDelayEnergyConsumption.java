@@ -11,7 +11,6 @@ public class TestDelayEnergyConsumption {
 
     @Test
     public void testDelayEnergyConsumption() throws Exception {
-        // Create producers for three CSV files, each extracting values from the 4th column
         final IProducer<String> producer1 = new DelayEnergyConsumptionProducer("./src/test/data/Mock_data_1.csv", null, 3);
         final IProducer<String> producer2 = new DelayEnergyConsumptionProducer("./src/test/data/Mock_data_2.csv", null, 3);
         final IProducer<String> producer3 = new DelayEnergyConsumptionProducer("./src/test/data/Mock_data_3.csv", null, 3);
