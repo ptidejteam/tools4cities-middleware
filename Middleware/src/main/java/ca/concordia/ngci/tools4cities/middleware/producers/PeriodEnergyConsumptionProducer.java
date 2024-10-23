@@ -28,7 +28,7 @@ public class PeriodEnergyConsumptionProducer extends AbstractProducer<String> im
 	    public void fetchData() throws Exception {
 	        
 	        try {
-	        	final String csvString = this.fetchFromPath();
+	        	final String csvString = new String(this.fetchFromPath());
 	        	System.out.println("Read CSV data: " + csvString);
 	            final List<String> csvLines = parseCsvManually(csvString);
 	            

@@ -25,7 +25,7 @@ public class CSVProducer extends AbstractProducer<String> implements IProducer<S
 	@Override
 	public void fetchData() throws Exception {
 		try {
-			final String csvString = this.fetchFromPath();
+			final String csvString = new String(this.fetchFromPath());
 			
 			// split CSV string by line, add lines to the list
 			final List<String> csvLines = new ArrayList<String>();
@@ -39,8 +39,8 @@ public class CSVProducer extends AbstractProducer<String> implements IProducer<S
 	}
 	
 	@Override
-    protected String fetchFromPath() throws Exception {
+    protected byte[] fetchFromPath() throws Exception {
         // Read the content of the file into a string
-        return new String(Files.readAllBytes(Paths.get(filePath)));
+        return Files.readAllBytes(Paths.get(filePath));
     }
 }

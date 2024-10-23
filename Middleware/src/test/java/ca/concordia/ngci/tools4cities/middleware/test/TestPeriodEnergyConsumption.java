@@ -20,8 +20,6 @@ public class TestPeriodEnergyConsumption {
 	        1,    // Index for January (third column)
 	        3     // Index for March (fifth column)
 	    );
-
-	    //IOp o=new Colu,nSelector(producer, 1)
 	    
 	    final Set<IProducer<String>> producers = new HashSet<>();
 	    producers.add(producer);
