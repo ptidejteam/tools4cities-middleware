@@ -39,7 +39,7 @@ public class DelayEnergyConsumptionProducer extends AbstractProducer<String> imp
 
 
         try {
-            final String csvString = this.fetchFromPath(); // Fetch the CSV data as a string
+            final String csvString = new String(this.fetchFromPath()); // Fetch the CSV data as a string
             if (csvString == null || csvString.isEmpty()) {
                 System.err.println("Fetched CSV data is null or empty.");
                 return; // Early return if the CSV string is null or empty
