@@ -85,7 +85,7 @@ public class DelayEnergyConsumptionProducer extends AbstractProducer<String> imp
             }
         }
 
-        return columnValues; // Return the string representation of the column values from the 4th line
+        return columnValues; // Return the string representation of the column values from the 3rd line
     }
     
     public long getFetchTime() {
