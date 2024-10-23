@@ -7,12 +7,12 @@ import ca.concordia.ngci.tools4cities.middleware.middleware.IConsumer;
 import ca.concordia.ngci.tools4cities.middleware.middleware.IProducer;
 
 
-public class EnergyConsumptionConsumer extends AbstractConsumer<String> implements IConsumer<String> {
+public class PeriodEnergyConsumptionConsumer extends AbstractConsumer<String> implements IConsumer<String> {
 	
 	private List<String> results;
     private Map<String, Map<Integer, Double>> postalCodeEnergyConsumption; // To store postal codes and their total consumption per month
 
-    public EnergyConsumptionConsumer(Set<IProducer<String>> setOfProducers) {
+    public PeriodEnergyConsumptionConsumer(Set<IProducer<String>> setOfProducers) {
         super(setOfProducers);
         postalCodeEnergyConsumption = new HashMap<>();
     }
@@ -35,24 +35,16 @@ public class EnergyConsumptionConsumer extends AbstractConsumer<String> implemen
                 String postalCode = parts[0].trim();
                 int month = Integer.parseInt(parts[1].trim()); // Extract month as an integer (1 for January, 3 for March)
                 Double consumption = Double.parseDouble(parts[2].trim()); // Extract consumption
-                
-             // Debugging: Print the values being processed
-                System.out.println("Processing: PostalCode=" + postalCode + ", Month=" + month + ", Consumption=" + consumption);
-
 
                 // Always initialize, got a Nullpointer error because of missing initialization
                 if (postalCodeEnergyConsumption == null) {
                     postalCodeEnergyConsumption = new HashMap<>();
                 }
                 // Only consider postal code H1B for months January (1) and March (3)
-                if ("G2A".equals(postalCode) && (month == 1 || month == 3)) {
+                if ("H1A".equals(postalCode) && (month == 1 || month == 3)) {
                     postalCodeEnergyConsumption
                         .computeIfAbsent(postalCode, k -> new HashMap<>())
                         .merge(month, consumption, Double::sum);
-                    
-                 // Debugging: Print the current sum after merging
-                    System.out.println("Updated sum for PostalCode=" + postalCode + ", Month=" + month + ": " 
-                        + postalCodeEnergyConsumption.get(postalCode).get(month));
                 }
             } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
                 System.err.println("Invalid input format: " + entry);

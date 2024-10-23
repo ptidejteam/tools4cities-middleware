@@ -9,8 +9,5 @@ public interface IProducer<E> {
 	void addObserver(final IConsumer<E> aConsumer);
 	
 	void notifyObservers(final List<E> results);
-	
-	// I defined this method because I use it for my local csv file
-	//List<E> getData(); 
 
 }
