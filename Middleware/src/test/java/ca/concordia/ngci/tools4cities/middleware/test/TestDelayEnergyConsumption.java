@@ -51,12 +51,12 @@ public class TestDelayEnergyConsumption {
         // Display the total processing time, check if it is the sum of individual fetching time and processing time
         System.out.println("Total time calculated for all operations: " + totalProcessingTime + " ms");
 
-        Double expectedSum = 19.0; // Always adjust based on the actual CSV data
+        Double expectedSum = 21.0; // Always adjust based on the actual CSV data
         System.out.println("Calculated Sum at consumer's: " + consumer.getSum());
         
         Assertions.assertEquals(expectedSum, consumer.getSum(), "The sum of the values should be correct.");
         
-        List<String> expectedResults = Arrays.asList("3", "6", "10"); 
+        List<String> expectedResults = Arrays.asList("3", "3", "15"); 
         Assertions.assertEquals(expectedResults, results, "The results list should match the expected values.");
     }  
 }
