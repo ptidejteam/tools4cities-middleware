@@ -23,7 +23,7 @@ public class JSONProducer extends AbstractProducer<JsonObject> implements IProdu
 	public void fetchData() throws Exception {
 		try {
 			final List<JsonObject> jsonObjects = new ArrayList<JsonObject>();
-			String jsonString = this.fetchFromPath();
+			String jsonString = new String(this.fetchFromPath());
 			
 			// convert JSON string to object
 			final JsonElement jsonElement = JsonParser.parseString(jsonString);

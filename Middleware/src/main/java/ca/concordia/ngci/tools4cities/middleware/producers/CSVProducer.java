@@ -1,5 +1,8 @@
 package ca.concordia.ngci.tools4cities.middleware.producers;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -17,14 +20,27 @@ public class CSVProducer extends AbstractProducer<String> implements IProducer<S
 		this.fileOptions = fileOptions;
 	}
 
+	// I added the error handling to ensure I actually read my local file
+	
 	@Override
 	public void fetchData() throws Exception {
-		final String csvString = this.fetchFromPath();
+		try {
+			final String csvString = new String(this.fetchFromPath());
+			
+			// split CSV string by line, add lines to the list
+			final List<String> csvLines = new ArrayList<String>();
+			csvLines.addAll(Arrays.asList(csvString.split(System.lineSeparator())));
+			
+			this.notifyObservers(csvLines);
+		} catch (IOException e) {
+			throw new RuntimeException("Error reading CSV file", e);
+		}
 		
-		// split CSV string by line, add lines to the list
-		final List<String> csvLines = new ArrayList<String>();
-		csvLines.addAll(Arrays.asList(csvString.split(System.lineSeparator())));
-		
-		this.notifyObservers(csvLines);
 	}
+	
+	@Override
+    protected byte[] fetchFromPath() throws Exception {
+        // Read the content of the file into a string
+        return Files.readAllBytes(Paths.get(filePath));
+    }
 }
