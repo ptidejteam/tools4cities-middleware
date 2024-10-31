@@ -49,7 +49,7 @@ public abstract class AbstractProducer<E> implements IProducer<E> {
 	/**
 	 * Fetch file via HTTP or filesystem depending on whether it is a path or URL
 	 */
-	protected String fetchFromPath() throws Exception {
+	protected byte[] fetchFromPath() throws Exception {
 		if (this.filePath.startsWith("http")) {
 			return this.doHTTPRequest();
 		}
@@ -59,7 +59,7 @@ public abstract class AbstractProducer<E> implements IProducer<E> {
 	/**
 	 * Fetch file via HTTP GET or POST
 	 */
-	protected String doHTTPRequest() throws Exception {
+	protected byte[] doHTTPRequest() throws Exception {
 		HttpRequest request;
 		BodyPublisher requestBody;
 		URI endpointURI = new URI(this.filePath);
@@ -70,7 +70,7 @@ public abstract class AbstractProducer<E> implements IProducer<E> {
 		// for now, I kept support to PUT and POST because they are needed for Hub API auth
 		switch (this.fileOptions.method) {
 		case "HEAD":
-			requestBuilder.HEAD();
+			
 			break;
 		case "GET":
 			requestBuilder.GET();
@@ -101,17 +101,19 @@ public abstract class AbstractProducer<E> implements IProducer<E> {
 		
 		if (this.fileOptions.returnHeaders) {
 			Gson gson = new Gson();
-			return gson.toJson(response.headers().map());
+			return gson.toJson(response.headers().map()).getBytes();
 		}
-		return response.body();
+		return response.body().getBytes();
 	}
 
 	/**
 	 * Fetch file from filesystem
 	 */
-	protected String readFile() throws Exception {
+	protected byte[] readFile() throws Exception {
 		Path path = Paths.get(this.filePath);
-		return new String(Files.readAllBytes(path));
+		return Files.readAllBytes(path);
 	}
+	
+	
 
 }
