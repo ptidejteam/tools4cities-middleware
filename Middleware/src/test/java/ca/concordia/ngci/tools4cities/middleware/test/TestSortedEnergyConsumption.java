@@ -13,7 +13,7 @@ public class TestSortedEnergyConsumption {
     public void testMonthlyEnergyConsumptionSorting() {
         // Create a producer to read energy consumption data from the CSV file
         final IProducer<String> producer = new CSVProducer(
-            "/home/zongo/Documents/ConcordiaLabs/City-Layer-Data/H1A_Monthly_Consumption.csv", 
+            "./src/test/data/H1A_Monthly_Consumption.csv", 
             null // Optional config
         );
         
