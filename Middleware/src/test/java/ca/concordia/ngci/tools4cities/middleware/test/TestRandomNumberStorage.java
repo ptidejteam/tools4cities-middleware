@@ -29,7 +29,7 @@ public class TestRandomNumberStorage {
 
     @Test
     public void case1s1() {
-        System.out.println("Case 1 - Scenario 1: Launch the producer first, then the consumer");
+        System.out.println("Scenario 1: Collect data as it is generated for a specified period of time");
 
         try {
             final int listSize = 10;
@@ -41,12 +41,10 @@ public class TestRandomNumberStorage {
             // Starting producer and then waiting for data to be generated
             Thread.sleep(2000);
 
-            // Start the consumer
             final IntegerConsumer consumer = new IntegerConsumer(producers);
             List<Integer> randomNumbers = consumer.getResults();
             Assertions.assertNotEquals(0, randomNumbers.size());
 
-            // Save results to CSV
             saveToCsv(randomNumbers, "./src/test/data/file1.csv");
 
         } catch (InterruptedException ex) {
@@ -56,7 +54,7 @@ public class TestRandomNumberStorage {
 
     @Test
     public void case1s2() {
-        System.out.println("Case 1 - Scenario 2: Launch the producer and the Consumer simultaneously");
+        System.out.println("Scenario 2: Collect data after a specified period of time");
 
         final int listSize = 10;
         final int generationDelay = 2000;
@@ -64,12 +62,10 @@ public class TestRandomNumberStorage {
         final Set<IProducer<Integer>> producers = new HashSet<>();
         producers.add(producer);
 
-        // Start the consumer
         final IntegerConsumer consumer = new IntegerConsumer(producers);
         List<Integer> randomNumbers = consumer.getResults();
         Assertions.assertNotEquals(0, randomNumbers.size());
-
-        // Save results to CSV
+        
         saveToCsv(randomNumbers, "./src/test/data/file2.csv");
     }
 }
