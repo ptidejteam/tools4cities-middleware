@@ -47,7 +47,7 @@ public class TestRandomNumberStorage {
             Assertions.assertNotEquals(0, randomNumbers.size());
 
             // Save results to CSV
-            saveToCsv(randomNumbers, "/home/zongo/Downloads/file1.csv");
+            saveToCsv(randomNumbers, "./src/test/data/file1.csv");
 
         } catch (InterruptedException ex) {
             System.out.println(ex.getMessage());
@@ -70,6 +70,6 @@ public class TestRandomNumberStorage {
         Assertions.assertNotEquals(0, randomNumbers.size());
 
         // Save results to CSV
-        saveToCsv(randomNumbers, "/home/zongo/Downloads/file2.csv");
+        saveToCsv(randomNumbers, "./src/test/data/file2.csv");
     }
 }
