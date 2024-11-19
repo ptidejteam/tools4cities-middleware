@@ -23,7 +23,7 @@ public class TestSortedEnergyConsumption {
         final SortedEnergyConsumptionConsumer consumer = new SortedEnergyConsumptionConsumer(producers);
 
         try {
-            producer.fetchData(); // This will trigger newDataAvailable() in the consumer
+            producer.fetchData(); // This triggers newDataAvailable() in the consumer
         } catch (Exception e) {
             e.printStackTrace();
         }
