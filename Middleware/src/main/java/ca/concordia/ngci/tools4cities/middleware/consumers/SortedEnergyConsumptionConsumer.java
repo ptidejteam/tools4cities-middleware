@@ -25,7 +25,7 @@ public class SortedEnergyConsumptionConsumer extends AbstractConsumer<String> im
     public void newDataAvailable(List<String> data) {
     	if (data == null || data.isEmpty()) {
             System.err.println("Received null or empty data!");
-            return; // Exit early if data is null or empty
+            return;
         }
 
         // Process the incoming data
@@ -34,7 +34,7 @@ public class SortedEnergyConsumptionConsumer extends AbstractConsumer<String> im
 
     private void processData(List<String> data) {
     	// Skip header by starting from the second line if the first line is a header
-        boolean isHeader = data.get(0).contains("kWh"); // Adjust this if your header has different content
+        boolean isHeader = data.get(0).contains("kWh"); // Adjust this based on header content
         int startIndex = isHeader ? 1 : 0;
 
         for (int i = startIndex; i < data.size(); i++) {
@@ -50,12 +50,10 @@ public class SortedEnergyConsumptionConsumer extends AbstractConsumer<String> im
             String date = values[2];
             double kWh;
             
-            // Parse kWh value, with debugging for invalid entries
+            // Parse kWh value
             try {
-                //System.out.println("Parsing kWh value: " + values[3]); // Debug print
                 kWh = Double.parseDouble(values[3]);
             } catch (NumberFormatException e) {
-                System.err.println("Invalid KWh value: " + line);
                 continue;
             }
 
@@ -68,13 +66,13 @@ public class SortedEnergyConsumptionConsumer extends AbstractConsumer<String> im
     }
 
     public Map<Integer, Double> getMonthlyConsumption() {
-        return new HashMap<>(monthlyConsumption); // Return a copy of the monthly consumption map
+        return new HashMap<>(monthlyConsumption); 
     }
 
     public void printSortedMonthlyConsumption() {
         // Create a sorted list of the entries based on the monthly consumption
         List<Map.Entry<Integer, Double>> sortedEntries = new ArrayList<>(monthlyConsumption.entrySet());
-        sortedEntries.sort(Map.Entry.comparingByValue()); // Sort by kWh consumption
+        sortedEntries.sort(Map.Entry.comparingByValue()); 
 
         // Print the sorted monthly consumption
         System.out.println("Monthly KWh Consumption (sorted):");
