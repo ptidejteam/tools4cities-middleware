@@ -79,7 +79,18 @@ public class SortedEnergyConsumptionConsumer extends AbstractConsumer<String> im
     }
 
     public synchronized Map<Integer, Double> getMonthlyConsumption() {
-        return new HashMap<>(monthlyConsumption); // Return a copy of the monthly consumption map
+        ic synchronized Map<Integer, Double> getMonthlyConsumption() {
+    	if (monthlyConsumption == null) {
+            return Collections.emptyMap(); // Return an empty map if no data is available
+        }
+
+        // Sort the map by value (ascending)
+        return monthlyConsumption.entrySet()
+            .stream()
+            .sorted(Map.Entry.comparingByValue())
+            .collect(LinkedHashMap::new, 
+                     (map, entry) -> map.put(entry.getKey(), entry.getValue()), 
+                     Map::putAll);
     }
 
     public synchronized void printSortedMonthlyConsumption() {
