@@ -30,7 +30,7 @@ public class TestSortedEnergyConsumption {
             Assertions.fail("Fetching data failed due to an exception.");
         }
 
-        // Retrieve sorted monthly consumption
+        // Retrieve sorted monthly consumption from the consumer
         Map<Integer, Double> sortedConsumption = consumer.getMonthlyConsumption();
 
         // Validate sorting by values (ascending order)
