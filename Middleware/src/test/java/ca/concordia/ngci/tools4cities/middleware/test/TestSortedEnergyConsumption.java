@@ -20,6 +20,7 @@ public class TestSortedEnergyConsumption {
         final Set<IProducer<String>> producers = new HashSet<>();
         producers.add(producer);
 
+        // create the consumer
         final SortedEnergyConsumptionConsumer consumer = new SortedEnergyConsumptionConsumer(producers);
 
         try {
