@@ -14,7 +14,7 @@ public class SortedEnergyConsumptionConsumer extends AbstractConsumer<String> im
     public SortedEnergyConsumptionConsumer(Set<IProducer<String>> producers) {
         super(producers);
         this.results = new ArrayList<>();
-        this.monthlyConsumption = new HashMap<>();
+        this.monthlyConsumption = Collections.synchronizedMap(new HashMap<>());
     }
 
     @Override
@@ -24,18 +24,28 @@ public class SortedEnergyConsumptionConsumer extends AbstractConsumer<String> im
 
     @Override
     public void newDataAvailable(List<String> data) {
-    	if (data == null || data.isEmpty()) {
+        if (data == null || data.isEmpty()) {
             System.err.println("Received null or empty data!");
-            return;
+            return; // Exit early if data is null or empty
         }
 
         // Process the incoming data
         processData(data);
     }
 
+    private synchronized void updateMonthlyConsumption(int month, double kWh) {
+    	 // Initialize monthlyConsumption if it is null
+        if (monthlyConsumption == null) {
+            monthlyConsumption = Collections.synchronizedMap(new HashMap<>());
+        }
+
+        // Update the map safely
+        monthlyConsumption.put(month, monthlyConsumption.getOrDefault(month, 0.0) + kWh);
+    }
+
     private void processData(List<String> data) {
-    	// Skip header by starting from the second line if the first line is a header
-        boolean isHeader = data.get(0).contains("kWh"); // Adjust this based on header content
+        // Skip header by starting from the second line if the first line is a header
+        boolean isHeader = data.get(0).contains("kWh"); // Adjust this if your header has different content
         int startIndex = isHeader ? 1 : 0;
 
         for (int i = startIndex; i < data.size(); i++) {
@@ -50,30 +60,31 @@ public class SortedEnergyConsumptionConsumer extends AbstractConsumer<String> im
 
             String date = values[2];
             double kWh;
-            
-            // Parse kWh value
+
+            // Parse kWh value, with debugging for invalid entries
             try {
                 kWh = Double.parseDouble(values[3]);
             } catch (NumberFormatException e) {
+                System.err.println("Invalid KWh value: " + line);
                 continue;
             }
 
             // Extract the month from the date (assuming format YYYY-MM-DD)
             int month = Integer.parseInt(date.substring(5, 7));
 
-            // Sum the kWh values for each month
-            monthlyConsumption.put(month, monthlyConsumption.getOrDefault(month, 0.0) + kWh);
+            // Safely update the monthly consumption map
+            updateMonthlyConsumption(month, kWh);
         }
     }
 
-    public Map<Integer, Double> getMonthlyConsumption() {
-        return new HashMap<>(monthlyConsumption); 
+    public synchronized Map<Integer, Double> getMonthlyConsumption() {
+        return new HashMap<>(monthlyConsumption); // Return a copy of the monthly consumption map
     }
 
-    public void printSortedMonthlyConsumption() {
+    public synchronized void printSortedMonthlyConsumption() {
         // Create a sorted list of the entries based on the monthly consumption
         List<Map.Entry<Integer, Double>> sortedEntries = new ArrayList<>(monthlyConsumption.entrySet());
-        sortedEntries.sort(Map.Entry.comparingByValue()); 
+        sortedEntries.sort(Map.Entry.comparingByValue()); // Sort by kWh consumption
 
         // Print the sorted monthly consumption
         System.out.println("Monthly KWh Consumption (sorted):");
