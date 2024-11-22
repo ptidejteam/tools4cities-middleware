@@ -45,7 +45,7 @@ public class SortedEnergyConsumptionConsumer extends AbstractConsumer<String> im
 
     private void processData(List<String> data) {
         // Skip header by starting from the second line if the first line is a header
-        boolean isHeader = data.get(0).contains("kWh"); // Adjust this if your header has different content
+        boolean isHeader = data.get(0).contains("kWh"); // Adjust to the actual header's content
         int startIndex = isHeader ? 1 : 0;
 
         for (int i = startIndex; i < data.size(); i++) {
