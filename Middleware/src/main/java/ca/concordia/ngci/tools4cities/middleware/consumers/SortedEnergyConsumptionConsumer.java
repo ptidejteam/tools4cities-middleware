@@ -6,6 +6,7 @@ import ca.concordia.ngci.tools4cities.middleware.middleware.AbstractConsumer;
 import ca.concordia.ngci.tools4cities.middleware.middleware.IConsumer;
 import ca.concordia.ngci.tools4cities.middleware.middleware.IProducer;
 
+// This class computes the total energy consumption of a specified region in a city, collected for 4 months (january-April) and sorts these total consumption ascending
 public class SortedEnergyConsumptionConsumer extends AbstractConsumer<String> implements IConsumer<String> {
     private List<String> results;
     private Map<Integer, Double> monthlyConsumption;
