@@ -79,7 +79,6 @@ public class SortedEnergyConsumptionConsumer extends AbstractConsumer<String> im
     }
 
     public synchronized Map<Integer, Double> getMonthlyConsumption() {
-        ic synchronized Map<Integer, Double> getMonthlyConsumption() {
     	if (monthlyConsumption == null) {
             return Collections.emptyMap(); // Return an empty map if no data is available
         }
