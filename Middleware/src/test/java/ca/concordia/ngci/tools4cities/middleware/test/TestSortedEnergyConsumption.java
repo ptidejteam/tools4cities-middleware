@@ -27,17 +27,21 @@ public class TestSortedEnergyConsumption {
             producer.fetchData(); // This triggers newDataAvailable() in the consumer
         } catch (Exception e) {
             e.printStackTrace();
+            Assertions.fail("Fetching data failed due to an exception.");
         }
-        
-        consumer.printSortedMonthlyConsumption();
 
-        Map<Integer, Double> sortedConsumption = consumer.getMonthlyConsumption(); 
+        // Retrieve sorted monthly consumption
+        Map<Integer, Double> sortedConsumption = consumer.getMonthlyConsumption();
 
+        // Validate sorting by values (ascending order)
         List<Double> values = new ArrayList<>(sortedConsumption.values());
         for (int i = 1; i < values.size(); i++) {
             Assertions.assertTrue(values.get(i) >= values.get(i - 1), 
                 "Monthly consumption is not sorted in ascending order.");
         }
+
+        // Print sorted monthly consumption for manual verification
+        System.out.println("Sorted Monthly Consumption: " + sortedConsumption);
     }
 
 }
