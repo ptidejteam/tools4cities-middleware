@@ -1,0 +1,4 @@
+packaging==23.2
+pkg-about==1.1.5
+py4j==0.10.9.7
+tomli==2.0.1
