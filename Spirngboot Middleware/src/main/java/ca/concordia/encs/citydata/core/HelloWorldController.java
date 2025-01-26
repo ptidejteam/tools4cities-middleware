@@ -1,4 +1,4 @@
-package ca.concordia.encs.citydata.controllers;
+package ca.concordia.encs.citydata.core;
 
 
 import org.springframework.web.bind.annotation.GetMapping;
