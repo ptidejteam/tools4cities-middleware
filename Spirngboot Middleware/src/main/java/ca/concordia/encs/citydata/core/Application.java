@@ -5,12 +5,12 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import ca.concordia.encs.citydata.datastores.InMemoryDataStore;
 
-
 /**
  *
- * This is the Micronaut application entrypoint
+ * This is the Spring Boot application entry point
  * 
  */
+
 @SpringBootApplication
 public class Application {
 
