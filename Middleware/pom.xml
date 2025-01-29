@@ -8,7 +8,7 @@
 		<version>3.4.0</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.concordia</groupId>
+	<groupId>com.concordia.encs.citydata</groupId>
 	<artifactId>Middleware</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>Middleware</name>
