@@ -30,7 +30,8 @@ public class ProducerController {
 		try {
 			// Instantiate SequentialRunner using reflection
 			Class<?> sequentialRunnerClass = Class.forName("ca.concordia.encs.citydata.runners.SequentialRunner");
-			deckard = (SequentialRunner) sequentialRunnerClass.getDeclaredConstructor(JsonObject.class).newInstance(stepsObject);
+			deckard = (SequentialRunner) sequentialRunnerClass.getDeclaredConstructor(JsonObject.class)
+					.newInstance(stepsObject);
 
 			Thread runnerTask = getThread(deckard, sequentialRunnerClass, errorLog);
 			runnerTask.join();
@@ -89,7 +90,8 @@ public class ProducerController {
 
 		try {
 			Class<?> sequentialRunnerClass = Class.forName("ca.concordia.encs.citydata.runners.SequentialRunner");
-			aRunner = (SequentialRunner) sequentialRunnerClass.getDeclaredConstructor(JsonObject.class).newInstance(stepsObject);
+			aRunner = (SequentialRunner) sequentialRunnerClass.getDeclaredConstructor(JsonObject.class)
+					.newInstance(stepsObject);
 
 			Method runStepsMethod = sequentialRunnerClass.getDeclaredMethod("runSteps");
 			runStepsMethod.invoke(aRunner);
@@ -104,8 +106,8 @@ public class ProducerController {
 			String runnerId = (String) getMetadataMethod.invoke(aRunner, "id");
 
 			return "Hello! The runner " + runnerId
-					+ " is currently working on your request. Please make a GET request to /apply/async/"
-					+ runnerId + " to find out your request status.";
+					+ " is currently working on your request. Please make a GET request to /apply/async/" + runnerId
+					+ " to find out your request status.";
 		} catch (Exception e) {
 			e.printStackTrace();
 			return "Error: " + e.getMessage();
@@ -131,6 +133,11 @@ public class ProducerController {
 			return "Error: " + e.getMessage();
 		}
 	}
+
+	/*
+	 * @GetMapping("/ping") public String ping() { return "pong - " +
+	 * Instant.now().toString(); }
+	 */
 
 	@RequestMapping(value = "/ping", method = RequestMethod.GET)
 	public String ping() {
