@@ -134,11 +134,6 @@ public class ProducerController {
 		}
 	}
 
-	/*
-	 * @GetMapping("/ping") public String ping() { return "pong - " +
-	 * Instant.now().toString(); }
-	 */
-
 	@RequestMapping(value = "/ping", method = RequestMethod.GET)
 	public String ping() {
 		Date timeObject = Calendar.getInstance().getTime();
