@@ -7,7 +7,7 @@ import ca.concordia.encs.citydata.datastores.InMemoryDataStore;
 
 /**
  *
- * This is the Spring Boot application entry point. This is a comment.
+ * This is the Spring Boot application entry point.
  */
 
 @SpringBootApplication
