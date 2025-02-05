@@ -2,7 +2,6 @@ package ca.concordia.encs.citydata.core;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -49,6 +48,7 @@ public class RouteController {
 			});
 		});
 
-		return routes.stream().sorted().collect(Collectors.toList());
+		routes.sort(null);
+		return routes;
 	}
 }
