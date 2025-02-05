@@ -1,0 +1,20 @@
+{
+    "use": "ca.concordia.encs.citydata.producers.EnergyConsumptionProducer",
+    "withParams": [
+        {
+            "name": "city",
+            "value": "montreal"
+        }
+    ],
+    "apply": [
+        {
+            "name": "ca.concordia.encs.citydata.operations.StringFilterOperation",
+            "withParams": [
+                {
+                    "name": "filterBy",
+                    "value": "09:45:00"
+                }
+            ]
+        }
+    ]
+}
