@@ -36,7 +36,7 @@ public abstract class AbstractProducer<E> extends MiddlewareEntity implements IP
 
 	protected String filePath;
 	protected RequestOptions fileOptions;
-	private IOperation<E> operation;
+	public IOperation<E> operation;
 	private Set<IRunner> runners = new HashSet<>();
 	protected ArrayList<E> result;
 
@@ -90,11 +90,11 @@ public abstract class AbstractProducer<E> extends MiddlewareEntity implements IP
 		JsonArray jsonArray = new JsonArray();
 		if (this.result == null) {
 			return null;
-		} else if (this.result.get(0) instanceof JsonObject) {
+		} else if (this.result.size() > 0 && this.result.get(0) instanceof JsonObject) {
 			for (E el : this.result) {
 				jsonArray.add((JsonObject) el);
 			}
-		} else if (this.result.get(0) instanceof JsonElement) {
+		} else if (this.result.size() > 0 && this.result.get(0) instanceof JsonElement) {
 			for (E el : this.result) {
 				jsonArray.add((JsonElement) el);
 			}

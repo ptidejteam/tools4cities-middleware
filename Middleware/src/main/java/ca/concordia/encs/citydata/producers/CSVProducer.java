@@ -2,7 +2,6 @@ package ca.concordia.encs.citydata.producers;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import ca.concordia.encs.citydata.core.AbstractProducer;
 import ca.concordia.encs.citydata.core.IProducer;
@@ -25,11 +24,10 @@ public class CSVProducer extends AbstractProducer<String> implements IProducer<S
 		final String csvString = new String(this.fetchFromPath());
 
 		// split CSV string by line, add lines to the list
-		final List<String> csvLines = new ArrayList<String>();
+		final ArrayList<String> csvLines = new ArrayList<String>();
 		csvLines.addAll(Arrays.asList(csvString.split(System.lineSeparator())));
-
-		this.notifyObservers();
-
+		this.result = csvLines;
+		this.applyOperation();
 	}
 
 }

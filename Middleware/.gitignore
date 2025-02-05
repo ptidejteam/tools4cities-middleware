@@ -1,11 +1,10 @@
-<<<<<<< HEAD
 /bin/
 /target/
 env.json
 ./src/test/data/citylayer-middleware.json
 joularjx-result/*/all/total/methods/joularJX-*-all-methods-energy.csv
 joularjx-result/*/app/total/methods/joularJX-*-filtered-methods-energy.csv
-=======
+
 HELP.md
 target/
 !.mvn/wrapper/maven-wrapper.jar
@@ -39,4 +38,4 @@ build/
 
 ### VS Code ###
 .vscode/
->>>>>>> test/springboot
+

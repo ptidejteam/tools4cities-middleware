@@ -1,13 +1,14 @@
 package ca.concordia.encs.citydata.producers;
 
 import java.util.ArrayList;
-import java.util.List;
+
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+
 import ca.concordia.encs.citydata.core.AbstractProducer;
-import ca.concordia.encs.citydata.core.RequestOptions;
 import ca.concordia.encs.citydata.core.IProducer;
+import ca.concordia.encs.citydata.core.RequestOptions;
 
 /**
  * This producer can load JSON from a file or remotely via an HTTP request.
@@ -21,24 +22,23 @@ public class JSONProducer extends AbstractProducer<JsonObject> implements IProdu
 
 	@Override
 	public void fetch() {
-				
-		final ArrayList<JsonObject> result = new ArrayList<JsonObject>();
-		String jsonString = new String(this.fetchFromPath());
-		
+
+		final ArrayList<JsonObject> jsonOutput = new ArrayList<JsonObject>();
+		String inputJson = new String(this.fetchFromPath());
+
 		// convert JSON string to object
-		final JsonElement jsonElement = JsonParser.parseString(jsonString);
-		
-		JsonObject jsonObject = new JsonObject();
-		if (jsonElement.isJsonArray()) {
-			jsonObject.add("result", jsonElement);
+		final JsonElement inputJsonElement = JsonParser.parseString(inputJson);
+
+		JsonObject outputJsonObject = new JsonObject();
+		if (inputJsonElement.isJsonArray()) {
+			outputJsonObject.add("result", inputJsonElement);
 		} else {
-			jsonObject = jsonElement.getAsJsonObject();
+			outputJsonObject = inputJsonElement.getAsJsonObject();
 		}
-		
-		result.add(jsonObject);
-		this.result = result;
-		this.notifyObservers();
-		
+
+		jsonOutput.add(outputJsonObject);
+		this.result = jsonOutput;
+		this.applyOperation();
 	}
 
 }
