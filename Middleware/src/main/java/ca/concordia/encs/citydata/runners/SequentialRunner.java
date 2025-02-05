@@ -115,23 +115,29 @@ public class SequentialRunner extends AbstractRunner implements IRunner {
 		 * sequential operation counter
 		 */
 		JsonArray operationsToApply = getRequiredField(this.steps, "apply").getAsJsonArray();
-		JsonObject currentOperation = operationsToApply.get(this.operationCounter).getAsJsonObject();
+		int totalOperations = operationsToApply.size();
+		if (totalOperations > 0) {
+			JsonObject currentOperation = operationsToApply.get(this.operationCounter).getAsJsonObject();
 
-		// instantiate current operation
-		JsonObject operationNode = currentOperation.getAsJsonObject();
-		String operationName = getRequiredField(operationNode, "name").getAsString();
-		Object operationInstance = instantiateClass(operationName);
+			// instantiate current operation
+			JsonObject operationNode = currentOperation.getAsJsonObject();
+			String operationName = getRequiredField(operationNode, "name").getAsString();
+			Object operationInstance = instantiateClass(operationName);
 
-		// extract operation parameters and set them
-		JsonArray operationParams = getRequiredField(operationNode, "withParams").getAsJsonArray();
-		setParameters(operationInstance, operationParams);
+			// extract operation parameters and set them
+			JsonArray operationParams = getRequiredField(operationNode, "withParams").getAsJsonArray();
+			setParameters(operationInstance, operationParams);
 
-		// set operation to producer
-		Method setOperationMethod = producer.getClass().getMethod("setOperation", IOperation.class);
-		setOperationMethod.invoke(producer, operationInstance);
+			// set operation to producer
+			Method setOperationMethod = producer.getClass().getMethod("setOperation", IOperation.class);
+			setOperationMethod.invoke(producer, operationInstance);
 
-		// trigger data fetching, which will in turn apply the operation
-		System.out.println("Applying operation " + (this.operationCounter + 1) + " out of " + operationsToApply.size());
+			// trigger data fetching, which will in turn apply the operation
+			System.out.println("Applying operation " + (this.operationCounter + 1) + " out of " + totalOperations);
+		} else {
+			System.out.println("No operations to apply");
+		}
+
 		producer.fetch();
 
 	}
@@ -143,7 +149,7 @@ public class SequentialRunner extends AbstractRunner implements IRunner {
 		this.operationCounter += 1;
 
 		// but is there really a next one? if not, stop
-		JsonArray operationsToApply = this.steps.get("apply").getAsJsonArray();
+		JsonArray operationsToApply = getRequiredField(this.steps, "apply").getAsJsonArray();
 		if (this.operationCounter >= operationsToApply.size()) {
 			this.storeResults(producer);
 			this.setAsDone();

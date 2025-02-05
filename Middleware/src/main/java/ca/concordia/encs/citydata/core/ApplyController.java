@@ -19,14 +19,17 @@ import ca.concordia.encs.citydata.runners.SequentialRunner;
 // TODO: rename to ApplyController
 @RestController
 @RequestMapping("/apply")
-public class ProducerController {
+public class ApplyController {
 
 	@RequestMapping(value = "/sync", method = RequestMethod.POST)
 	public String sync(@RequestBody String steps) {
+		String runnerId = "";
 		JsonObject errorLog = new JsonObject();
-		JsonObject stepsObject = JsonParser.parseString(steps).getAsJsonObject();
-		SequentialRunner deckard = new SequentialRunner(stepsObject);
+
 		try {
+			JsonObject stepsObject = JsonParser.parseString(steps).getAsJsonObject();
+			SequentialRunner deckard = new SequentialRunner(stepsObject);
+			runnerId = deckard.getMetadata("id").toString();
 			Thread runnerTask = new Thread() {
 				public void run() {
 					try {
@@ -35,7 +38,7 @@ public class ProducerController {
 							System.out.println("Busy waiting!");
 						}
 					} catch (Exception e) {
-						errorLog.addProperty("runnerError", e.getMessage());
+						errorLog.addProperty("runnerError", e.getClass().getName() + ": " + e.getMessage());
 					}
 
 				}
@@ -43,7 +46,7 @@ public class ProducerController {
 			runnerTask.start();
 			runnerTask.join();
 		} catch (Exception e) {
-			errorLog.addProperty("threadError", e.getMessage());
+			errorLog.addProperty("threadError", e.getClass().getName() + ": " + e.getMessage());
 		}
 
 		// if there are execution errors, return an error message
@@ -53,20 +56,20 @@ public class ProducerController {
 
 		// else, return the data
 		IDataStore store = InMemoryDataStore.getInstance();
-		String runnerId = deckard.getMetadata("id").toString();
 		return store.get(runnerId).getResultJSONString();
 	}
 
 	@RequestMapping(value = "/async", method = RequestMethod.POST)
 	public String async(@RequestBody String steps) {
+		String runnerId = "";
 		JsonObject errorLog = new JsonObject();
-		JsonObject stepsObject = JsonParser.parseString(steps).getAsJsonObject();
-		SequentialRunner deckard = new SequentialRunner(stepsObject);
-
 		try {
+			JsonObject stepsObject = JsonParser.parseString(steps).getAsJsonObject();
+			SequentialRunner deckard = new SequentialRunner(stepsObject);
+			runnerId = deckard.getMetadata("id").toString();
 			deckard.runSteps();
 		} catch (Exception e) {
-			errorLog.addProperty("runnerError", e.getMessage());
+			errorLog.addProperty("runnerError", e.getClass().getName() + ": " + e.getMessage());
 		}
 
 		// if there are execution errors, return an error message
@@ -74,9 +77,9 @@ public class ProducerController {
 			return errorLog.toString();
 		}
 
-		return "Hello! The runner " + deckard.getMetadata("id")
-				+ " is currently working on your request. Please make a GET request to /apply/async/ "
-				+ deckard.getMetadata("id") + " to find out your request status.";
+		return "Hello! The runner " + runnerId
+				+ " is currently working on your request. Please make a GET request to /apply/async/ " + runnerId
+				+ " to find out your request status.";
 	}
 
 	@RequestMapping(value = "/async/{runnerId}", method = RequestMethod.GET)
