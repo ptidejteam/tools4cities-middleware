@@ -16,14 +16,6 @@ public class StringReplaceOperation extends AbstractOperation<String> implements
 	private String searchFor = "";
 	private String replaceBy = "";
 
-	public StringReplaceOperation() {
-	}
-	public StringReplaceOperation(String searchFor, String replaceBy) {
-
-		this.searchFor = searchFor;
-		this.replaceBy = replaceBy;
-
-	}
 	public void setSearchFor(String searchFor) {
 		this.searchFor = searchFor;
 	}

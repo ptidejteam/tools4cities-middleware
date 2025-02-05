@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 /bin/
 /target/
 env.json
@@ -37,4 +36,4 @@ build/
 
 ### VS Code ###
 .vscode/
->>>>>>> test/springboot
+
