@@ -1,5 +1,7 @@
 package ca.concordia.encs.citydata.runners;
 
+import java.lang.reflect.Method;
+
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -10,8 +12,6 @@ import ca.concordia.encs.citydata.core.IOperation;
 import ca.concordia.encs.citydata.core.IProducer;
 import ca.concordia.encs.citydata.core.IRunner;
 import ca.concordia.encs.citydata.datastores.InMemoryDataStore;
-import ca.concordia.encs.citydata.operations.StringReplaceOperation;
-import ca.concordia.encs.citydata.producers.StringProducer;
 
 /**
  *
@@ -29,76 +29,113 @@ public class SequentialRunner extends AbstractRunner implements IRunner {
 		this.steps = steps;
 	}
 
+	private JsonElement getRequiredField(JsonObject jsonObject, String fieldName) {
+		if (!jsonObject.has(fieldName)) {
+			throw new IllegalArgumentException("Error: Missing '" + fieldName + "' field");
+		}
+		return jsonObject.get(fieldName);
+	}
+
+	private Object instantiateClass(String className) throws Exception {
+		Class<?> clazz = Class.forName(className);
+		return clazz.getDeclaredConstructor().newInstance();
+	}
+
+	private void setParameters(Object instance, JsonArray params) throws Exception {
+		Class<?> clazz = instance.getClass();
+		for (JsonElement paramElement : params) {
+			JsonObject paramObject = paramElement.getAsJsonObject();
+			String paramName = paramObject.get("name").getAsString();
+			JsonElement paramValue = paramObject.get("value");
+			Method setter = findSetterMethod(clazz, paramName, paramValue);
+			setter.invoke(instance, convertValue(setter.getParameterTypes()[0], paramValue));
+		}
+	}
+
+	private Method findSetterMethod(Class<?> clazz, String paramName, JsonElement paramValue)
+			throws NoSuchMethodException {
+		String methodName = "set" + capitalize(paramName);
+		for (Method method : clazz.getMethods()) {
+			if (method.getName().equals(methodName) && method.getParameterCount() == 1) {
+				return method;
+			}
+		}
+		throw new NoSuchMethodException("No suitable setter found for " + paramName);
+	}
+
+	private Object convertValue(Class<?> targetType, JsonElement value) {
+		if (targetType == int.class || targetType == Integer.class) {
+			return value.getAsInt();
+		} else if (targetType == boolean.class || targetType == Boolean.class) {
+			return value.getAsBoolean();
+		} else if (targetType == double.class || targetType == Double.class) {
+			return value.getAsDouble();
+		} else {
+			return value.getAsString();
+		}
+	}
+
+	private String capitalize(String str) {
+		return str == null || str.isEmpty() ? str : str.substring(0, 1).toUpperCase() + str.substring(1);
+	}
+
 	@Override
 	public void runSteps() throws Exception {
-		StringProducer producer = null;
-
 		// if there are no steps to run, warn the user and stop
 		if (this.steps == null) {
 			this.setAsDone();
 			throw new RuntimeException("No steps to run! Please provide steps so the runner can execute them.");
 		}
 
-		// check if producer exists
+		// start by extracting Producers, Operations and their params from the query
 		System.out.println("Run started!");
-		if (this.steps.get("use").getAsString().equalsIgnoreCase("StringProducer")) {
+		String producerName = getRequiredField(this.steps, "use").getAsString();
+		JsonArray producerParams = getRequiredField(this.steps, "withParams").getAsJsonArray();
 
-			// if there are producer params, iterate over them
-			if (this.steps.get("withParams") != null) {
-				JsonArray producerParams = this.steps.get("withParams").getAsJsonArray();
-				String generationProcessParam = null;
-				Integer stringLengthParam = null;
-				for (JsonElement param : producerParams) {
-					JsonObject currentParam = param.getAsJsonObject();
-					if (currentParam.get("name").getAsString().equals("generationProcess")) {
-						generationProcessParam = currentParam.get("value").getAsString();
-					}
+		// spin up a new Producer instance and set its params
+		Object producerInstance = instantiateClass(
+				"ca.concordia.ngci.tools4cities.middleware.producers." + producerName);
+		setParameters(producerInstance, producerParams);
 
-					if (currentParam.get("name").getAsString().equals("stringLength")) {
-						stringLengthParam = currentParam.get("value").getAsInt();
-					}
-				}
-
-				producer = new StringProducer();
-				producer.setGenerationProcess(generationProcessParam);
-				producer.setStringLength(stringLengthParam);
-				producer.addObserver(this);
+		// TODO: add observer to producer instance
+		for (Method method : producerInstance.getClass().getMethods()) {
+			if (method.getName().equals("addObserver") && method.getParameterCount() == 1) {
+				method.invoke(producerInstance, this);
+				break;
 			}
-
-			// if there are operations, apply the first one
-			// subsequent operation will be applied on P1' once the first is done
-			this.applyNextOperation(producer);
-
 		}
+
+		// if there are operations, apply the first one
+		// subsequent operation will be applied on P1' once the first is done
+		this.applyNextOperation((IProducer<?>) producerInstance);
+
 	}
 
 	@Override
 	public void applyNextOperation(IProducer<?> producer) throws Exception {
-		if (this.steps.get("apply") != null) {
-			JsonArray operationsToApply = this.steps.get("apply").getAsJsonArray();
-			JsonObject currentOperation = operationsToApply.get(this.operationCounter).getAsJsonObject();
-			if (currentOperation.get("name").getAsString().equals("StringReplaceOperation")) {
-				String searchFor = "";
-				String replaceBy = "";
+		JsonArray operationsToApply = getRequiredField(this.steps, "apply").getAsJsonArray();
+		JsonObject currentOperation = operationsToApply.get(this.operationCounter).getAsJsonObject();
 
-				// if operation has parameters, extract them and pass them to operation object
-				JsonArray operationParams = currentOperation.get("withParams").getAsJsonArray();
-				for (JsonElement param : operationParams) {
-					JsonObject currentParam = param.getAsJsonObject();
+		// spin up current operation and their params
+		JsonObject operationNode = currentOperation.getAsJsonObject();
+		String operationName = getRequiredField(operationNode, "name").getAsString();
+		JsonArray operationParams = getRequiredField(operationNode, "withParams").getAsJsonArray();
 
-					if (currentParam.get("name").getAsString().equals("searchFor")) {
-						searchFor = currentParam.get("value").getAsString();
-					} else if (currentParam.get("name").getAsString().equals("replaceBy")) {
-						replaceBy = currentParam.get("value").getAsString();
-					}
-				}
-				producer.setOperation(new StringReplaceOperation(searchFor, replaceBy));
-				System.out.println(
-						"Applying operation " + (this.operationCounter + 1) + " out of " + operationsToApply.size());
-				producer.fetch();
+		Object operationInstance = instantiateClass(
+				"ca.concordia.ngci.tools4cities.middleware.operations." + operationName);
+		setParameters(operationInstance, operationParams);
+
+		// set operation to producer
+		for (Method method : producer.getClass().getMethods()) {
+			if (method.getName().equals("setOperation") && method.getParameterCount() == 1) {
+				method.invoke(producer, operationInstance);
+				break;
 			}
-
 		}
+
+		System.out.println("Applying operation " + (this.operationCounter + 1) + " out of " + operationsToApply.size());
+		producer.fetch();
+
 	}
 
 	@Override
