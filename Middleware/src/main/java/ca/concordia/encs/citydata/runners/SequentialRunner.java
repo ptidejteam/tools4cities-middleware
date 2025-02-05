@@ -29,6 +29,7 @@ public class SequentialRunner extends AbstractRunner implements IRunner {
 		this.steps = steps;
 	}
 
+	// REFLECTION METHODS
 	private JsonElement getRequiredField(JsonObject jsonObject, String fieldName) {
 		if (!jsonObject.has(fieldName)) {
 			throw new IllegalArgumentException("Error: Missing '" + fieldName + "' field");
@@ -79,6 +80,7 @@ public class SequentialRunner extends AbstractRunner implements IRunner {
 		return str == null || str.isEmpty() ? str : str.substring(0, 1).toUpperCase() + str.substring(1);
 	}
 
+	// RUNNER METHODS
 	@Override
 	public void runSteps() throws Exception {
 		// if there are no steps to run, warn the user and stop
@@ -92,18 +94,13 @@ public class SequentialRunner extends AbstractRunner implements IRunner {
 		String producerName = getRequiredField(this.steps, "use").getAsString();
 		JsonArray producerParams = getRequiredField(this.steps, "withParams").getAsJsonArray();
 
-		// spin up a new Producer instance and set its params
-		Object producerInstance = instantiateClass(
-				"ca.concordia.ngci.tools4cities.middleware.producers." + producerName);
+		// instantiate a new Producer instance and set its params
+		Object producerInstance = instantiateClass(producerName);
 		setParameters(producerInstance, producerParams);
 
-		// TODO: add observer to producer instance
-		for (Method method : producerInstance.getClass().getMethods()) {
-			if (method.getName().equals("addObserver") && method.getParameterCount() == 1) {
-				method.invoke(producerInstance, this);
-				break;
-			}
-		}
+		// add this Runner as an observer of the Producer instance
+		Method addObserverMethod = producerInstance.getClass().getMethod("addObserver", IRunner.class);
+		addObserverMethod.invoke(producerInstance, this);
 
 		// if there are operations, apply the first one
 		// subsequent operation will be applied on P1' once the first is done
@@ -113,26 +110,27 @@ public class SequentialRunner extends AbstractRunner implements IRunner {
 
 	@Override
 	public void applyNextOperation(IProducer<?> producer) throws Exception {
+		/*
+		 * get list of operations and choose which one to execute next based on the
+		 * sequential operation counter
+		 */
 		JsonArray operationsToApply = getRequiredField(this.steps, "apply").getAsJsonArray();
 		JsonObject currentOperation = operationsToApply.get(this.operationCounter).getAsJsonObject();
 
-		// spin up current operation and their params
+		// instantiate current operation
 		JsonObject operationNode = currentOperation.getAsJsonObject();
 		String operationName = getRequiredField(operationNode, "name").getAsString();
-		JsonArray operationParams = getRequiredField(operationNode, "withParams").getAsJsonArray();
+		Object operationInstance = instantiateClass(operationName);
 
-		Object operationInstance = instantiateClass(
-				"ca.concordia.ngci.tools4cities.middleware.operations." + operationName);
+		// extract operation parameters and set them
+		JsonArray operationParams = getRequiredField(operationNode, "withParams").getAsJsonArray();
 		setParameters(operationInstance, operationParams);
 
 		// set operation to producer
-		for (Method method : producer.getClass().getMethods()) {
-			if (method.getName().equals("setOperation") && method.getParameterCount() == 1) {
-				method.invoke(producer, operationInstance);
-				break;
-			}
-		}
+		Method setOperationMethod = producer.getClass().getMethod("setOperation", IOperation.class);
+		setOperationMethod.invoke(producer, operationInstance);
 
+		// trigger data fetching, which will in turn apply the operation
 		System.out.println("Applying operation " + (this.operationCounter + 1) + " out of " + operationsToApply.size());
 		producer.fetch();
 

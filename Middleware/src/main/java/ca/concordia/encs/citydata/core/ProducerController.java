@@ -16,6 +16,7 @@ import com.google.gson.JsonParser;
 import ca.concordia.encs.citydata.datastores.InMemoryDataStore;
 import ca.concordia.encs.citydata.runners.SequentialRunner;
 
+// TODO: rename to ApplyController
 @RestController
 @RequestMapping("/apply")
 public class ProducerController {
@@ -79,7 +80,7 @@ public class ProducerController {
 	}
 
 	@RequestMapping(value = "/async/{runnerId}", method = RequestMethod.GET)
-	public String asyncId(@PathVariable String runnerId) {
+	public String asyncId(@PathVariable("runnerId") String runnerId) {
 		InMemoryDataStore store = InMemoryDataStore.getInstance();
 		Object storeResult = store.get(runnerId);
 
