@@ -6,7 +6,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Set;
 
-import ca.concordia.encs.citydata.runners.SequentialRunner;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,7 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-;
+
+import ca.concordia.encs.citydata.runners.SequentialRunner;
 
 @RestController
 @RequestMapping("/apply")
@@ -28,35 +28,58 @@ public class ProducerController {
 		SequentialRunner deckard = null;
 
 		try {
-			deckard = ReflectionUtils.createSequentialRunner(stepsObject);
+			// Instantiate SequentialRunner using reflection
+			Class<?> sequentialRunnerClass = Class.forName("ca.concordia.encs.citydata.runners.SequentialRunner");
+			deckard = (SequentialRunner) sequentialRunnerClass.getDeclaredConstructor(JsonObject.class)
+					.newInstance(stepsObject);
 
-			Thread runnerTask = getThread(deckard, errorLog);
+			Thread runnerTask = getThread(deckard, sequentialRunnerClass, errorLog);
 			runnerTask.join();
 
-			if (ReflectionUtils.hasErrors(errorLog)) {
+			Method keySetMethod = errorLog.getClass().getDeclaredMethod("keySet");
+			Set<?> keySet = (Set<?>) keySetMethod.invoke(errorLog);
+			if (!keySet.isEmpty()) {
 				return errorLog.toString();
 			}
 
-			IProducer<?> producer = ReflectionUtils.getProducer(ReflectionUtils.getRunnerId(deckard));
-			return ReflectionUtils.getResultJSONString(producer);
+			Class<?> dataStoreClass = Class.forName("ca.concordia.encs.citydata.datastores.InMemoryDataStore");
+			Method getInstanceMethod = dataStoreClass.getDeclaredMethod("getInstance");
+			IDataStore store = (IDataStore) getInstanceMethod.invoke(null);
+
+			Method getMetadataMethod = sequentialRunnerClass.getMethod("getMetadata", String.class);
+			String runnerId = (String) getMetadataMethod.invoke(deckard, "id");
+
+			Method getMethod = dataStoreClass.getDeclaredMethod("get", String.class);
+			IProducer<?> producer = (IProducer<?>) getMethod.invoke(store, runnerId);
+			Method getResultJSONStringMethod = producer.getClass().getMethod("getResultJSONString");
+			return (String) getResultJSONStringMethod.invoke(producer);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return "Error: " + e.getMessage();
 		}
 	}
 
-	private static Thread getThread(SequentialRunner deckard, JsonObject errorLog) {
-		return new Thread(() -> {
-			try {
-				ReflectionUtils.runSteps(deckard);
+	private static Thread getThread(SequentialRunner deckard, Class<?> sequentialRunnerClass, JsonObject errorLog) {
+		SequentialRunner finalDeckard = deckard;
+		Thread runnerTask = new Thread() {
+			public void run() {
+				try {
+					// Call runSteps method using reflection
+					Method runStepsMethod = sequentialRunnerClass.getDeclaredMethod("runSteps");
+					runStepsMethod.invoke(finalDeckard);
 
-				while (!ReflectionUtils.isRunnerDone(deckard)) {
-					System.out.println("Busy waiting!");
+					// Check if the runner is done using reflection
+					Method isDoneMethod = sequentialRunnerClass.getMethod("isDone");
+					while (!(Boolean) isDoneMethod.invoke(finalDeckard)) {
+						System.out.println("Busy waiting!");
+					}
+				} catch (Exception e) {
+					errorLog.addProperty("runnerError", e.getMessage());
 				}
-			} catch (Exception e) {
-				errorLog.addProperty("runnerError", e.getMessage());
 			}
-		});
+		};
+		runnerTask.start();
+		return runnerTask;
 	}
 
 	@RequestMapping(value = "/async", method = RequestMethod.POST)
@@ -66,14 +89,22 @@ public class ProducerController {
 		SequentialRunner aRunner = null;
 
 		try {
-			aRunner = ReflectionUtils.createSequentialRunner(stepsObject);
-			ReflectionUtils.runSteps(aRunner);
+			Class<?> sequentialRunnerClass = Class.forName("ca.concordia.encs.citydata.runners.SequentialRunner");
+			aRunner = (SequentialRunner) sequentialRunnerClass.getDeclaredConstructor(JsonObject.class)
+					.newInstance(stepsObject);
 
-			if (ReflectionUtils.hasErrors(errorLog)) {
+			Method runStepsMethod = sequentialRunnerClass.getDeclaredMethod("runSteps");
+			runStepsMethod.invoke(aRunner);
+
+			Method keySetMethod = errorLog.getClass().getDeclaredMethod("keySet");
+			Set<?> keySet = (Set<?>) keySetMethod.invoke(errorLog);
+			if (!keySet.isEmpty()) {
 				return errorLog.toString();
 			}
 
-			String runnerId = ReflectionUtils.getRunnerId(aRunner);
+			Method getMetadataMethod = sequentialRunnerClass.getMethod("getMetadata", String.class);
+			String runnerId = (String) getMetadataMethod.invoke(aRunner, "id");
+
 			return "Hello! The runner " + runnerId
 					+ " is currently working on your request. Please make a GET request to /apply/async/" + runnerId
 					+ " to find out your request status.";
@@ -86,9 +117,15 @@ public class ProducerController {
 	@RequestMapping(value = "/async/{runnerId}", method = RequestMethod.GET)
 	public String asyncId(@PathVariable String runnerId) {
 		try {
-			IProducer<?> producer = ReflectionUtils.getProducer(runnerId);
+			Class<?> dataStoreClass = Class.forName("ca.concordia.encs.citydata.datastores.InMemoryDataStore");
+			Method getInstanceMethod = dataStoreClass.getDeclaredMethod("getInstance");
+			IDataStore store = (IDataStore) getInstanceMethod.invoke(null);
+
+			Method getMethod = dataStoreClass.getDeclaredMethod("get", String.class);
+			IProducer<?> producer = (IProducer<?>) getMethod.invoke(store, runnerId);
 			if (producer != null) {
-				return ReflectionUtils.getResultJSONString(producer);
+				Method getResultJSONStringMethod = producer.getClass().getMethod("getResultJSONString");
+				return (String) getResultJSONStringMethod.invoke(producer);
 			}
 			return "Sorry, your request result is not ready yet. Please try again later.";
 		} catch (Exception e) {
@@ -102,50 +139,5 @@ public class ProducerController {
 		Date timeObject = Calendar.getInstance().getTime();
 		String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(timeObject);
 		return "pong - " + timeStamp;
-	}
-}
-
-
-
-class ReflectionUtils {
-
-	public static SequentialRunner createSequentialRunner(JsonObject stepsObject) throws Exception {
-		Class<?> sequentialRunnerClass = Class.forName("ca.concordia.encs.citydata.runners.SequentialRunner");
-		return (SequentialRunner) sequentialRunnerClass.getDeclaredConstructor(JsonObject.class).newInstance(stepsObject);
-	}
-
-	public static void runSteps(SequentialRunner runner) throws Exception {
-		Method runStepsMethod = runner.getClass().getDeclaredMethod("runSteps");
-		runStepsMethod.invoke(runner);
-	}
-
-	public static boolean isRunnerDone(SequentialRunner runner) throws Exception {
-		Method isDoneMethod = runner.getClass().getMethod("isDone");
-		return (Boolean) isDoneMethod.invoke(runner);
-	}
-
-	public static String getRunnerId(SequentialRunner runner) throws Exception {
-		Method getMetadataMethod = runner.getClass().getMethod("getMetadata", String.class);
-		return (String) getMetadataMethod.invoke(runner, "id");
-	}
-
-	public static IProducer<?> getProducer(String runnerId) throws Exception {
-		Class<?> dataStoreClass = Class.forName("ca.concordia.encs.citydata.datastores.InMemoryDataStore");
-		Method getInstanceMethod = dataStoreClass.getDeclaredMethod("getInstance");
-		IDataStore store = (IDataStore) getInstanceMethod.invoke(null);
-
-		Method getMethod = dataStoreClass.getDeclaredMethod("get", String.class);
-		return (IProducer<?>) getMethod.invoke(store, runnerId);
-	}
-
-	public static String getResultJSONString(IProducer<?> producer) throws Exception {
-		Method getResultJSONStringMethod = producer.getClass().getMethod("getResultJSONString");
-		return (String) getResultJSONStringMethod.invoke(producer);
-	}
-
-	public static boolean hasErrors(JsonObject errorLog) throws Exception {
-		Method keySetMethod = errorLog.getClass().getDeclaredMethod("keySet");
-		Set<?> keySet = (Set<?>) keySetMethod.invoke(errorLog);
-		return !keySet.isEmpty();
 	}
 }
