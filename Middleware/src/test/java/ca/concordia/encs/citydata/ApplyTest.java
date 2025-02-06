@@ -114,8 +114,8 @@ public class ApplyTest {
 	 * 
 	 * mockMvc.perform(post("/apply/async").contentType(MediaType.APPLICATION_JSON).
 	 * content(invalidSteps))
-	 * .andExpect(status().isOk()).andExpect(content().string(startsWith("Error: "))
-	 * ); }
+	 * .andExpect(status().isOk()).andExpect(content().string(
+	 * containsString("Error: Invalid JSON format"))); }
 	 */
 
 	// Test for GET /async/{runnerId} with a valid runner ID
