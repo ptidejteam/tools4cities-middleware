@@ -3,18 +3,20 @@ package ca.concordia.encs.citydata.core;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+/* This java class is to print all available operations and their characteristics 
+ * Author: Sikandar Ejaz
+ * Date: 2-6-2025
+ */
 
 @RestController
 @RequestMapping("/operations")
@@ -57,14 +59,6 @@ public class ListOperationsController {
 				Field[] fields = clazz.getDeclaredFields();
 				for (Field field : fields) {
 					paramList.add(field.getName() + " (" + field.getType().getSimpleName() + ")");
-				}
-
-				// List methods
-				Method[] methods = clazz.getDeclaredMethods();
-				for (Method method : methods) {
-					String paramTypes = Arrays.stream(method.getParameterTypes()).map(Class::getSimpleName)
-							.collect(Collectors.joining(", "));
-					paramList.add(method.getName() + " (" + paramTypes + ")");
 				}
 
 				operationDetails.put("params", String.join(", ", paramList));
