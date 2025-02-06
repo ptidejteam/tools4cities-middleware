@@ -1,5 +1,11 @@
 package ca.concordia.encs.citydata.runners;
 
+import java.lang.reflect.Method;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+
 import ca.concordia.encs.citydata.core.AbstractRunner;
 import ca.concordia.encs.citydata.core.IDataStore;
 import ca.concordia.encs.citydata.core.IOperation;
@@ -14,17 +20,41 @@ import ca.concordia.encs.citydata.datastores.InMemoryDataStore;
  */
 public class LazyRunner extends AbstractRunner implements IRunner {
 
-	private IProducer<?> producer;
+	private IProducer producer;
+	private String targetProducer;
+	private JsonArray targetProducerParams;
 
-	public LazyRunner(IProducer<?> producer) {
-		this.producer = producer;
+	public LazyRunner(String targetProducer, JsonArray targetProducerParams) {
+		this.targetProducer = targetProducer;
+		this.targetProducerParams = targetProducerParams;
+	}
+
+	private String capitalize(String str) {
+		return str == null || str.isEmpty() ? str : str.substring(0, 1).toUpperCase() + str.substring(1);
 	}
 
 	@Override
 	public void runSteps() throws Exception {
-		if (this.producer != null) {
-			this.producer.addObserver(this);
-			this.producer.fetch();
+		if (this.targetProducer != null) {
+
+			// instantiate a new Producer instance
+			Class<?> targetProducerClass = Class.forName(this.targetProducer);
+			IProducer targetProducerInstance = (IProducer) targetProducerClass.getDeclaredConstructor().newInstance();
+
+			// set Producer params
+			for (JsonElement param : this.targetProducerParams) {
+				JsonObject paramObject = param.getAsJsonObject();
+				String methodName = "set" + capitalize(paramObject.get("name").getAsString());
+				for (Method method : targetProducerClass.getMethods()) {
+					if (method.getName().equals(methodName) && method.getParameterCount() == 1) {
+						method.invoke(targetProducerInstance, paramObject.get("value").getAsString());
+						break;
+					}
+				}
+			}
+
+			targetProducerInstance.addObserver(this);
+			targetProducerInstance.fetch();
 		}
 	}
 

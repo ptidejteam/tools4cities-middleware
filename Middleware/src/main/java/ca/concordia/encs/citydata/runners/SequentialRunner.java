@@ -71,9 +71,12 @@ public class SequentialRunner extends AbstractRunner implements IRunner {
 			return value.getAsBoolean();
 		} else if (targetType == double.class || targetType == Double.class) {
 			return value.getAsDouble();
-		} else {
-			return value.getAsString();
+		} else if (targetType == JsonObject.class) {
+			return value.getAsJsonObject();
+		} else if (targetType == JsonArray.class) {
+			return value.getAsJsonArray();
 		}
+		return value.getAsString();
 	}
 
 	private String capitalize(String str) {

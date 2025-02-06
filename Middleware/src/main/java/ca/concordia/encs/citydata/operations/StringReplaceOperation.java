@@ -7,7 +7,7 @@ import ca.concordia.encs.citydata.core.IOperation;
 
 /**
  *
- * This operations searches for a sequence in a string, and replaces this
+ * This operation searches for a sequence in a string, and replaces this
  * sequence with another one.
  * 
  */
