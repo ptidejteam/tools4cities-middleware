@@ -11,7 +11,7 @@ The purpose of the Tools4Cities Middleware is to enable users to perform operati
 
 - Producer: connects to data sources and fetches data
 - Operation: describes transformations to be performed on producer outputs (data)
-- Consumer: calls a series of producers, executes a series of operations on the producer's outputs, and then outputs the resulting data
+- Consumer/Runner: calls a series of producers, executes a series of operations on the producer's outputs, and then outputs the resulting data
 
 ![image](./docs/architecture.png)
 
@@ -43,16 +43,29 @@ mvn install
 
 ## How do I use it?
 
-- This middleware is a REST API which receives queries as input, and generates data as output.
-- Queries are JSON files where you speficy which data you want, and which transformations you wish to apply on the data. In the folder /docs/examples, you can see examples of such queries.
+- This middleware is a REST API which receives queries as input and generates data as output.
+- Queries are JSON files where you specify which data you want, and which transformations you wish to apply to the data. You can see examples of such queries in the folder /docs/examples.
 - You can call the middleware routes using either Postman or via code (for example, using the requests package in [Python](https://www.geeksforgeeks.org/get-post-requests-using-python/)).
-- For now the amount of Producers, Operations and parameters is quite limited, but we intend to expand it in the future and also document it better. Your suggestions are more than welcome!
+
+The following routes are availble:
+
+| **Method** | **Route**               | **Description**                                                                              | **Input**                        |
+|------------|-------------------------|----------------------------------------------------------------------------------------------|----------------------------------|
+| GET        | /producers/list         | Lists all Producers and their parameters                                                     |                                  |
+| GET        | /operations/list        | Lists all Operations and their parameters                                                    |                                  |
+| POST       | /apply/sync             | Executes query synchronously (will not return until completed)                               | A JSON query in the request body |
+| POST       | /apply/async            | Executes query asynchronously (will return a runner ID instantly)                            | A JSON query in the request body |
+| GET        | /apply/async/{runnerId} | Returns status of a runner ID. If the runner is completed, returns the prime Producer result | A runner ID                      |
+| GET        | /apply/ping  | Returns pong (this is great to test if the middleware is running 😊) |                       |
+| POST       | /exists                 | Returns a list of prime Producers which match the given query                                | A JSON query in the request body |****
+  
+For now, the amount of Producers, Operations and parameters is quite limited, but we intend to expand it in the future and also document it better. Your suggestions are more than welcome!
 
 ## Who do I talk to?
 
 Project manager: gabriel.cavalheiroullmann at concordia.ca
 
-## Guidelines
+## Development Guidelines
 
 - If you wish to integrate your changes into the middleware, please create a new branch from develop, make your changes, then open a PR requesting merge into develop.
 - Tests shall be written to show the proper way Producers and Operations should be used. Consequently, the tests will also ensure these classes are working as intended by the developer.
