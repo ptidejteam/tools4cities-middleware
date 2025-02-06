@@ -33,6 +33,21 @@ public class LazyRunner extends AbstractRunner implements IRunner {
 		return str == null || str.isEmpty() ? str : str.substring(0, 1).toUpperCase() + str.substring(1);
 	}
 
+	private Object convertValue(Class<?> targetType, JsonElement value) {
+		if (targetType == int.class || targetType == Integer.class) {
+			return value.getAsInt();
+		} else if (targetType == boolean.class || targetType == Boolean.class) {
+			return value.getAsBoolean();
+		} else if (targetType == double.class || targetType == Double.class) {
+			return value.getAsDouble();
+		} else if (targetType == JsonObject.class) {
+			return value.getAsJsonObject();
+		} else if (targetType == JsonArray.class) {
+			return value.getAsJsonArray();
+		}
+		return value.getAsString();
+	}
+
 	@Override
 	public void runSteps() throws Exception {
 		if (this.targetProducer != null) {
@@ -47,7 +62,8 @@ public class LazyRunner extends AbstractRunner implements IRunner {
 				String methodName = "set" + capitalize(paramObject.get("name").getAsString());
 				for (Method method : targetProducerClass.getMethods()) {
 					if (method.getName().equals(methodName) && method.getParameterCount() == 1) {
-						method.invoke(targetProducerInstance, paramObject.get("value").getAsString());
+						method.invoke(targetProducerInstance,
+								convertValue(method.getParameterTypes()[0], paramObject.get("value")));
 						break;
 					}
 				}
