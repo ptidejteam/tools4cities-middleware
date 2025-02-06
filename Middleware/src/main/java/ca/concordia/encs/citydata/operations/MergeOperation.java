@@ -1,6 +1,9 @@
 package ca.concordia.encs.citydata.operations;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 import com.google.gson.JsonArray;
 
@@ -28,7 +31,15 @@ public class MergeOperation extends AbstractOperation<String> implements IOperat
 
 	@Override
 	public ArrayList<String> apply(ArrayList<String> inputs) {
-		ArrayList<String> sourceList = inputs;
+
+		// all keys are timestamps because timestamps are unique, and JSON cannot have
+		// duplicated keys
+		String timeStampFormat = "yyyy-MM-dd_HH:mm:ss";
+		Date timeObject = Calendar.getInstance().getTime();
+		String timeStampSource = new SimpleDateFormat(timeStampFormat).format(timeObject);
+
+		ArrayList<String> sourceList = new ArrayList<>();
+		sourceList.add("{\"" + timeStampSource + "\": \"" + inputs + "\" }");
 
 		try {
 			LazyRunner deckard = new LazyRunner(targetProducer, targetProducerParams);
@@ -53,7 +64,8 @@ public class MergeOperation extends AbstractOperation<String> implements IOperat
 
 			ArrayList<String> targetList = (ArrayList<String>) store.get(runnerId).getResult();
 			if (targetList != null && targetList.size() > 0) {
-				sourceList.addAll(targetList);
+				String timeStampTarget = new SimpleDateFormat(timeStampFormat).format(timeObject);
+				sourceList.add("{\"" + timeStampTarget + "\": \"" + targetList + "\" }");
 			}
 
 		} catch (InterruptedException e) {
