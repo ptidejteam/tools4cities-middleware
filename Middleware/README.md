@@ -44,10 +44,11 @@ mvn install
 ## How do I use it?
 
 - This middleware is a REST API which receives queries as input and generates data as output.
-- Queries are JSON files where you specify which data you want, and which transformations you wish to apply to the data. You can see examples of such queries in the folder /docs/examples.
-- You can call the middleware routes using either Postman or via code (for example, using the requests package in [Python](https://www.geeksforgeeks.org/get-post-requests-using-python/)).
+- A query is a JSON file where you specify which data you want, and which transformations you wish to apply to the data. You can see query examples in the folder /docs/examples.
+- You can call the middleware routes using either Postman or via code using your favourite programming language. For example, you can use the requests package in [Python](https://www.geeksforgeeks.org/get-post-requests-using-python/) or the fetch API in [JavaScript](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch).
+- If you are familiar with Postman, you can also find a Postman collection in the folder /docs/examples.
 
-The following routes are availble:
+The following routes are available:
 
 | **Method** | **Route**               | **Description**                                                                              | **Input**                        |
 |------------|-------------------------|----------------------------------------------------------------------------------------------|----------------------------------|
@@ -67,5 +68,6 @@ Project manager: gabriel.cavalheiroullmann at concordia.ca
 
 ## Development Guidelines
 
-- If you wish to integrate your changes into the middleware, please create a new branch from develop, make your changes, then open a PR requesting merge into develop.
+- If you wish to integrate your changes into the middleware, please create a new branch from develop, make your changes, and then open a PR requesting merge into develop.
+- The branch develop is the working branch for developers. We will merge develop into master from time to time when we reckon to have a stable version or major new features.
 - Tests shall be written to show the proper way Producers and Operations should be used. Consequently, the tests will also ensure these classes are working as intended by the developer.
