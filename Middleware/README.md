@@ -2,8 +2,10 @@
 
 ![Java](https://img.shields.io/badge/Java-orange)
 ![Apache Maven](https://github.com/ptidejteam/ptidej-Ptidej/actions/workflows/maven.yml/badge.svg)
+This Web page: [![CO₂ Shield](https://img.shields.io/badge/CO₂-C_0.36g-C89806)](https://overbrowsing.com/projects/co2-shield)
 
-Tools4Cities Middleware allows users to fetch, transform, and process data from various sources using Producers, Operations, and Consumers.
+
+Tools4Cities Middleware allows users to fetch, transform, and process data from various sources using Producers and Operations.
 
 ## What is it?
 
