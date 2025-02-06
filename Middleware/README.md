@@ -17,9 +17,10 @@ The purpose of the Tools4Cities Middleware is to enable users to perform operati
 
 ## What do I need?
 
-- Java 17
+- Java 21
 - Eclipse 2024-06 (4.32.0)
 - Maven version 3.7.x (embedded in Eclipse)
+- Postman (optional)
 
 ## How do I set it up?
 
@@ -40,12 +41,18 @@ mvn validate
 mvn install
 ```
 
+## How do I use it?
+
+- This middleware is a REST API which receives queries as input, and generates data as output.
+- Queries are JSON files where you speficy which data you want, and which transformations you wish to apply on the data. In the folder /docs/examples, you can see examples of such queries.
+- You can call the middleware routes using either Postman or via code (for example, using the requests package in [Python](https://www.geeksforgeeks.org/get-post-requests-using-python/)).
+- For now the amount of Producers, Operations and parameters is quite limited, but we intend to expand it in the future and also document it better. Your suggestions are more than welcome!
+
 ## Who do I talk to?
 
 Project manager: gabriel.cavalheiroullmann at concordia.ca
 
 ## Guidelines
 
-- Tests shall be written to show the proper way producers, consumers and operations should be used.
-- Consequently, the tests will also ensure these classes are working as intended by the developer.
-- In the future, a code review process will be implemented to ensure changes will be integrated correctly, and that proper coding standards are followed.
+- If you wish to integrate your changes into the middleware, please create a new branch from develop, make your changes, then open a PR requesting merge into develop.
+- Tests shall be written to show the proper way Producers and Operations should be used. Consequently, the tests will also ensure these classes are working as intended by the developer.

@@ -1,0 +1,10 @@
+{
+    "use": "ca.concordia.encs.citydata.producers.StringProducer",
+    "withParams": [
+        {
+            "name": "generationProcess",
+            "value": "gabriel"
+        }
+    ],
+    "apply": []
+}
