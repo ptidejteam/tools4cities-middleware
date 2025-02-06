@@ -68,7 +68,7 @@ public class ListProducerController {
 		}
 
 		return producersDetailsList.isEmpty()
-				? List.of(Map.of("message", "No operations found in package: " + TARGET_PACKAGE))
+				? List.of(Map.of("message", "No producers found in package: " + TARGET_PACKAGE))
 				: producersDetailsList;
 	}
 }
