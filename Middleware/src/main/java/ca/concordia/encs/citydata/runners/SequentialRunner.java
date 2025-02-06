@@ -119,7 +119,8 @@ public class SequentialRunner extends AbstractRunner implements IRunner {
 		 */
 		JsonArray operationsToApply = getRequiredField(this.steps, "apply").getAsJsonArray();
 		int totalOperations = operationsToApply.size();
-		if (totalOperations > 0) {
+		if (producer != null && totalOperations > 0) {
+
 			JsonObject currentOperation = operationsToApply.get(this.operationCounter).getAsJsonObject();
 
 			// instantiate current operation
@@ -133,6 +134,7 @@ public class SequentialRunner extends AbstractRunner implements IRunner {
 
 			// set operation to producer
 			Method setOperationMethod = producer.getClass().getMethod("setOperation", IOperation.class);
+
 			setOperationMethod.invoke(producer, operationInstance);
 
 			// trigger data fetching, which will in turn apply the operation

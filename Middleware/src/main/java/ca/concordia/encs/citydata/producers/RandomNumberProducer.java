@@ -21,15 +21,19 @@ public class RandomNumberProducer extends AbstractProducer<Integer> implements I
 	@Override
 	public void fetch() {
 		try {
-			Random random = new Random();
-			final ArrayList<Integer> randomNumbers = new ArrayList<Integer>();
-			for (int i = 0; i < this.listSize; i++) {
-				randomNumbers.add(random.nextInt(100));
-				if (this.generationDelay > 0) {
-					Thread.sleep(this.generationDelay);
+			// if this is running for the first time, fetch
+			// otherwise, just apply next operation on top of previous result
+			if (this.result == null) {
+				Random random = new Random();
+				final ArrayList<Integer> randomNumbers = new ArrayList<Integer>();
+				for (int i = 0; i < this.listSize; i++) {
+					randomNumbers.add(random.nextInt(100));
+					if (this.generationDelay > 0) {
+						Thread.sleep(this.generationDelay);
+					}
 				}
+				this.result = randomNumbers;
 			}
-			this.result = randomNumbers;
 			this.applyOperation();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
