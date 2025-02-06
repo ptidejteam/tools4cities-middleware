@@ -1,0 +1,20 @@
+{
+  "use": "ca.concordia.encs.citydata.producers.RandomNumberProducer",
+  "withParams": [
+    {
+      "name": "listSize",
+      "value": 10
+    }
+  ],
+  "apply": [
+    {
+      "name": "ca.concordia.encs.citydata.operations.AverageOperation",
+      "withParams": [
+        {
+          "name": "roundingMethod",
+          "value": "floor"
+        }
+      ]
+    }
+  ]
+}

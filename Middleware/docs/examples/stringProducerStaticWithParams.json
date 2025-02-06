@@ -3,6 +3,10 @@
     "withParams": [
         {
             "name": "generationProcess",
+            "value": "processInput"
+        },
+        {
+            "name": "inputString",
             "value": "gabriel"
         }
     ],
