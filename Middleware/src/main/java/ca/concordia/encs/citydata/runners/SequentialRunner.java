@@ -18,7 +18,7 @@ import ca.concordia.encs.citydata.datastores.InMemoryDataStore;
  * This Runner starts with data provided by a producer P1, then applies
  * operations in order based on P1' (P1 prime). For example: P1 + O1 = P1'. P1'
  * + O2 -> P1'', etc.
- * 
+ *
  */
 public class SequentialRunner extends AbstractRunner implements IRunner {
 
@@ -95,7 +95,8 @@ public class SequentialRunner extends AbstractRunner implements IRunner {
 		JsonArray producerParams = getRequiredField(this.steps, "withParams").getAsJsonArray();
 
 		// instantiate a new Producer instance and set its params
-		Object producerInstance = instantiateClass(producerName);
+
+		Object producerInstance = instantiateClass("ca.concordia.encs.citydata.producers."+producerName);
 		setParameters(producerInstance, producerParams);
 
 		// add this Runner as an observer of the Producer instance
@@ -122,7 +123,7 @@ public class SequentialRunner extends AbstractRunner implements IRunner {
 			// instantiate current operation
 			JsonObject operationNode = currentOperation.getAsJsonObject();
 			String operationName = getRequiredField(operationNode, "name").getAsString();
-			Object operationInstance = instantiateClass(operationName);
+			Object operationInstance = instantiateClass("ca.concordia.encs.citydata.operations."+operationName);
 
 			// extract operation parameters and set them
 			JsonArray operationParams = getRequiredField(operationNode, "withParams").getAsJsonArray();
