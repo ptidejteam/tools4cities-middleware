@@ -71,9 +71,12 @@ public class SequentialRunner extends AbstractRunner implements IRunner {
 			return value.getAsBoolean();
 		} else if (targetType == double.class || targetType == Double.class) {
 			return value.getAsDouble();
-		} else {
-			return value.getAsString();
+		} else if (targetType == JsonObject.class) {
+			return value.getAsJsonObject();
+		} else if (targetType == JsonArray.class) {
+			return value.getAsJsonArray();
 		}
+		return value.getAsString();
 	}
 
 	private String capitalize(String str) {
@@ -116,7 +119,8 @@ public class SequentialRunner extends AbstractRunner implements IRunner {
 		 */
 		JsonArray operationsToApply = getRequiredField(this.steps, "apply").getAsJsonArray();
 		int totalOperations = operationsToApply.size();
-		if (totalOperations > 0) {
+		if (producer != null && totalOperations > 0) {
+
 			JsonObject currentOperation = operationsToApply.get(this.operationCounter).getAsJsonObject();
 
 			// instantiate current operation
@@ -130,6 +134,7 @@ public class SequentialRunner extends AbstractRunner implements IRunner {
 
 			// set operation to producer
 			Method setOperationMethod = producer.getClass().getMethod("setOperation", IOperation.class);
+
 			setOperationMethod.invoke(producer, operationInstance);
 
 			// trigger data fetching, which will in turn apply the operation

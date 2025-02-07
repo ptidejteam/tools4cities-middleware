@@ -3,6 +3,10 @@
     "withParams": [
         {
             "name": "generationProcess",
+            "value": "static"
+        },
+        {
+            "name": "staticString",
             "value": "gabriel"
         }
     ],

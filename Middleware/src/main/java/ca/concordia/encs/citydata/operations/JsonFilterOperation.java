@@ -1,20 +1,26 @@
 package ca.concordia.encs.citydata.operations;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import com.google.gson.JsonObject;
 
 import ca.concordia.encs.citydata.core.AbstractOperation;
 import ca.concordia.encs.citydata.core.IOperation;
 
+/**
+ * This operation filters an array of JsonObjects by a given key and value.
+ */
 public class JsonFilterOperation extends AbstractOperation<JsonObject> implements IOperation<JsonObject> {
-	String filterBy = "";
+	String key;
+	String value;
 	Boolean isExactlyEqual = false;
 
-	public void setFilterBy(String filterBy) {
-		this.filterBy = filterBy;
+	public void setKey(String key) {
+		this.key = key;
+	}
+
+	public void setValue(String value) {
+		this.value = value;
 	}
 
 	public void setIsExactlyEqual(Boolean isExactlyEqual) {
@@ -23,13 +29,17 @@ public class JsonFilterOperation extends AbstractOperation<JsonObject> implement
 
 	@Override
 	public ArrayList<JsonObject> apply(ArrayList<JsonObject> inputs) {
-		List<JsonObject> filteredList = inputs;
-		if (!isExactlyEqual) {
-			filteredList = inputs.stream().filter(s -> s.toString().contains(filterBy)).collect(Collectors.toList());
-		} else {
-			filteredList = inputs.stream().filter(s -> s.toString().equalsIgnoreCase(filterBy))
-					.collect(Collectors.toList());
+		ArrayList<JsonObject> filteredList = new ArrayList<>();
+		for (JsonObject jsonObject : inputs) {
+			if (key != null && jsonObject.has(key)) {
+				String objectValue = jsonObject.get(key).getAsString();
+				if (isExactlyEqual && objectValue.equals(value)) {
+					filteredList.add(jsonObject);
+				} else if (!isExactlyEqual && objectValue.contains(value)) {
+					filteredList.add(jsonObject);
+				}
+			}
 		}
-		return new ArrayList<JsonObject>(filteredList);
+		return filteredList;
 	}
 }

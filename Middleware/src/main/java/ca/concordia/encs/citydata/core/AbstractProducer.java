@@ -82,6 +82,11 @@ public abstract class AbstractProducer<E> extends MiddlewareEntity implements IP
 	}
 
 	@Override
+	public ArrayList<E> getResult() {
+		return this.result;
+	}
+
+	@Override
 	// if this is a JsonObject, JsonElement or JsonArray producer, stringify the
 	// JsonObject
 	// else, forcibly cast the result into string, but also put it in a JSON for
