@@ -28,7 +28,7 @@ public class ListOperationsController {
 		List<Map<String, String>> operationDetailsList = new ArrayList<>();
 
 		// Get the path to the package
-		URL packageURL = Thread.currentThread().getContextClassLoader().getResource(IConstant.OPERATION_ROOT_PACKAGE);
+		URL packageURL = Thread.currentThread().getContextClassLoader().getResource(Constants.OPERATION_ROOT_PACKAGE);
 
 		if (packageURL == null) {
 			return List.of(Map.of("error", "Package not found."));
@@ -67,7 +67,7 @@ public class ListOperationsController {
 		}
 
 		return operationDetailsList.isEmpty()
-				? List.of(Map.of("message", "No operations found in package: " + IConstant.OPERATION_ROOT_PACKAGE))
+				? List.of(Map.of("message", "No operations found in package: " + Constants.OPERATION_ROOT_PACKAGE))
 				: operationDetailsList;
 	}
 }

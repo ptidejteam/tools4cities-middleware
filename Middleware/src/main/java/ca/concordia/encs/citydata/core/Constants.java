@@ -7,7 +7,7 @@ package ca.concordia.encs.citydata.core;
  */
 
 
-public interface IConstant {
+public interface Constants {
     public static final String PRODUCER_ROOT_PACKAGE = "ca/concordia/encs/citydata/producers";
 
     public static final String OPERATION_ROOT_PACKAGE= "ca/concordia/encs/citydata/operations";

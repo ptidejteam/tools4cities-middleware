@@ -28,7 +28,7 @@ public class ListProducerController {
 		List<Map<String, String>> producersDetailsList = new ArrayList<>();
 
 		// Get the path to the package
-		URL packageURL = Thread.currentThread().getContextClassLoader().getResource(IConstant.PRODUCER_ROOT_PACKAGE);
+		URL packageURL = Thread.currentThread().getContextClassLoader().getResource(Constants.PRODUCER_ROOT_PACKAGE);
 
 		if (packageURL == null) {
 			return List.of(Map.of("error", "Package not found."));
@@ -67,7 +67,7 @@ public class ListProducerController {
 		}
 
 		return producersDetailsList.isEmpty()
-				? List.of(Map.of("message", "No producers found in package: " + IConstant.PRODUCER_ROOT_PACKAGE))
+				? List.of(Map.of("message", "No producers found in package: " + Constants.PRODUCER_ROOT_PACKAGE))
 				: producersDetailsList;
 	}
 }
