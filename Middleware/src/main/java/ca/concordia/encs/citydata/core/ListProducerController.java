@@ -22,14 +22,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/producers")
 public class ListProducerController {
 
-	private static final String TARGET_PACKAGE = "ca/concordia/encs/citydata/producers";
 
 	@GetMapping("/list")
 	public List<Map<String, String>> listProducers() throws IOException, ClassNotFoundException {
 		List<Map<String, String>> producersDetailsList = new ArrayList<>();
 
 		// Get the path to the package
-		URL packageURL = Thread.currentThread().getContextClassLoader().getResource(TARGET_PACKAGE);
+		URL packageURL = Thread.currentThread().getContextClassLoader().getResource(IConstant.PRODUCER_ROOT_PACKAGE);
 
 		if (packageURL == null) {
 			return List.of(Map.of("error", "Package not found."));
@@ -68,7 +67,7 @@ public class ListProducerController {
 		}
 
 		return producersDetailsList.isEmpty()
-				? List.of(Map.of("message", "No producers found in package: " + TARGET_PACKAGE))
+				? List.of(Map.of("message", "No producers found in package: " + IConstant.PRODUCER_ROOT_PACKAGE))
 				: producersDetailsList;
 	}
 }
