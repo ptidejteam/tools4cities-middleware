@@ -25,7 +25,7 @@ import ca.concordia.encs.citydata.core.AppConfig;
 @SpringBootTest(classes = AppConfig.class)
 @AutoConfigureMockMvc
 @ComponentScan(basePackages = "ca.concordia.encs.citydata.core") // Explicitly scan the package containing
-																	// ProducerController
+// ProducerController (now ApplyController)
 
 public class ApplyTest {
 
@@ -241,7 +241,7 @@ public class ApplyTest {
 				.andExpect(status().is4xxClientError());
 	}
 
-	// Test to check /apply/sync with incomplete input
+	// Test to check /apply/sync with incomplete input - Fix this error
 	@Test
 	public void testSyncWrongMediaType() throws Exception {
 		mockMvc.perform(post("/apply/sync").contentType("application/XXX").content(ApplyTest.jsonPayload))

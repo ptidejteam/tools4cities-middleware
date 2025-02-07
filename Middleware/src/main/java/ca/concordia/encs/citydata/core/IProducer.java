@@ -6,6 +6,7 @@ package ca.concordia.encs.citydata.core;
  * operation on the result - Notify observers when both tasks are done
  * 
  */
+
 public interface IProducer<E> {
 
 	// 1 - prepare producer
