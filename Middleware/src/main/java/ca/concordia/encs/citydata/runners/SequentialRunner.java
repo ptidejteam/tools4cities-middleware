@@ -96,7 +96,7 @@ public class SequentialRunner extends AbstractRunner implements IRunner {
 
 		// instantiate a new Producer instance and set its params
 
-		Object producerInstance = instantiateClass("ca.concordia.encs.citydata.producers."+producerName);
+		Object producerInstance = instantiateClass(producerName);
 		setParameters(producerInstance, producerParams);
 
 		// add this Runner as an observer of the Producer instance
@@ -123,7 +123,7 @@ public class SequentialRunner extends AbstractRunner implements IRunner {
 			// instantiate current operation
 			JsonObject operationNode = currentOperation.getAsJsonObject();
 			String operationName = getRequiredField(operationNode, "name").getAsString();
-			Object operationInstance = instantiateClass("ca.concordia.encs.citydata.operations."+operationName);
+			Object operationInstance = instantiateClass(operationName);
 
 			// extract operation parameters and set them
 			JsonArray operationParams = getRequiredField(operationNode, "withParams").getAsJsonArray();

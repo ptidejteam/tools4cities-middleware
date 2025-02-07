@@ -87,12 +87,12 @@ public class ApplyTest {
 		ApplyTest.jsonPayload = payload.toString();
 	}
 
-	// Test for POST /async with valid JSON input
+	 //Test for POST /async with valid JSON input
 	@Test
 	public void whenValidSteps_thenReturnSuccessMessage() throws Exception {
 		// Create the JSON payload
 		JsonObject payload = new JsonObject();
-		payload.addProperty("use", "StringProducer");
+		payload.addProperty("use", "ca.concordia.encs.citydata.core.producers.StringProducer");
 
 		// Add "withParams" array
 		JsonArray withParams = new JsonArray();
@@ -113,7 +113,7 @@ public class ApplyTest {
 
 		// First operation
 		JsonObject operation1 = new JsonObject();
-		operation1.addProperty("name", "StringReplaceOperation");
+		operation1.addProperty("name", "ca.concordia.encs.citydata.core.operations.StringReplaceOperation");
 
 		JsonArray operation1Params = new JsonArray();
 		JsonObject operation1Param1 = new JsonObject();
@@ -131,7 +131,7 @@ public class ApplyTest {
 
 		// Second operation
 		JsonObject operation2 = new JsonObject();
-		operation2.addProperty("name", "StringReplaceOperation");
+		operation2.addProperty("name", "ca.concordia.encs.citydata.core.operations.StringReplaceOperation");
 
 		JsonArray operation2Params = new JsonArray();
 		JsonObject operation2Param1 = new JsonObject();
@@ -231,7 +231,7 @@ public class ApplyTest {
 	@Test
 	public void testSync() throws Exception {
 		JsonObject payload = new JsonObject();
-		payload.addProperty("use", "StringProducer");
+		payload.addProperty("use", "ca.concordia.encs.citydata.producers.StringProducer");
 		// Add "withParams" array
 		JsonArray withParams = new JsonArray();
 		JsonObject param1 = new JsonObject();
@@ -247,7 +247,7 @@ public class ApplyTest {
 		JsonArray apply = new JsonArray();
 		// First operation
 		JsonObject operation1 = new JsonObject();
-		operation1.addProperty("name", "StringReplaceOperation");
+		operation1.addProperty("name", "ca.concordia.encs.citydata.operations.StringReplaceOperation");
 		JsonArray operation1Params = new JsonArray();
 		JsonObject operation1Param1 = new JsonObject();
 		operation1Param1.addProperty("name", "searchFor");
@@ -261,7 +261,7 @@ public class ApplyTest {
 		apply.add(operation1);
 		// Second operation
 		JsonObject operation2 = new JsonObject();
-		operation2.addProperty("name", "StringReplaceOperation");
+		operation2.addProperty("name", "ca.concordia.encs.citydata.operations.StringReplaceOperation");
 		JsonArray operation2Params = new JsonArray();
 		JsonObject operation2Param1 = new JsonObject();
 		operation2Param1.addProperty("name", "searchFor");
