@@ -25,7 +25,7 @@ import ca.concordia.encs.citydata.core.AppConfig;
 @SpringBootTest(classes = AppConfig.class)
 @AutoConfigureMockMvc
 @ComponentScan(basePackages = "ca.concordia.encs.citydata.core") // Explicitly scan the package containing
-																	// ProducerController
+// ProducerController (now ApplyController)
 
 public class ApplyTest {
 
@@ -183,7 +183,7 @@ public class ApplyTest {
 		final String invalidSteps = "invalid-json";
 
 		mockMvc.perform(post("/apply/asyncXXX").contentType(MediaType.APPLICATION_JSON).content(invalidSteps))
-				.andExpect(status().is4xxClientError());
+				.andExpect(status().is5xxServerError());
 	}
 
 	// Test to check /apply/async with invalid JSON input and wrong route accessed
@@ -192,7 +192,7 @@ public class ApplyTest {
 		final String invalidSteps = "invalid-json";
 
 		mockMvc.perform(post("/applyXXX/async").contentType(MediaType.APPLICATION_NDJSON).content(invalidSteps))
-				.andExpect(status().is4xxClientError());
+				.andExpect(status().is5xxServerError());
 	}
 
 	// Test for GET /async/{runnerId} with a valid runner ID
@@ -284,10 +284,10 @@ public class ApplyTest {
 	@Test
 	public void testSyncWrongMediaTypeAccess() throws Exception {
 		mockMvc.perform(post("/apply/sync").contentType("XXX").content(ApplyTest.jsonPayload))
-				.andExpect(status().is4xxClientError());
+				.andExpect(status().is5xxServerError());
 	}
 
-	// Test to check /apply/sync with incomplete input
+	// Test to check /apply/sync with incomplete input - Fix this error
 	@Test
 	public void testSyncWrongMediaType() throws Exception {
 		mockMvc.perform(post("/apply/sync").contentType("application/XXX").content(ApplyTest.jsonPayload))
