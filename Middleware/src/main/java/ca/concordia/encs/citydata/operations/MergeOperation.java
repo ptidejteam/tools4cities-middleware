@@ -1,0 +1,77 @@
+package ca.concordia.encs.citydata.operations;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+
+import com.google.gson.JsonArray;
+
+import ca.concordia.encs.citydata.core.AbstractOperation;
+import ca.concordia.encs.citydata.core.IDataStore;
+import ca.concordia.encs.citydata.core.IOperation;
+import ca.concordia.encs.citydata.datastores.InMemoryDataStore;
+import ca.concordia.encs.citydata.runners.LazyRunner;
+
+/**
+ * This operation merges two Producer results together.
+ */
+public class MergeOperation extends AbstractOperation<String> implements IOperation<String> {
+
+	private String targetProducer;
+	private JsonArray targetProducerParams;
+
+	public void setTargetProducer(String targetProducer) {
+		this.targetProducer = targetProducer;
+	}
+
+	public void setTargetProducerParams(JsonArray targetProducerParams) {
+		this.targetProducerParams = targetProducerParams;
+	}
+
+	@Override
+	public ArrayList<String> apply(ArrayList<String> inputs) {
+
+		// all keys are timestamps because timestamps are unique, and JSON cannot have
+		// duplicated keys
+		String timeStampFormat = "yyyy-MM-dd_HH:mm:ss";
+		Date timeObject = Calendar.getInstance().getTime();
+		String timeStampSource = new SimpleDateFormat(timeStampFormat).format(timeObject);
+
+		ArrayList<String> sourceList = new ArrayList<>();
+		sourceList.add("{\"" + timeStampSource + "\": \"" + inputs + "\" }");
+
+		try {
+			LazyRunner deckard = new LazyRunner(targetProducer, targetProducerParams);
+			Thread runnerTask = new Thread() {
+				public void run() {
+					try {
+						deckard.runSteps();
+						while (!deckard.isDone()) {
+							System.out.println("Busy waiting!");
+						}
+					} catch (Exception e) {
+						System.out.println(e.getMessage());
+					}
+
+				}
+			};
+			runnerTask.start();
+			runnerTask.join();
+
+			String runnerId = deckard.getMetadata("id").toString();
+			IDataStore store = InMemoryDataStore.getInstance();
+
+			ArrayList<String> targetList = (ArrayList<String>) store.get(runnerId).getResult();
+			if (targetList != null && targetList.size() > 0) {
+				String timeStampTarget = new SimpleDateFormat(timeStampFormat).format(timeObject);
+				sourceList.add("{\"" + timeStampTarget + "\": \"" + targetList + "\" }");
+			}
+
+		} catch (InterruptedException e) {
+			System.out.println(e.getMessage());
+		}
+
+		return sourceList;
+	}
+}

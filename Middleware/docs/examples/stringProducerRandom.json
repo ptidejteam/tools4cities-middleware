@@ -1,0 +1,14 @@
+{
+    "use": "ca.concordia.encs.citydata.producers.StringProducer",
+    "withParams": [
+        {
+            "name": "generationProcess",
+            "value": "random"
+        },
+        {
+            "name": "stringLength",
+            "value": 10
+        }
+    ],
+    "apply": []
+}

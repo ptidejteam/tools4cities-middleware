@@ -28,7 +28,7 @@ public class SequentialRunner extends AbstractRunner implements IRunner {
 	public SequentialRunner(JsonObject steps) {
 		this.steps = steps;
 	}
-
+  
 	// RUNNER METHODS
 	@Override
 	public void runSteps() throws Exception {
@@ -44,7 +44,7 @@ public class SequentialRunner extends AbstractRunner implements IRunner {
 		JsonArray producerParams = ReflectionUtils.getRequiredField(this.steps, "withParams").getAsJsonArray();
 
 		// instantiate a new Producer instance and set its params
-		Object producerInstance = ReflectionUtils.instantiateClass(producerName);
+    Object producerInstance = ReflectionUtils.instantiateClass(producerName);
 		ReflectionUtils.setParameters(producerInstance, producerParams);
 
 		// add this Runner as an observer of the Producer instance
@@ -65,7 +65,8 @@ public class SequentialRunner extends AbstractRunner implements IRunner {
 		 */
 		JsonArray operationsToApply = ReflectionUtils.getRequiredField(this.steps, "apply").getAsJsonArray();
 		int totalOperations = operationsToApply.size();
-		if (totalOperations > 0) {
+		if (producer != null && totalOperations > 0) {
+
 			JsonObject currentOperation = operationsToApply.get(this.operationCounter).getAsJsonObject();
 
 			// instantiate current operation
@@ -78,6 +79,7 @@ public class SequentialRunner extends AbstractRunner implements IRunner {
 
 			// set operation to producer
 			Method setOperationMethod = producer.getClass().getMethod("setOperation", IOperation.class);
+
 			setOperationMethod.invoke(producer, operationInstance);
 
 			// trigger data fetching, which will in turn apply the operation

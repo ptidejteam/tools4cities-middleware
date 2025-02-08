@@ -13,22 +13,22 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-/* This java class is to print all available producers and their characteristics
+/* This java class is to print all available operations and their characteristics 
  * Author: Sikandar Ejaz
  * Date: 2-6-2025
  */
 
 @RestController
-@RequestMapping("/producers")
-public class ListProducerController {
+@RequestMapping("/operations")
+public class ListOperationsController {
 
 
 	@GetMapping("/list")
-	public List<Map<String, String>> listProducers() throws IOException, ClassNotFoundException {
-		List<Map<String, String>> producersDetailsList = new ArrayList<>();
+	public List<Map<String, String>> listOperations() throws IOException, ClassNotFoundException {
+		List<Map<String, String>> operationDetailsList = new ArrayList<>();
 
 		// Get the path to the package
-		URL packageURL = Thread.currentThread().getContextClassLoader().getResource(Constants.PRODUCER_ROOT_PACKAGE);
+		URL packageURL = Thread.currentThread().getContextClassLoader().getResource(Constants.OPERATION_ROOT_PACKAGE);
 
 		if (packageURL == null) {
 			return List.of(Map.of("error", "Package not found."));
@@ -43,13 +43,13 @@ public class ListProducerController {
 				String className = file.getName().substring(0, file.getName().length() - 6);
 
 				// Load the class using reflection
-				Class<?> clazz = Class.forName("ca.concordia.encs.citydata.producers." + className);
+				Class<?> clazz = Class.forName("ca.concordia.encs.citydata.operations." + className);
 
 				// Map to hold operation details
-				Map<String, String> producersDetails = new HashMap<>();
+				Map<String, String> operationDetails = new HashMap<>();
 
 				// Set class name
-				producersDetails.put("name", clazz.getName());
+				operationDetails.put("name", clazz.getName());
 
 				// Collect fields and method signatures
 				List<String> paramList = new ArrayList<>();
@@ -60,14 +60,14 @@ public class ListProducerController {
 					paramList.add(field.getName() + " (" + field.getType().getSimpleName() + ")");
 				}
 
-				producersDetails.put("params", String.join(", ", paramList));
+				operationDetails.put("params", String.join(", ", paramList));
 
-				producersDetailsList.add(producersDetails);
+				operationDetailsList.add(operationDetails);
 			}
 		}
 
-		return producersDetailsList.isEmpty()
-				? List.of(Map.of("message", "No producers found in package: " + Constants.PRODUCER_ROOT_PACKAGE))
-				: producersDetailsList;
+		return operationDetailsList.isEmpty()
+				? List.of(Map.of("message", "No operations found in package: " + Constants.OPERATION_ROOT_PACKAGE))
+				: operationDetailsList;
 	}
 }
