@@ -22,14 +22,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/operations")
 public class ListOperationsController {
 
-	private static final String TARGET_PACKAGE = "ca/concordia/encs/citydata/operations";
 
 	@GetMapping("/list")
 	public List<Map<String, String>> listOperations() throws IOException, ClassNotFoundException {
 		List<Map<String, String>> operationDetailsList = new ArrayList<>();
 
 		// Get the path to the package
-		URL packageURL = Thread.currentThread().getContextClassLoader().getResource(TARGET_PACKAGE);
+		URL packageURL = Thread.currentThread().getContextClassLoader().getResource(Constants.OPERATION_ROOT_PACKAGE);
 
 		if (packageURL == null) {
 			return List.of(Map.of("error", "Package not found."));
@@ -68,7 +67,7 @@ public class ListOperationsController {
 		}
 
 		return operationDetailsList.isEmpty()
-				? List.of(Map.of("message", "No operations found in package: " + TARGET_PACKAGE))
+				? List.of(Map.of("message", "No operations found in package: " + Constants.OPERATION_ROOT_PACKAGE))
 				: operationDetailsList;
 	}
 }
