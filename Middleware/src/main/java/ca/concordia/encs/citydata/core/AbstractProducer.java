@@ -176,5 +176,4 @@ public abstract class AbstractProducer<E> extends MiddlewareEntity implements IP
 			throw new RuntimeException("Cannot read file: " + this.filePath, e);
 		}
 	}
-
 }
