@@ -36,6 +36,8 @@ public class OccupancyProducer extends AbstractProducer<String> implements IProd
 		this.applyOperation();
 	}
 
+	// Fix the error here
+
 	/*
 	 * public List<String> getResult() { return this.result; }
 	 */
