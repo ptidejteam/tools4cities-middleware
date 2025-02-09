@@ -1,7 +1,6 @@
 package ca.concordia.encs.citydata.producers;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 import ca.concordia.encs.citydata.core.AbstractProducer;
@@ -41,7 +40,9 @@ public class RandomNumberProducer extends AbstractProducer<Integer> implements I
 		}
 	}
 
-	public List<Integer> getResult() {
-		return this.result;
-	}
+	// Fix the error here
+
+	/*
+	 * public List<Integer> getResult() { return this.result; }
+	 */
 }

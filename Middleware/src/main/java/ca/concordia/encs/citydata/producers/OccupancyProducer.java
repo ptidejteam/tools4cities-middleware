@@ -1,7 +1,6 @@
 package ca.concordia.encs.citydata.producers;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 import ca.concordia.encs.citydata.core.AbstractProducer;
@@ -37,7 +36,7 @@ public class OccupancyProducer extends AbstractProducer<String> implements IProd
 		this.applyOperation();
 	}
 
-	public List<String> getResult() {
-		return this.result;
-	}
+	/*
+	 * public List<String> getResult() { return this.result; }
+	 */
 }
