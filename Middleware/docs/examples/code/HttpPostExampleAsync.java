@@ -8,13 +8,50 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class HttpPostExample {
+public class HttpPostExampleAsync {
 	
 	public static void main(String[] args) throws IOException {
 		String requestUrl = "http://localhost:8082/apply/sync";
-		String jsonInput = "{\"key\": \"value\"}"; // Example JSON input
+		String jsonInput = "{\r\n"
+				+ "  \"use\": \"ca.concordia.encs.citydata.producers.RandomNumberProducer\",\r\n"
+				+ "  \"withParams\": [\r\n"
+				+ "    {\r\n"
+				+ "      \"name\": \"listSize\",\r\n"
+				+ "      \"value\": 10\r\n"
+				+ "    }\r\n"
+				+ "  ],\r\n"
+				+ "  \"apply\": [\r\n"
+				+ "    {\r\n"
+				+ "      \"name\": \"ca.concordia.encs.citydata.operations.AverageOperation\",\r\n"
+				+ "      \"withParams\": [\r\n"
+				+ "        {\r\n"
+				+ "          \"name\": \"roundingMethod\",\r\n"
+				+ "          \"value\": \"floor\"\r\n"
+				+ "        }\r\n"
+				+ "      ]\r\n"
+				+ "    },\r\n"
+				+ "    {\r\n"
+				+ "      \"name\": \"ca.concordia.encs.citydata.operations.MergeOperation\",\r\n"
+				+ "      \"withParams\": [\r\n"
+				+ "        {\r\n"
+				+ "          \"name\": \"targetProducer\",\r\n"
+				+ "          \"value\": \"ca.concordia.encs.citydata.producers.RandomNumberProducer\"\r\n"
+				+ "        },\r\n"
+				+ "        {\r\n"
+				+ "          \"name\": \"targetProducerParams\",\r\n"
+				+ "          \"value\": [\r\n"
+				+ "            {\r\n"
+				+ "              \"name\": \"listSize\",\r\n"
+				+ "              \"value\": 4\r\n"
+				+ "            }\r\n"
+				+ "          ]\r\n"
+				+ "        }\r\n"
+				+ "      ]\r\n"
+				+ "    }\r\n"
+				+ "  ]\r\n"
+				+ "}"; // Example JSON input
 
-		URL url = new URI.toURL(requestUrl);
+		URL url = new URL(requestUrl);
 		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 		connection.setRequestMethod("POST");
 		connection.setRequestProperty("Content-Type", "application/json");

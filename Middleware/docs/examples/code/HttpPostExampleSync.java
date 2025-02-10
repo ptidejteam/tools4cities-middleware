@@ -8,13 +8,13 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class HttpPostExampleAsync {
+public class HttpPostExampleSync {
 	
 	public static void main(String[] args) throws IOException {
 		String requestUrl = "http://localhost:8082/apply/async";
 		String jsonInput = "{\"task\": \"long-running-task\"}";
 
-		URL url = new URI.toURL(requestUrl);
+		URL url = new URL(requestUrl);
 		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 		connection.setRequestMethod("POST");
 		connection.setRequestProperty("Content-Type", "application/json");

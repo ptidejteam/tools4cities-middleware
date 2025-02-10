@@ -14,7 +14,7 @@ public class HttpGetExampleAsync {
 		String runnerId = "example-id";
 		String requestUrl = "http://localhost:8082/apply/async/" + runnerId;
 
-		URL url = new URI.toURL(requestUrl);
+		URL url = new URL(requestUrl);
 		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 		connection.setRequestMethod("GET");
 
