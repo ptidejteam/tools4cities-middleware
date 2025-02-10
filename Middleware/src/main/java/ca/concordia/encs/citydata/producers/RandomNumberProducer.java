@@ -39,11 +39,4 @@ public class RandomNumberProducer extends AbstractProducer<Integer> implements I
 			e.printStackTrace();
 		}
 	}
-
-	// Fix the error here
-
-	/*
-	 * public List<Integer> getResult() { return this.result; }
-	 */
-
 }

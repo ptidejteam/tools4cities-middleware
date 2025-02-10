@@ -11,7 +11,7 @@ import java.net.URL;
 public class HttpPostSync {
 	
 	public static void main(String[] args) throws IOException {
-		String requestUrl = "http://localhost:8080/apply/sync";
+		String requestUrl = "http://localhost:8082/apply/sync";
 		String jsonInput = "{\r\n"
 				+ "    \"use\": \"ca.concordia.encs.citydata.producers.EnergyConsumptionProducer\",\r\n"
 				+ "    \"withParams\": [\r\n"

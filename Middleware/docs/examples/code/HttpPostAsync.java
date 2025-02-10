@@ -11,7 +11,7 @@ import java.net.URL;
 public class HttpPostAsync {
 	
 	public static void main(String[] args) throws IOException {
-		String requestUrl = "http://localhost:8080/apply/async";
+		String requestUrl = "http://localhost:8082/apply/async";
 		String jsonInput = "{\r\n"
 				+ "  \"use\": \"ca.concordia.encs.citydata.producers.RandomNumberProducer\",\r\n"
 				+ "  \"withParams\": [\r\n"
