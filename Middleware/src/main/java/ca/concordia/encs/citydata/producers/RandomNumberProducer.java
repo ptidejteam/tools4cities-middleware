@@ -45,4 +45,5 @@ public class RandomNumberProducer extends AbstractProducer<Integer> implements I
 	/*
 	 * public List<Integer> getResult() { return this.result; }
 	 */
+
 }

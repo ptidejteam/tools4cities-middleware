@@ -8,10 +8,10 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class HttpPostExampleAsync {
+public class HttpPostAsync {
 	
 	public static void main(String[] args) throws IOException {
-		String requestUrl = "http://localhost:8082/apply/sync";
+		String requestUrl = "http://localhost:8080/apply/async";
 		String jsonInput = "{\r\n"
 				+ "  \"use\": \"ca.concordia.encs.citydata.producers.RandomNumberProducer\",\r\n"
 				+ "  \"withParams\": [\r\n"

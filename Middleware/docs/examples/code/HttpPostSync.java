@@ -8,11 +8,30 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class HttpPostExampleSync {
+public class HttpPostSync {
 	
 	public static void main(String[] args) throws IOException {
-		String requestUrl = "http://localhost:8082/apply/async";
-		String jsonInput = "{\"task\": \"long-running-task\"}";
+		String requestUrl = "http://localhost:8080/apply/sync";
+		String jsonInput = "{\r\n"
+				+ "    \"use\": \"ca.concordia.encs.citydata.producers.EnergyConsumptionProducer\",\r\n"
+				+ "    \"withParams\": [\r\n"
+				+ "        {\r\n"
+				+ "            \"name\": \"city\",\r\n"
+				+ "            \"value\": \"montreal\"\r\n"
+				+ "        }\r\n"
+				+ "    ],\r\n"
+				+ "    \"apply\": [\r\n"
+				+ "        {\r\n"
+				+ "            \"name\": \"ca.concordia.encs.citydata.operations.StringFilterOperation\",\r\n"
+				+ "            \"withParams\": [\r\n"
+				+ "                {\r\n"
+				+ "                    \"name\": \"filterBy\",\r\n"
+				+ "                    \"value\": \"09:45:00\"\r\n"
+				+ "                }\r\n"
+				+ "            ]\r\n"
+				+ "        }\r\n"
+				+ "    ]\r\n"
+				+ "}";
 
 		URL url = new URL(requestUrl);
 		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
