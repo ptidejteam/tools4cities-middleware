@@ -55,7 +55,7 @@ public class ApplyController {
 		}
 
 		// else, return the data
-		IDataStore store = InMemoryDataStore.getInstance();
+		InMemoryDataStore store = InMemoryDataStore.getInstance();
 		return store.get(runnerId).getResultJSONString();
 	}
 
