@@ -4,13 +4,16 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 
 import ca.concordia.encs.citydata.datastores.InMemoryDataStore;
@@ -45,13 +48,16 @@ public class ApplyController {
 			};
 			runnerTask.start();
 			runnerTask.join();
+		} catch (IllegalStateException | JsonParseException e) {
+			String detailedMessage = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			errorLog.addProperty("threadError", "Your query is not a valid JSON file. Details: " + detailedMessage);
 		} catch (Exception e) {
 			errorLog.addProperty("threadError", e.getClass().getName() + ": " + e.getMessage());
 		}
 
 		// if there are execution errors, return an error message
 		if (errorLog.keySet().size() > 0) {
-			return errorLog.toString();
+			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, errorLog.toString());
 		}
 
 		// else, return the data
@@ -68,18 +74,21 @@ public class ApplyController {
 			SequentialRunner deckard = new SequentialRunner(stepsObject);
 			runnerId = deckard.getMetadata("id").toString();
 			deckard.runSteps();
+		} catch (IllegalStateException | JsonParseException e) {
+			String detailedMessage = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+			errorLog.addProperty("threadError", "Your query is not a valid JSON file. Details: " + detailedMessage);
 		} catch (Exception e) {
-			errorLog.addProperty("runnerError", e.getClass().getName() + ": " + e.getMessage());
+			errorLog.addProperty("threadError", e.getClass().getName() + ": " + e.getMessage());
 		}
 
 		// if there are execution errors, return an error message
 		if (errorLog.keySet().size() > 0) {
-			return errorLog.toString();
+			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, errorLog.toString());
 		}
 
 		return "Hello! The runner " + runnerId
 				+ " is currently working on your request. Please make a GET request to /apply/async/ " + runnerId
-				+ " to find out your request status.";
+				+ " to retrieve request results.";
 	}
 
 	@RequestMapping(value = "/async/{runnerId}", method = RequestMethod.GET)
@@ -97,6 +106,6 @@ public class ApplyController {
 	public String ping() {
 		Date timeObject = Calendar.getInstance().getTime();
 		String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(timeObject);
-		return "pong - " + timeStamp;
+		return "pong at " + timeStamp;
 	}
 }
