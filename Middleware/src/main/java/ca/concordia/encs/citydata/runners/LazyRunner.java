@@ -20,7 +20,6 @@ import ca.concordia.encs.citydata.datastores.InMemoryDataStore;
  */
 public class LazyRunner extends AbstractRunner implements IRunner {
 
-	private IProducer producer;
 	private String targetProducer;
 	private JsonArray targetProducerParams;
 
@@ -54,7 +53,8 @@ public class LazyRunner extends AbstractRunner implements IRunner {
 
 			// instantiate a new Producer instance
 			Class<?> targetProducerClass = Class.forName(this.targetProducer);
-			IProducer targetProducerInstance = (IProducer) targetProducerClass.getDeclaredConstructor().newInstance();
+			IProducer<?> targetProducerInstance = (IProducer<?>) targetProducerClass.getDeclaredConstructor()
+					.newInstance();
 
 			// set Producer params
 			for (JsonElement param : this.targetProducerParams) {
