@@ -135,15 +135,15 @@ public class CKANProducer extends AbstractProducer<String> implements IProducer<
 			// before attempting to fetch, check if a file with this resource ID already
 			// exists in the disk
 			byte[] fileOnDisk = diskStore.get(this.resourceId);
-
-			// if not, fetch from CKAN and save on disk
 			if (fileOnDisk == null) {
+				// if not, fetch from CKAN and save on disk
 				byte[] fileFromCkan = fetchFromCkan();
 				diskStore.set(this.resourceId, fileFromCkan);
 				intermediateResult.add(new String(fileFromCkan));
 			} else {
 				intermediateResult.add(new String(fileOnDisk));
 			}
+
 			this.result = this.intermediateResult;
 			this.applyOperation();
 		}

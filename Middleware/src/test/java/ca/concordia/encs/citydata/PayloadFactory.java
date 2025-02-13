@@ -1,5 +1,9 @@
 package ca.concordia.encs.citydata;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
@@ -63,9 +67,13 @@ public abstract class PayloadFactory {
 		return payload.toString();
 	}
 
-	public static String getExampleQuery(String queryFileName) {
-		// TODO: read files from src/examples/queries
-		return "Not yet implemented.";
+	public static String getExampleQuery(String queryFileName) throws Exception {
+		try {
+			Path filePath = Path.of("./docs/examples/queries/" + queryFileName + ".json");
+			return new String(Files.readAllBytes(filePath));
+		} catch (IOException e) {
+			throw e;
+		}
 	}
 
 }
