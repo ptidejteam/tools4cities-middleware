@@ -29,7 +29,6 @@ public class SequentialRunner extends AbstractRunner implements IRunner {
 		this.steps = steps;
 	}
 
-	// RUNNER METHODS
 	@Override
 	public void runSteps() throws Exception {
 		// if there are no steps to run, warn the user and stop
