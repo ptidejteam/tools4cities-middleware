@@ -11,13 +11,15 @@ import ca.concordia.encs.citydata.core.IProducer;
 import ca.concordia.encs.citydata.core.IRunner;
 import ca.concordia.encs.citydata.core.ReflectionUtils;
 import ca.concordia.encs.citydata.datastores.InMemoryDataStore;
+import ca.concordia.encs.citydata.producers.ExceptionProducer;
 
-/**
- *
- * This Runner starts with data provided by a producer P1, then applies
+/* This Runner starts with data provided by a producer P1, then applies
  * operations in order based on P1' (P1 prime). For example: P1 + O1 = P1'. P1'
- * + O2 -> P1'', etc.
+ * + O2 -> P1'', etc. It is notified via the Observer pattern when P1' is ready, 
+ * then proceeds to the next Operation until all operations are completed.
  *
+ * Author: Gabriel C. Ullmann 
+ * Date: 2025-02-14
  */
 public class SequentialRunner extends AbstractRunner implements IRunner {
 
@@ -92,21 +94,30 @@ public class SequentialRunner extends AbstractRunner implements IRunner {
 	}
 
 	@Override
-	public void newDataAvailable(IProducer<?> producer) throws Exception {
+	public void newDataAvailable(IProducer<?> producer) {
 
 		// congratulations, you are done with your operation, go to the next one
 		this.operationCounter += 1;
 
-		// but is there really a next one? if not, stop
-		JsonArray operationsToApply = ReflectionUtils.getRequiredField(this.steps, "apply").getAsJsonArray();
-		if (this.operationCounter >= operationsToApply.size()) {
-			this.storeResults(producer);
+		try {
+			// but is there really a next one? if not, stop
+			JsonArray operationsToApply = ReflectionUtils.getRequiredField(this.steps, "apply").getAsJsonArray();
+			if (this.operationCounter >= operationsToApply.size()) {
+				this.storeResults(producer);
+				this.setAsDone();
+				System.out.println("Run completed!");
+			} else {
+				// if there are operations to be applied, apply the first one
+				// subsequent operations will be applied on the P1' once the first is done
+				this.applyNextOperation(producer);
+			}
+		} catch (Exception e) {
+			InMemoryDataStore store = InMemoryDataStore.getInstance();
+			store.set(this.getMetadataString("id"), new ExceptionProducer(e));
+
+			// stop runner as soon as an exception is thrown to avoid infinite loops
 			this.setAsDone();
-			System.out.println("Run completed!");
-		} else {
-			// if there are operations to be applied, apply the first one
-			// subsequent operations will be applied on the P1' once the first is done
-			this.applyNextOperation(producer);
+			System.out.println(e.getMessage());
 		}
 
 	}

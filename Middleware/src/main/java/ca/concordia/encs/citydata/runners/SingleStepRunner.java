@@ -10,12 +10,18 @@ import ca.concordia.encs.citydata.core.AbstractRunner;
 import ca.concordia.encs.citydata.core.IOperation;
 import ca.concordia.encs.citydata.core.IProducer;
 import ca.concordia.encs.citydata.core.IRunner;
+import ca.concordia.encs.citydata.core.ReflectionUtils;
 import ca.concordia.encs.citydata.datastores.InMemoryDataStore;
+import ca.concordia.encs.citydata.producers.ExceptionProducer;
 
-/**
+/* This Runner executes a single Producer with no Operations. 
+ * It can be used for tests when you want to quickly inspect the output of 
+ * a given Producer with parameters. This Runner is also used by Operations 
+ * that need to spawn other Producers as part of the transformation they 
+ * are applying (e.g. MergeOperation).
  * 
- * This Runner runs a single Producer with no Operations. For test only.
- * 
+ * Author: Gabriel C. Ullmann 
+ * Date: 2025-02-14
  */
 public class SingleStepRunner extends AbstractRunner implements IRunner {
 
@@ -25,25 +31,6 @@ public class SingleStepRunner extends AbstractRunner implements IRunner {
 	public SingleStepRunner(String targetProducer, JsonArray targetProducerParams) {
 		this.targetProducerName = targetProducer;
 		this.targetProducerParams = targetProducerParams;
-	}
-
-	private String capitalize(String str) {
-		return str == null || str.isEmpty() ? str : str.substring(0, 1).toUpperCase() + str.substring(1);
-	}
-
-	private Object convertValue(Class<?> targetType, JsonElement value) {
-		if (targetType == int.class || targetType == Integer.class) {
-			return value.getAsInt();
-		} else if (targetType == boolean.class || targetType == Boolean.class) {
-			return value.getAsBoolean();
-		} else if (targetType == double.class || targetType == Double.class) {
-			return value.getAsDouble();
-		} else if (targetType == JsonObject.class) {
-			return value.getAsJsonObject();
-		} else if (targetType == JsonArray.class) {
-			return value.getAsJsonArray();
-		}
-		return value.getAsString();
 	}
 
 	@Override
@@ -58,11 +45,12 @@ public class SingleStepRunner extends AbstractRunner implements IRunner {
 			// set Producer params
 			for (JsonElement param : this.targetProducerParams) {
 				JsonObject paramObject = param.getAsJsonObject();
-				String methodName = "set" + capitalize(paramObject.get("name").getAsString());
+				String methodName = "set" + ReflectionUtils.capitalize(paramObject.get("name").getAsString());
 				for (Method method : targetProducerClass.getMethods()) {
 					if (method.getName().equals(methodName) && method.getParameterCount() == 1) {
-						method.invoke(targetProducerInstance,
-								convertValue(method.getParameterTypes()[0], paramObject.get("value")));
+						Object targetProducerParamValue = ReflectionUtils.convertValue(method.getParameterTypes()[0],
+								paramObject.get("value"));
+						method.invoke(targetProducerInstance, targetProducerParamValue);
 						break;
 					}
 				}
@@ -85,9 +73,18 @@ public class SingleStepRunner extends AbstractRunner implements IRunner {
 
 	@Override
 	public void newDataAvailable(IProducer<?> producer) {
-		this.storeResults(producer);
-		this.setAsDone();
-		System.out.println("Run completed!");
+		try {
+			this.storeResults(producer);
+			this.setAsDone();
+			System.out.println("Run completed!");
+		} catch (Exception e) {
+			InMemoryDataStore store = InMemoryDataStore.getInstance();
+			store.set(this.getMetadataString("id"), new ExceptionProducer(e));
+
+			// stop runner as soon as an exception is thrown to avoid infinite loops
+			this.setAsDone();
+			System.out.println(e.getMessage());
+		}
 	}
 
 	@Override
