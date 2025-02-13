@@ -207,10 +207,8 @@ public abstract class AbstractProducer<E> extends MiddlewareEntity implements IP
 		} catch (IOException e) {
 			throw new RuntimeException("Cannot read file: " + this.filePath, e);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new RuntimeException("An error occured while fetching the data: ", e);
 		}
 
-		return "".getBytes();
 	}
 }
