@@ -52,7 +52,8 @@ public class SingleStepRunner extends AbstractRunner implements IRunner {
 
 			// instantiate a new Producer instance
 			Class<?> targetProducerClass = Class.forName(this.targetProducerName);
-			IProducer targetProducerInstance = (IProducer) targetProducerClass.getDeclaredConstructor().newInstance();
+			IProducer<?> targetProducerInstance = (IProducer<?>) targetProducerClass.getDeclaredConstructor()
+					.newInstance();
 
 			// set Producer params
 			for (JsonElement param : this.targetProducerParams) {
