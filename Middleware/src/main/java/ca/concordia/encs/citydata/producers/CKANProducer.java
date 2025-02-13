@@ -15,8 +15,9 @@ import ca.concordia.encs.citydata.datastores.DiskDatastore;
 import ca.concordia.encs.citydata.datastores.InMemoryDataStore;
 import ca.concordia.encs.citydata.runners.SingleStepRunner;
 
-/**
- * This producer can connect to a CKAN instance and fetch a resource.
+/* This producer can connect to a CKAN instance and fetch a resource.
+ * Author: Gabriel C. Ullmann 
+ * Date: 2025-02-12
  */
 public class CKANProducer extends AbstractProducer<String> implements IProducer<String> {
 
