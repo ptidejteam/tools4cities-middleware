@@ -48,18 +48,16 @@ public class DiskDatastore extends MiddlewareEntity implements IDataStore<byte[]
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	@Override
 	public byte[] get(String key) {
+		Path filePath = Path.of(baseFolderPath + "/" + key + filePrefix);
 		try {
-			Path filePath = Path.of(baseFolderPath + "/" + key + filePrefix);
 			return Files.readAllBytes(filePath);
 		} catch (IOException e) {
-			e.printStackTrace();
+			return null;
 		}
-		return null;
 	}
 
 	@Override

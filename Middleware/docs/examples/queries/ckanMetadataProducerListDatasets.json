@@ -3,8 +3,8 @@
     "withParams": [
         {
             "name": "url",
-            "value": "https://open.canada.ca/data/api"
+            "value": "https://ngci.encs.concordia.ca/ckan/api/3"
         }
     ],
-    "apply": []
+    "apply": [ ]
 }
