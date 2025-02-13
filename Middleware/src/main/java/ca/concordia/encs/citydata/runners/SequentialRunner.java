@@ -6,7 +6,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import ca.concordia.encs.citydata.core.AbstractRunner;
-import ca.concordia.encs.citydata.core.IDataStore;
 import ca.concordia.encs.citydata.core.IOperation;
 import ca.concordia.encs.citydata.core.IProducer;
 import ca.concordia.encs.citydata.core.IRunner;
@@ -120,7 +119,7 @@ public class SequentialRunner extends AbstractRunner implements IRunner {
 
 	@Override
 	public void storeResults(IProducer<?> producer) throws Exception {
-		IDataStore store = InMemoryDataStore.getInstance();
+		InMemoryDataStore store = InMemoryDataStore.getInstance();
 		String runnerId = this.getMetadata("id").toString();
 		store.set(runnerId, producer);
 	}
