@@ -7,7 +7,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import ca.concordia.encs.citydata.core.AbstractRunner;
-import ca.concordia.encs.citydata.core.IDataStore;
 import ca.concordia.encs.citydata.core.IOperation;
 import ca.concordia.encs.citydata.core.IProducer;
 import ca.concordia.encs.citydata.core.IRunner;
@@ -18,13 +17,13 @@ import ca.concordia.encs.citydata.datastores.InMemoryDataStore;
  * This Runner runs a single Producer with no Operations. For test only.
  * 
  */
-public class LazyRunner extends AbstractRunner implements IRunner {
+public class SingleStepRunner extends AbstractRunner implements IRunner {
 
-	private String targetProducer;
+	private String targetProducerName;
 	private JsonArray targetProducerParams;
 
-	public LazyRunner(String targetProducer, JsonArray targetProducerParams) {
-		this.targetProducer = targetProducer;
+	public SingleStepRunner(String targetProducer, JsonArray targetProducerParams) {
+		this.targetProducerName = targetProducer;
 		this.targetProducerParams = targetProducerParams;
 	}
 
@@ -49,10 +48,10 @@ public class LazyRunner extends AbstractRunner implements IRunner {
 
 	@Override
 	public void runSteps() throws Exception {
-		if (this.targetProducer != null) {
+		if (this.targetProducerName != null) {
 
 			// instantiate a new Producer instance
-			Class<?> targetProducerClass = Class.forName(this.targetProducer);
+			Class<?> targetProducerClass = Class.forName(this.targetProducerName);
 			IProducer<?> targetProducerInstance = (IProducer<?>) targetProducerClass.getDeclaredConstructor()
 					.newInstance();
 
@@ -93,7 +92,7 @@ public class LazyRunner extends AbstractRunner implements IRunner {
 
 	@Override
 	public void storeResults(IProducer<?> producer) {
-		IDataStore store = InMemoryDataStore.getInstance();
+		InMemoryDataStore store = InMemoryDataStore.getInstance();
 		String runnerId = this.getMetadata("id").toString();
 		store.set(runnerId, producer);
 	}

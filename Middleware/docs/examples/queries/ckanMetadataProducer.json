@@ -1,0 +1,10 @@
+{
+    "use": "ca.concordia.encs.citydata.producers.CKANMetadataProducer",
+    "withParams": [
+        {
+            "name": "url",
+            "value": "https://open.canada.ca/data/api"
+        }
+    ],
+    "apply": []
+}

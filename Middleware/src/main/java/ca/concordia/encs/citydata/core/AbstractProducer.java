@@ -194,12 +194,23 @@ public abstract class AbstractProducer<E> extends MiddlewareEntity implements IP
 
 	protected byte[] fetchFromPath() {
 		try {
-			// Read the content of the file into a string
-			return Files.readAllBytes(Paths.get(this.filePath));
+			// If the file path is a URL and there are RequestOptions
+			if (this.filePath != null && this.filePath.contains("://") && this.fileOptions != null) {
+				return this.doHTTPRequest();
+			}
+
+			// else, fetch from the filesystem
+			return this.readFile();
+
 		} catch (FileNotFoundException e) {
 			throw new RuntimeException("File not found: " + this.filePath, e);
 		} catch (IOException e) {
 			throw new RuntimeException("Cannot read file: " + this.filePath, e);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+
+		return "".getBytes();
 	}
 }

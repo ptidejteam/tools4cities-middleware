@@ -44,7 +44,7 @@ public class ApplyController {
 					} catch (Exception e) {
 						// stop runner as soon as an exception is thrown to avoid infinite loops
 						deckard.setAsDone();
-						IDataStore store = InMemoryDataStore.getInstance();
+						InMemoryDataStore store = InMemoryDataStore.getInstance();
 						store.set(deckard.getMetadataString("id"), new ExceptionProducer(e));
 					}
 				}
@@ -67,7 +67,7 @@ public class ApplyController {
 		}
 
 		// else, return the data
-		IDataStore store = InMemoryDataStore.getInstance();
+		InMemoryDataStore store = InMemoryDataStore.getInstance();
 		IProducer<?> resultProducer = store.get(runnerId);
 
 		// if the thread, which cannot throw exceptions, produces an ExceptionProducer,

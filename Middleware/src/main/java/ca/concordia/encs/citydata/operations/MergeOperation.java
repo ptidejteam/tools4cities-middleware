@@ -8,10 +8,9 @@ import java.util.Date;
 import com.google.gson.JsonArray;
 
 import ca.concordia.encs.citydata.core.AbstractOperation;
-import ca.concordia.encs.citydata.core.IDataStore;
 import ca.concordia.encs.citydata.core.IOperation;
 import ca.concordia.encs.citydata.datastores.InMemoryDataStore;
-import ca.concordia.encs.citydata.runners.LazyRunner;
+import ca.concordia.encs.citydata.runners.SingleStepRunner;
 
 /**
  * This operation merges two Producer results together.
@@ -42,7 +41,7 @@ public class MergeOperation extends AbstractOperation<String> implements IOperat
 		sourceList.add("{\"" + timeStampSource + "\": \"" + inputs + "\" }");
 
 		try {
-			LazyRunner deckard = new LazyRunner(targetProducer, targetProducerParams);
+			SingleStepRunner deckard = new SingleStepRunner(targetProducer, targetProducerParams);
 			Thread runnerTask = new Thread() {
 				public void run() {
 					try {
@@ -60,7 +59,7 @@ public class MergeOperation extends AbstractOperation<String> implements IOperat
 			runnerTask.join();
 
 			String runnerId = deckard.getMetadata("id").toString();
-			IDataStore store = InMemoryDataStore.getInstance();
+			InMemoryDataStore store = InMemoryDataStore.getInstance();
 
 			ArrayList<String> targetList = (ArrayList<String>) store.get(runnerId).getResult();
 			if (targetList != null && targetList.size() > 0) {
