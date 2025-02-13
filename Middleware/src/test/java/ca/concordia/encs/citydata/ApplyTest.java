@@ -35,8 +35,6 @@ public class ApplyTest {
 	@Autowired
 	private MockMvc mockMvc;
 
-	private static String jsonPayload;
-
 	@Autowired
 	private WebApplicationContext webApplicationContext;
 
@@ -59,7 +57,7 @@ public class ApplyTest {
 		final String invalidSteps = "invalid-json";
 
 		mockMvc.perform(post("/apply/async").contentType(MediaType.APPLICATION_JSON).content(invalidSteps))
-				.andExpect(status().isInternalServerError())
+				.andExpect(status().is4xxClientError())
 				.andExpect(content().string(containsString("Your query is not a valid JSON file.")));
 	}
 
@@ -69,7 +67,7 @@ public class ApplyTest {
 	public void whenInvalidReturnIdWrongMediaType() throws Exception {
 		final String invalidSteps = "invalid-json";
 		mockMvc.perform(post("/apply/async").contentType(MediaType.APPLICATION_NDJSON_VALUE).content(invalidSteps))
-				.andExpect(status().isInternalServerError())
+				.andExpect(status().is4xxClientError())
 				.andExpect(content().string(containsString("Your query is not a valid JSON file.")));
 	}
 
@@ -79,7 +77,7 @@ public class ApplyTest {
 	public void whenValidRunnerId_thenReturnResultOrNotReadyMessage() throws Exception {
 		String runnerId = "d593c930-7fed-4c7b-ac52-fff946b78c32";
 		mockMvc.perform(get("/apply/async/" + runnerId).contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isOk())
+				.andExpect(status().is4xxClientError())
 				.andExpect(content().string(containsString("Sorry, your request result is not ready yet.")));
 	}
 
@@ -87,7 +85,7 @@ public class ApplyTest {
 	@Test
 	public void whenInvalidRunnerId_thenReturnNotReadyMessage() throws Exception {
 		String invalidRunnerId = "nonexistent-runner-id";
-		mockMvc.perform(get("/apply/async/" + invalidRunnerId)).andExpect(status().isOk())
+		mockMvc.perform(get("/apply/async/" + invalidRunnerId)).andExpect(status().is(404))
 				.andExpect(content().string(containsString("Sorry, your request result is not ready yet.")));
 	}
 
@@ -128,7 +126,7 @@ public class ApplyTest {
 				+ "\"withParams\": [ { \"name\": \"generationProcess\", \"value\": \"random\" } ";
 
 		mockMvc.perform(post("/apply/sync").contentType(MediaType.APPLICATION_JSON).content(brokenJson))
-				.andExpect(status().isInternalServerError())
+				.andExpect(status().is4xxClientError())
 				.andExpect(content().string(containsString("Your query is not a valid JSON file.")));
 	}
 
@@ -157,7 +155,7 @@ public class ApplyTest {
 		String nonExistentParam = "{ \"use\": \"ca.concordia.encs.citydata.producers.StringProducer\", \"withParams\": [ { \"name\": \"nonExistentParam\", \"value\": \"value\" } ] }";
 
 		mockMvc.perform(post("/apply/sync").contentType(MediaType.APPLICATION_JSON).content(nonExistentParam))
-				.andExpect(content().string(containsString("NoSuchMethodException")));
+				.andExpect(content().string(containsString("No suitable setter found for nonExistentParam")));
 	}
 
 	// Test for missing params in Operation (valid case for operations that take no
@@ -168,7 +166,7 @@ public class ApplyTest {
 
 		mockMvc.perform(post("/apply/sync").contentType(MediaType.APPLICATION_JSON).content(missingParamsForOperation))
 				.andExpect(status().isInternalServerError())
-				.andExpect(content().string(containsString("IllegalArgumentException")));
+				.andExpect(content().string(containsString("Missing 'withParams' field")));
 	}
 
 	@Test

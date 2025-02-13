@@ -4,7 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 // A class that produces mock request payloads, for example, JSON queries to use with /apply/sync
-public class PayloadFactory {
+public abstract class PayloadFactory {
 
 	public static String getBasicQuery() {
 		JsonObject payload = new JsonObject();

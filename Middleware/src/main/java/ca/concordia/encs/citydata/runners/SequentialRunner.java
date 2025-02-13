@@ -1,5 +1,7 @@
 package ca.concordia.encs.citydata.runners;
 
+import java.lang.reflect.Method;
+
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
@@ -10,8 +12,6 @@ import ca.concordia.encs.citydata.core.IProducer;
 import ca.concordia.encs.citydata.core.IRunner;
 import ca.concordia.encs.citydata.core.ReflectionUtils;
 import ca.concordia.encs.citydata.datastores.InMemoryDataStore;
-
-import java.lang.reflect.Method;
 
 /**
  *
@@ -28,7 +28,7 @@ public class SequentialRunner extends AbstractRunner implements IRunner {
 	public SequentialRunner(JsonObject steps) {
 		this.steps = steps;
 	}
-  
+
 	// RUNNER METHODS
 	@Override
 	public void runSteps() throws Exception {
@@ -44,7 +44,7 @@ public class SequentialRunner extends AbstractRunner implements IRunner {
 		JsonArray producerParams = ReflectionUtils.getRequiredField(this.steps, "withParams").getAsJsonArray();
 
 		// instantiate a new Producer instance and set its params
-    Object producerInstance = ReflectionUtils.instantiateClass(producerName);
+		Object producerInstance = ReflectionUtils.instantiateClass(producerName);
 		ReflectionUtils.setParameters(producerInstance, producerParams);
 
 		// add this Runner as an observer of the Producer instance
@@ -74,7 +74,8 @@ public class SequentialRunner extends AbstractRunner implements IRunner {
 			Object operationInstance = ReflectionUtils.instantiateClass(operationName);
 
 			// extract operation parameters and set them
-			JsonArray operationParams = ReflectionUtils.getRequiredField(currentOperation, "withParams").getAsJsonArray();
+			JsonArray operationParams = ReflectionUtils.getRequiredField(currentOperation, "withParams")
+					.getAsJsonArray();
 			ReflectionUtils.setParameters(operationInstance, operationParams);
 
 			// set operation to producer
@@ -119,7 +120,7 @@ public class SequentialRunner extends AbstractRunner implements IRunner {
 	}
 
 	@Override
-	public void storeResults(IProducer<?> producer) {
+	public void storeResults(IProducer<?> producer) throws Exception {
 		IDataStore store = InMemoryDataStore.getInstance();
 		String runnerId = this.getMetadata("id").toString();
 		store.set(runnerId, producer);
