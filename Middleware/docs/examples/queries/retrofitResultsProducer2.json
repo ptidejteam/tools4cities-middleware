@@ -1,0 +1,20 @@
+{
+    "use": "ca.concordia.encs.citydata.producers.RetrofitResultsProducer",
+    "withParams": [
+        {
+            "name": "buildingIds",
+            "value": [ "01002777", "01002778" ]
+        }
+    ],
+    "apply": [
+        {
+            "use": "ca.concordia.encs.citydata.operations.JsonReadOperation",
+            "withParams": [
+                {
+                    "name": "path",
+                    "value": "results.current status[0].costs"
+                }
+            ]
+        }
+    ]
+} 
