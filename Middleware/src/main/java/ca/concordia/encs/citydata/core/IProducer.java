@@ -9,19 +9,22 @@ package ca.concordia.encs.citydata.core;
 public interface IProducer<E> {
 
 	// 1 - prepare producer
-	void addObserver(final IRunner aRunner);
+    void addObserver(final IRunner aRunner);
 
-	void setOperation(IOperation operation);
+    void setOperation(final IOperation operation);
 
-	// 2 - fetch data
-	void fetch() throws Exception;
+    // 2 - fetch data
+    void fetch() throws Exception;
 
-	// 3 - transform data and notify when done
-	void applyOperation();
+    // 3 - transform data and notify when done
+    void applyOperation();
 
-	void notifyObservers();
+    void notifyObservers();
 
-	// 4 - output data
-	String getResultJSONString();
+    // 4 - output data as JSON string
+    String getResultJSONString();
+
+    // 5 - check if data matches a specific query (optional)
+    boolean matchesQuery(String query);
 
 }

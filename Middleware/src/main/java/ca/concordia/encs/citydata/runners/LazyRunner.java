@@ -1,5 +1,7 @@
 package ca.concordia.encs.citydata.runners;
 
+import java.util.UUID;
+
 import ca.concordia.encs.citydata.core.AbstractRunner;
 import ca.concordia.encs.citydata.core.IDataStore;
 import ca.concordia.encs.citydata.core.IOperation;
@@ -49,7 +51,8 @@ public class LazyRunner extends AbstractRunner implements IRunner {
 	public void storeResults(IProducer<?> producer) {
 		IDataStore store = InMemoryDataStore.getInstance();
 		String runnerId = this.getMetadata("id").toString();
-		store.set(runnerId, producer);
+		
+		//store.addQuery(runnerId, producer);
 	}
 
 }

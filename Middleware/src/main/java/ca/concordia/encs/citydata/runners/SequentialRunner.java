@@ -1,6 +1,7 @@
 package ca.concordia.encs.citydata.runners;
 
 import java.lang.reflect.Method;
+import java.util.UUID;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -170,9 +171,9 @@ public class SequentialRunner extends AbstractRunner implements IRunner {
 
 	@Override
 	public void storeResults(IProducer<?> producer) {
-		IDataStore store = InMemoryDataStore.getInstance();
-		String runnerId = this.getMetadata("id").toString();
-		store.set(runnerId, producer);
-	}
+        IDataStore store = InMemoryDataStore.getInstance();
+        UUID runnerId = UUID.fromString(this.getMetadataString("id"));
+        store.addProducer(runnerId, producer);
+    }
 
 }

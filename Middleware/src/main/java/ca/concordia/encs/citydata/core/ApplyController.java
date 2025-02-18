@@ -3,6 +3,7 @@ package ca.concordia.encs.citydata.core;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.UUID;
 
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -56,7 +57,9 @@ public class ApplyController {
 
 		// else, return the data
 		IDataStore store = InMemoryDataStore.getInstance();
-		return store.get(runnerId).getResultJSONString();
+		
+		return store.getProducer(UUID.fromString(runnerId)).toString(); // Convert String to UUID
+	    //return store.get(runnerId).getResultJSONString();
 	}
 
 	@RequestMapping(value = "/async", method = RequestMethod.POST)
@@ -85,10 +88,10 @@ public class ApplyController {
 	@RequestMapping(value = "/async/{runnerId}", method = RequestMethod.GET)
 	public String asyncId(@PathVariable("runnerId") String runnerId) {
 		InMemoryDataStore store = InMemoryDataStore.getInstance();
-		Object storeResult = store.get(runnerId);
+		Object storeResult = store.getProducer(UUID.fromString(runnerId)).toString();
 
 		if (storeResult != null) {
-			return store.get(runnerId).getResultJSONString();
+			return store.getProducer(UUID.fromString(runnerId)).getResultJSONString().toString();
 		}
 		return "Sorry, your request result is not ready yet. Please try again later.";
 	}
