@@ -85,6 +85,7 @@ public class CKANProducer extends AbstractProducer<String> implements IProducer<
 							System.out.println("Busy waiting!");
 						}
 					} catch (Exception e) {
+						deckard.setAsDone();
 						System.out.println(e.getMessage());
 					}
 
@@ -118,7 +119,9 @@ public class CKANProducer extends AbstractProducer<String> implements IProducer<
 						+ " .");
 			}
 		} catch (InterruptedException e) {
-			e.printStackTrace();
+			ArrayList<String> errorMessageList = new ArrayList<>();
+			errorMessageList.add(e.getMessage());
+			this.result = errorMessageList;
 		}
 
 		return new byte[0];

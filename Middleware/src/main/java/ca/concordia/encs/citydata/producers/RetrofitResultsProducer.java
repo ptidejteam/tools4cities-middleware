@@ -56,12 +56,13 @@ public class RetrofitResultsProducer extends AbstractProducer<JsonObject> implem
 	}
 
 	private JsonObject getEnvVariables() {
-		Path path = Paths.get("env.json").toAbsolutePath();
+		final Path path = Paths.get("env.json").toAbsolutePath();
 		String envVariables = "";
 		try {
 			envVariables = new String(Files.readAllBytes(path));
 		} catch (IOException e) {
-			e.printStackTrace();
+			// do not throw this error to users
+			System.out.println(e.getMessage());
 		}
 		final JsonElement jsonElement = JsonParser.parseString(envVariables);
 		return jsonElement.getAsJsonObject();
@@ -96,10 +97,10 @@ public class RetrofitResultsProducer extends AbstractProducer<JsonObject> implem
 
 	private JsonObject startHubSession() {
 		try {
-			RequestOptions startOptions = this.getStartOptions();
-			JSONProducer startProducer = new JSONProducer(HUB_START_URL, startOptions);
-			SingleStepRunner deckard = new SingleStepRunner(startProducer);
-			Thread runnerTask = new Thread() {
+			final RequestOptions startOptions = this.getStartOptions();
+			final JSONProducer startProducer = new JSONProducer(HUB_START_URL, startOptions);
+			final SingleStepRunner deckard = new SingleStepRunner(startProducer);
+			final Thread runnerTask = new Thread() {
 				public void run() {
 					try {
 						deckard.runSteps();
@@ -107,6 +108,7 @@ public class RetrofitResultsProducer extends AbstractProducer<JsonObject> implem
 							System.out.println("Busy waiting!");
 						}
 					} catch (Exception e) {
+						deckard.setAsDone();
 						System.out.println(e.getMessage());
 					}
 
@@ -115,18 +117,23 @@ public class RetrofitResultsProducer extends AbstractProducer<JsonObject> implem
 			runnerTask.start();
 			runnerTask.join();
 
-			InMemoryDataStore memoryStore = InMemoryDataStore.getInstance();
-			String runnerId = deckard.getMetadata("id").toString();
-			IProducer<?> storeResult = memoryStore.get(runnerId);
+			final InMemoryDataStore memoryStore = InMemoryDataStore.getInstance();
+			final String runnerId = deckard.getMetadata("id").toString();
+			final IProducer<?> storeResult = memoryStore.get(runnerId);
 			if (storeResult != null) {
-				ArrayList<JsonObject> res = (ArrayList<JsonObject>) memoryStore.get(runnerId).getResult();
-				if (res != null && res.size() > 0) {
-					return res.get(0);
+				final ArrayList<JsonObject> retrofitResults = (ArrayList<JsonObject>) memoryStore.get(runnerId)
+						.getResult();
+				if (retrofitResults != null && retrofitResults.size() > 0) {
+					return retrofitResults.get(0);
 				}
 
 			}
 		} catch (InterruptedException e) {
-			e.printStackTrace();
+			ArrayList<JsonObject> errorMessageList = new ArrayList<>();
+			JsonObject errorMessage = new JsonObject();
+			errorMessage.addProperty("error", e.getMessage());
+			errorMessageList.add(errorMessage);
+			this.result = errorMessageList;
 		}
 		return new JsonObject();
 	}
@@ -137,7 +144,6 @@ public class RetrofitResultsProducer extends AbstractProducer<JsonObject> implem
 		final JsonObject errorObject = new JsonObject();
 
 		if (this.buildingIds != null && buildingIds.size() > 0) {
-
 			// start: get session token
 			JsonObject startResponseHeaders = this.startHubSession();
 
