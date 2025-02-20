@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
-/* This java class is to print all available routes */
+/* This java class is to print all available routes 
+ * Last Update: 2-19-2025
+ * */
 
 @RestController
 @RequestMapping("/routes")
@@ -28,7 +30,7 @@ public class RouteController {
 		List<String> routes = new ArrayList<>();
 
 		handlerMapping.getHandlerMethods().forEach((requestMappingInfo, handlerMethod) -> {
-			String methodInfo = handlerMethod.getMethod().toString();
+			final String methodInfo = handlerMethod.getMethod().toString();
 
 			List<String> paths = requestMappingInfo.getDirectPaths() != null
 					? requestMappingInfo.getDirectPaths().stream().toList()
@@ -36,7 +38,7 @@ public class RouteController {
 							? requestMappingInfo.getPatternsCondition().getPatterns().stream().toList()
 							: List.of("[No Route Patterns]");
 
-			String methods = requestMappingInfo.getMethodsCondition() != null
+			final String methods = requestMappingInfo.getMethodsCondition() != null
 					? requestMappingInfo.getMethodsCondition().toString()
 					: "[No Methods Condition]";
 

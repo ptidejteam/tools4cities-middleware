@@ -13,6 +13,7 @@ import ca.concordia.encs.citydata.core.MiddlewareEntity;
  * is lost.
  * 
  */
+
 public class InMemoryDataStore extends MiddlewareEntity implements IDataStore<IProducer<?>> {
 
 	private HashMap<String, IProducer<?>> map = new HashMap<>();

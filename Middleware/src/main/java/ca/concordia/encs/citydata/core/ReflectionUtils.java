@@ -1,5 +1,7 @@
 package ca.concordia.encs.citydata.core;
 
+/**Last Update: 2-19-2025 */
+
 import java.lang.reflect.Method;
 
 import com.google.gson.JsonArray;
@@ -15,7 +17,7 @@ public class ReflectionUtils {
 		return jsonObject.get(fieldName);
 	}
 
-	public static Object instantiateClass(String className) throws Exception {
+	public static final Object instantiateClass(String className) throws Exception {
 		Class<?> clazz = Class.forName(className);
 		return clazz.getDeclaredConstructor().newInstance();
 	}
@@ -31,9 +33,9 @@ public class ReflectionUtils {
 		}
 	}
 
-	public static Method findSetterMethod(Class<?> clazz, String paramName, JsonElement paramValue)
+	public static final Method findSetterMethod(Class<?> clazz, String paramName, JsonElement paramValue)
 			throws NoSuchMethodException {
-		String methodName = "set" + capitalize(paramName);
+		final String methodName = "set" + capitalize(paramName);
 		for (Method method : clazz.getMethods()) {
 			if (method.getName().equals(methodName) && method.getParameterCount() == 1) {
 				return method;
@@ -42,7 +44,7 @@ public class ReflectionUtils {
 		throw new NoSuchMethodException("No suitable setter found for " + paramName);
 	}
 
-	public static Object convertValue(Class<?> targetType, JsonElement value) {
+	public static final Object convertValue(Class<?> targetType, JsonElement value) {
 		if (targetType == int.class || targetType == Integer.class) {
 			return value.getAsInt();
 		} else if (targetType == boolean.class || targetType == Boolean.class) {
@@ -57,7 +59,7 @@ public class ReflectionUtils {
 		return value.getAsString();
 	}
 
-	public static String capitalize(String str) {
+	public static final String capitalize(String str) {
 		return str == null || str.isEmpty() ? str : str.substring(0, 1).toUpperCase() + str.substring(1);
 	}
 }
