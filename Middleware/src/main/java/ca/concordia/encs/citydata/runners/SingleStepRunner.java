@@ -25,6 +25,7 @@ import ca.concordia.encs.citydata.producers.ExceptionProducer;
  */
 public class SingleStepRunner extends AbstractRunner implements IRunner {
 
+	private IProducer<?> targetProducerInstance;
 	private String targetProducerName;
 	private JsonArray targetProducerParams;
 
@@ -33,32 +34,44 @@ public class SingleStepRunner extends AbstractRunner implements IRunner {
 		this.targetProducerParams = targetProducerParams;
 	}
 
+	public SingleStepRunner(IProducer<?> targetProducerInstance) {
+		this.targetProducerInstance = targetProducerInstance;
+	}
+
 	@Override
 	public void runSteps() throws Exception {
+
 		if (this.targetProducerName != null) {
 
 			// instantiate a new Producer instance
-			Class<?> targetProducerClass = Class.forName(this.targetProducerName);
-			IProducer<?> targetProducerInstance = (IProducer<?>) targetProducerClass.getDeclaredConstructor()
-					.newInstance();
+			final Class<?> targetProducerClass = Class.forName(this.targetProducerName);
+			this.targetProducerInstance = (IProducer<?>) targetProducerClass.getDeclaredConstructor().newInstance();
 
 			// set Producer params
 			for (JsonElement param : this.targetProducerParams) {
-				JsonObject paramObject = param.getAsJsonObject();
-				String methodName = "set" + ReflectionUtils.capitalize(paramObject.get("name").getAsString());
+				final JsonObject paramObject = param.getAsJsonObject();
+				final String methodName = "set" + ReflectionUtils.capitalize(paramObject.get("name").getAsString());
 				for (Method method : targetProducerClass.getMethods()) {
 					if (method.getName().equals(methodName) && method.getParameterCount() == 1) {
-						Object targetProducerParamValue = ReflectionUtils.convertValue(method.getParameterTypes()[0],
-								paramObject.get("value"));
-						method.invoke(targetProducerInstance, targetProducerParamValue);
+						final Object targetProducerParamValue = ReflectionUtils
+								.convertValue(method.getParameterTypes()[0], paramObject.get("value"));
+						method.invoke(this.targetProducerInstance, targetProducerParamValue);
 						break;
 					}
 				}
 			}
 
-			targetProducerInstance.addObserver(this);
-			targetProducerInstance.fetch();
 		}
+
+		// if there is a Producer instance, execute it
+		// otherwise, stop Runner
+		if (this.targetProducerInstance != null) {
+			this.targetProducerInstance.addObserver(this);
+			this.targetProducerInstance.fetch();
+		} else {
+			this.setAsDone();
+		}
+
 	}
 
 	@Override

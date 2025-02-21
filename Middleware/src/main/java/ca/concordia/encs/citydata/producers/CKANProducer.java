@@ -3,9 +3,7 @@ package ca.concordia.encs.citydata.producers;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 
 import ca.concordia.encs.citydata.core.AbstractProducer;
 import ca.concordia.encs.citydata.core.AbstractRunner;
@@ -74,12 +72,11 @@ public class CKANProducer extends AbstractProducer<String> implements IProducer<
 
 	private byte[] fetchFromCkan() {
 		try {
-			String metadataProducerName = "ca.concordia.encs.citydata.producers.CKANMetadataProducer";
-			JsonArray metadataProducerParams = JsonParser.parseString("[ {\"name\": \"url\", \"value\": \"" + this.url
-					+ "\"},\n" + "{\"name\": \"resourceId\", \"value\": \"" + this.resourceId + "\"} ]")
-					.getAsJsonArray();
-
-			SingleStepRunner deckard = new SingleStepRunner(metadataProducerName, metadataProducerParams);
+			// fetch resource metadata first
+			CKANMetadataProducer metadataProducer = new CKANMetadataProducer();
+			metadataProducer.setUrl(this.url);
+			metadataProducer.setResourceId(this.resourceId);
+			SingleStepRunner deckard = new SingleStepRunner(metadataProducer);
 			Thread runnerTask = new Thread() {
 				public void run() {
 					try {
@@ -88,6 +85,7 @@ public class CKANProducer extends AbstractProducer<String> implements IProducer<
 							System.out.println("Busy waiting!");
 						}
 					} catch (Exception e) {
+						deckard.setAsDone();
 						System.out.println(e.getMessage());
 					}
 
@@ -121,7 +119,9 @@ public class CKANProducer extends AbstractProducer<String> implements IProducer<
 						+ " .");
 			}
 		} catch (InterruptedException e) {
-			e.printStackTrace();
+			ArrayList<String> errorMessageList = new ArrayList<>();
+			errorMessageList.add(e.getMessage());
+			this.result = errorMessageList;
 		}
 
 		return new byte[0];
