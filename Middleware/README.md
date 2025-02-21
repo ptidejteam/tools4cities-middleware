@@ -4,7 +4,6 @@
 ![Apache Maven](https://github.com/ptidejteam/ptidej-Ptidej/actions/workflows/maven.yml/badge.svg)
 [![CO₂ Shield](https://img.shields.io/badge/CO₂-C_0.36g-C89806)](https://overbrowsing.com/projects/co2-shield)
 
-
 Tools4Cities Middleware allows users to fetch, transform, and process data from various sources using Producers and Operations.
 
 ## What is it?
@@ -13,9 +12,11 @@ The purpose of the Tools4Cities Middleware is to enable users to perform operati
 
 - Producer: connects to data sources and fetches data
 - Operation: describes transformations to be performed on producer outputs (data)
-- Consumer/Runner: calls a series of producers, executes a series of operations on the producer's outputs, and then outputs the resulting data
+- Runner: calls a series of producers, executes a series of operations on the producer's outputs, and then outputs the resulting data
 
-![image](./docs/architecture.png)
+![image](./docs/simplified-architecture.png)
+
+You can see a more detailed breakdown of resposibilities for the Middleware, Producers and Operations [here](./docs/architecture.png).
 
 ## What do I need?
 
@@ -52,16 +53,16 @@ mvn install
 
 The following routes are available:
 
-| **Method** | **Route**               | **Description**                                                                              | **Input**                        |
-|------------|-------------------------|----------------------------------------------------------------------------------------------|----------------------------------|
+| **Method** | **API Route URL**       | **Description**                                                                              | **Input**                        |
+| ---------- | ----------------------- | -------------------------------------------------------------------------------------------- | -------------------------------- | -------- |
 | GET        | /producers/list         | Lists all Producers and their parameters                                                     |                                  |
 | GET        | /operations/list        | Lists all Operations and their parameters                                                    |                                  |
 | POST       | /apply/sync             | Executes query synchronously (will not return until completed)                               | A JSON query in the request body |
 | POST       | /apply/async            | Executes query asynchronously (will return a runner ID instantly)                            | A JSON query in the request body |
 | GET        | /apply/async/{runnerId} | Returns status of a runner ID. If the runner is completed, returns the prime Producer result | A runner ID                      |
-| GET        | /apply/ping  | Returns pong (this is great to test if the middleware is running 😊) |                       |
-| POST       | /exists                 | Returns a list of prime Producers which match the given query                                | A JSON query in the request body |****
-  
+| GET        | /apply/ping             | Returns pong (this is great to test if the middleware is running 😊)                         |                                  |
+| POST       | /exists                 | Returns a list of prime Producers which match the given query                                | A JSON query in the request body | \*\*\*\* |
+
 For now, the amount of Producers, Operations and parameters is quite limited, but we intend to expand it in the future and also document it better. Your suggestions are more than welcome!
 
 ## Who do I talk to?

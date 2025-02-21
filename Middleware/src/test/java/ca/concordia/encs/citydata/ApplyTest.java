@@ -215,5 +215,23 @@ public class ApplyTest {
 		assertNotNull(method);
 		assertEquals("setLength", method.getName());
 	}
+	@Test
+	public void testRoutesList() throws Exception {
+		mockMvc.perform(get("/routes/list"))
+				.andExpect(status().isOk())
+				.andExpect(content().string(containsString("Method: [")));
 
-}
+	}
+	@Test
+	public void testOperationsList() throws Exception {
+		mockMvc.perform(get("/operations/list"))
+				.andExpect(status().isOk())
+				.andExpect(content().string(containsString("ca.concordia.encs.citydata")));
+	}
+
+	@Test
+	public void testProducersList() throws Exception {
+		mockMvc.perform(get("/producers/list"))
+				.andExpect(status().isOk())
+				.andExpect(content().string(containsString("ca.concordia.encs.citydata")));
+}}
