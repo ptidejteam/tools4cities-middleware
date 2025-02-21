@@ -5,6 +5,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import ca.concordia.encs.citydata.core.AbstractOperation;
@@ -12,8 +13,8 @@ import ca.concordia.encs.citydata.core.IOperation;
 
 public class JsonReadOperation extends AbstractOperation<JsonObject> implements IOperation<JsonObject> {
 	private String path = "";
-	private JsonObject currentObject;
-	final Pattern pattern = Pattern.compile("\\[(\\d+)\\]");
+	private JsonElement currentObject;
+	final Pattern containsArrayAccess = Pattern.compile("(.+)\\[(\\d+)\\]");;
 
 	public void setPath(String path) {
 		this.path = path;
@@ -23,7 +24,7 @@ public class JsonReadOperation extends AbstractOperation<JsonObject> implements 
 	public ArrayList<JsonObject> apply(ArrayList<JsonObject> inputs) {
 
 		final ArrayList<JsonObject> matchingJsonObjects = new ArrayList<>();
-		final String[] pathParts = this.path.split(".");
+		final String[] pathParts = this.path.split("\\.");
 
 		for (JsonObject input : inputs) {
 
@@ -31,20 +32,44 @@ public class JsonReadOperation extends AbstractOperation<JsonObject> implements 
 			for (String key : pathParts) {
 
 				// check if key contains []
-				final Matcher matcher = this.pattern.matcher(key);
+				final Matcher arrayAccessMatcher = this.containsArrayAccess.matcher(key);
 
 				// if so, go to key and array position
-				if (matcher.find()) {
-					final JsonArray jsonArray = this.currentObject.get(key).getAsJsonArray();
-					final String arrayPositionString = matcher.group(1);
-					final int arrayPosition = Integer.parseInt(arrayPositionString);
-					this.currentObject = jsonArray.get(arrayPosition).getAsJsonObject();
+				if (arrayAccessMatcher.matches()) {
+					final String arrayKey = arrayAccessMatcher.group(1);
+					final String arrayPositionString = arrayAccessMatcher.group(2);
+
+					// before reading array position, make sure you are reading from a JsonArray
+					if (this.currentObject.isJsonObject()) {
+						final JsonArray jsonArray = ((JsonObject) this.currentObject).get(arrayKey).getAsJsonArray();
+						final int arrayPosition = Integer.parseInt(arrayPositionString);
+						final JsonElement currentElement = jsonArray.get(arrayPosition);
+						if (currentElement.isJsonArray()) {
+							this.currentObject = currentElement.getAsJsonArray();
+						} else {
+							this.currentObject = currentElement.getAsJsonObject();
+						}
+					} else {
+						// if not, halt immediately
+						matchingJsonObjects.add(this.currentObject.getAsJsonObject());
+						return matchingJsonObjects;
+					}
+
 				} else {
-					this.currentObject = this.currentObject.get(key).getAsJsonObject();
+
+					if (this.currentObject.isJsonObject()) {
+						final JsonElement currentElement = ((JsonObject) this.currentObject).get(key);
+						if (currentElement.isJsonObject()) {
+							this.currentObject = currentElement.getAsJsonObject();
+						} else {
+							this.currentObject = currentElement.getAsJsonArray();
+						}
+					}
+
 				}
 
 			}
-			matchingJsonObjects.add(this.currentObject);
+			matchingJsonObjects.add(this.currentObject.getAsJsonObject());
 		}
 
 		return matchingJsonObjects;

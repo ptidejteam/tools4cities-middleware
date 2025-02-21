@@ -8,7 +8,7 @@
     ],
     "apply": [
         {
-            "use": "ca.concordia.encs.citydata.operations.JsonReadOperation",
+            "name": "ca.concordia.encs.citydata.operations.JsonReadOperation",
             "withParams": [
                 {
                     "name": "path",

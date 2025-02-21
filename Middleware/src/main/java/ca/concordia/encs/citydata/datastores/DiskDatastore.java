@@ -9,15 +9,14 @@ import java.nio.file.Path;
 import ca.concordia.encs.citydata.core.IDataStore;
 import ca.concordia.encs.citydata.core.MiddlewareEntity;
 
-/**
- *
- * A DataStore that persists information in the disk.
- * 
+/* A DataStore that persists information in the disk. 
+ * Author: Gabriel C. Ullmann
+ * Date: 2025-02-19
  */
 public class DiskDatastore extends MiddlewareEntity implements IDataStore<byte[]> {
 
-	private static final String filePrefix = ".ptidejmw";
-	private static final String baseFolderPath = "./ptidejmw-files";
+	private static final String filePrefix = ".citydata";
+	private static final String baseFolderPath = "./citydata-files";
 	private static final DiskDatastore storeInstance = new DiskDatastore();
 
 	// Private constructor prevents instantiation (this is a singleton)
@@ -56,6 +55,7 @@ public class DiskDatastore extends MiddlewareEntity implements IDataStore<byte[]
 		try {
 			return Files.readAllBytes(filePath);
 		} catch (IOException e) {
+			e.printStackTrace();
 			return null;
 		}
 	}
