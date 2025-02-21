@@ -54,14 +54,14 @@ mvn install
 The following routes are available:
 
 | **Method** | **API Route URL**       | **Description**                                                                              | **Input**                        |
-| ---------- | ----------------------- | -------------------------------------------------------------------------------------------- | -------------------------------- | -------- |
+|------------|-------------------------|----------------------------------------------------------------------------------------------|----------------------------------|
 | GET        | /producers/list         | Lists all Producers and their parameters                                                     |                                  |
 | GET        | /operations/list        | Lists all Operations and their parameters                                                    |                                  |
 | POST       | /apply/sync             | Executes query synchronously (will not return until completed)                               | A JSON query in the request body |
 | POST       | /apply/async            | Executes query asynchronously (will return a runner ID instantly)                            | A JSON query in the request body |
 | GET        | /apply/async/{runnerId} | Returns status of a runner ID. If the runner is completed, returns the prime Producer result | A runner ID                      |
-| GET        | /apply/ping             | Returns pong (this is great to test if the middleware is running 😊)                         |                                  |
-| POST       | /exists                 | Returns a list of prime Producers which match the given query                                | A JSON query in the request body | \*\*\*\* |
+| GET        | /apply/ping             | Returns pong (this is great to test if the middleware is running 😊)                          |                                  |
+| POST       | /exists                 | Returns a list of prime Producers which match the given query                                | A JSON query in the request body |
 
 For now, the amount of Producers, Operations and parameters is quite limited, but we intend to expand it in the future and also document it better. Your suggestions are more than welcome!
 
