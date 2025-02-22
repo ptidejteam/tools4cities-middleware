@@ -2,40 +2,23 @@ import json
 import requests
 
 if __name__ == "__main__":
-    base_url = "http://localhost:8080"
+    base_url = "http://localhost:8082"
     route = "/apply/async"
     data = json.dumps({
-        "use": "ca.concordia.encs.citydata.producers.StringProducer",
+        "use": "ca.concordia.encs.citydata.producers.EnergyConsumptionProducer",
         "withParams": [
             {
-                "name": "generationProcess",
-                "value": "gabriel"
+                "name": "city",
+                "value": "montreal"
             }
         ],
         "apply": [
             {
-                "name": "ca.concordia.encs.citydata.operations.StringReplaceOperation",
+                "name": "ca.concordia.encs.citydata.operations.StringFilterOperation",
                 "withParams": [
                     {
-                        "name": "searchFor",
-                        "value": "a"
-                    },
-                    {
-                        "name": "replaceBy",
-                        "value": "b"
-                    }
-                ]
-            },
-            {
-                "name": "ca.concordia.encs.citydata.operations.StringReplaceOperation",
-                "withParams": [
-                    {
-                        "name": "searchFor",
-                        "value": "l"
-                    },
-                    {
-                        "name": "replaceBy",
-                        "value": "k"
+                        "name": "filterBy",
+                        "value": "09:45:00"
                     }
                 ]
             }
