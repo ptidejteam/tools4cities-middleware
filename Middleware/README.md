@@ -1,14 +1,13 @@
-# Tools4Cities Middleware
+# CityData Middleware
 
 ![Java](https://img.shields.io/badge/Java-orange)
 ![Apache Maven](https://github.com/ptidejteam/ptidej-Ptidej/actions/workflows/maven.yml/badge.svg)
 [![CO₂ Shield](https://img.shields.io/badge/CO₂-C_0.36g-C89806)](https://overbrowsing.com/projects/co2-shield)
 
-Tools4Cities Middleware allows users to fetch, transform, and process data from various sources using Producers and Operations.
+The CityData middleware allows users to fetch, transform, and process data from various sources using Producers and Operations.
 
 ## What is it?
-
-The purpose of the Tools4Cities Middleware is to enable users to perform operations on data from different sources via the use of the following abstractions:
+CityData is a part of the [TOOLS4CITIES](https://www.concordia.ca/research/cities-institute/initiatives/tools4cities.html) tool suite. It is a middleware that enables users to perform operations on data from different sources via the use of the following abstractions:
 
 - Producer: connects to data sources and fetches data
 - Operation: describes transformations to be performed on producer outputs (data)
@@ -16,7 +15,7 @@ The purpose of the Tools4Cities Middleware is to enable users to perform operati
 
 ![image](./docs/simplified-architecture.png)
 
-You can see a more detailed breakdown of resposibilities for the Middleware, Producers and Operations [here](./docs/architecture.png).
+You can see a more detailed breakdown of responsibilities for the middleware [here](./docs/architecture.png).
 
 ## What do I need?
 
