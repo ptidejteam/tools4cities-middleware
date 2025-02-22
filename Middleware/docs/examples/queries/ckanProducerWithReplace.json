@@ -1,0 +1,28 @@
+{
+    "use": "ca.concordia.encs.citydata.producers.CKANProducer",
+    "withParams": [
+        {
+            "name": "url",
+            "value": "https://ngci.encs.concordia.ca/ckan/api/3"
+        },
+        {
+            "name": "resourceId",
+            "value": "c67ca879-cb5d-4ac7-940a-5002a02440b6"
+        }
+    ],
+    "apply": [
+        {
+            "name": "ca.concordia.encs.citydata.operations.StringReplaceOperation",
+            "withParams": [
+                {
+                    "name": "searchFor",
+                    "value": "FeatureCollection"
+                },
+                 {
+                    "name": "replaceBy",
+                    "value": "MiddlewareCollection"
+                }
+            ]
+        }
+    ]
+}

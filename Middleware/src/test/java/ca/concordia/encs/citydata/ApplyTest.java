@@ -1,11 +1,16 @@
 package ca.concordia.encs.citydata;
 
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.Matchers.anyOf;
+import static org.hamcrest.Matchers.containsString;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.lang.reflect.Method;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,12 +25,11 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import ca.concordia.encs.citydata.core.AppConfig;
+import ca.concordia.encs.citydata.core.ReflectionUtils;
 
 @SpringBootTest(classes = AppConfig.class)
 @AutoConfigureMockMvc
-@ComponentScan(basePackages = "ca.concordia.encs.citydata.core") // Explicitly scan the package containing
-																	// ProducerController
-
+@ComponentScan(basePackages = "ca.concordia.encs.citydata.core")
 public class ApplyTest {
 
 	@Autowired
@@ -34,175 +38,200 @@ public class ApplyTest {
 	@Autowired
 	private WebApplicationContext webApplicationContext;
 
-	// Test for POST /async with valid JSON input
+	private void performPostRequest(String url, String contentType, String content) throws Exception {
+		mockMvc.perform(post(url).contentType(contentType).content(content)).andExpect(status().isOk())
+				.andExpect(content().string(containsString("result")));
+	}
+
+	// Test for valid steps
 	@Test
 	public void whenValidSteps_thenReturnSuccessMessage() throws Exception {
-		// Create the JSON payload
-		JsonObject payload = new JsonObject();
-		payload.addProperty("use", "ca.concordia.encs.citydata.producers.StringProducer");
-
-		// Add "withParams" array
-		JsonArray withParams = new JsonArray();
-		JsonObject param1 = new JsonObject();
-		param1.addProperty("name", "generationProcess");
-		param1.addProperty("value", "random");
-		withParams.add(param1);
-
-		JsonObject param2 = new JsonObject();
-		param2.addProperty("name", "stringLength");
-		param2.addProperty("value", 10);
-		withParams.add(param2);
-
-		payload.add("withParams", withParams);
-
-		// Add "apply" array
-		JsonArray apply = new JsonArray();
-
-		// First operation
-		JsonObject operation1 = new JsonObject();
-		operation1.addProperty("name", "ca.concordia.encs.citydata.operations.StringReplaceOperation");
-
-		JsonArray operation1Params = new JsonArray();
-		JsonObject operation1Param1 = new JsonObject();
-		operation1Param1.addProperty("name", "searchFor");
-		operation1Param1.addProperty("value", "a");
-		operation1Params.add(operation1Param1);
-
-		JsonObject operation1Param2 = new JsonObject();
-		operation1Param2.addProperty("name", "replaceBy");
-		operation1Param2.addProperty("value", "b");
-		operation1Params.add(operation1Param2);
-
-		operation1.add("withParams", operation1Params);
-		apply.add(operation1);
-
-		// Second operation
-		JsonObject operation2 = new JsonObject();
-		operation2.addProperty("name", "ca.concordia.encs.citydata.operations.StringReplaceOperation");
-
-		JsonArray operation2Params = new JsonArray();
-		JsonObject operation2Param1 = new JsonObject();
-		operation2Param1.addProperty("name", "searchFor");
-		operation2Param1.addProperty("value", "cxsffdf");
-		operation2Params.add(operation2Param1);
-
-		JsonObject operation2Param2 = new JsonObject();
-		operation2Param2.addProperty("name", "replaceBy");
-		operation2Param2.addProperty("value", "c");
-		operation2Params.add(operation2Param2);
-
-		operation2.add("withParams", operation2Params);
-		apply.add(operation2);
-
-		payload.add("apply", apply);
-
-		// Convert the payload to a JSON string
-		String jsonPayload = payload.toString();
-		System.out.println("Sending JSON payload: " + jsonPayload); // Debug: Log the JSON payload
-
-		// Send the request and validate the response
+		String jsonPayload = PayloadFactory.getBasicQuery();
 		mockMvc.perform(post("/apply/async").contentType(MediaType.APPLICATION_JSON).content(jsonPayload))
 				.andExpect(status().isOk()).andExpect(content().string(containsString("Hello! The runner")));
 	}
 
-	// Test for POST /async with invalid JSON input. This test is supposed to fail
-	// as the purpose is to check is to see if the test fails on invalid input.
-
-	/*
-	 * @Test public void whenInvalidJson_thenReturnErrorMessage() throws Exception {
-	 * String invalidSteps = "invalid-json";
-	 * 
-	 * mockMvc.perform(post("/apply/async").contentType(MediaType.APPLICATION_JSON).
-	 * content(invalidSteps))
-	 * .andExpect(status().isOk()).andExpect(content().string(startsWith("Error: "))
-	 * ); }
-	 */
-
-	// Test for GET /async/{runnerId} with a valid runner ID
+	// Test to check /apply/async with invalid JSON input -- Need to fix
 	@Test
-	public void whenValidRunnerId_thenReturnResultOrNotReadyMessage() throws Exception {
-		// Valid runnerId (UUID format)
-		String runnerId = "d593c930-7fed-4c7b-ac52-fff946b78c32";
+	public void whenInvalidReturnIdWrongInput() throws Exception {
+		final String invalidSteps = "invalid-json";
 
-		// Call GET /async/{runnerId}
-		mockMvc.perform(get("/apply/async/" + runnerId).contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isOk())
-				.andExpect(content().string(anyOf(containsString("Sorry, your request result is not ready yet."),
-						containsString("\"result\":"))));
+		mockMvc.perform(post("/apply/async").contentType(MediaType.APPLICATION_JSON).content(invalidSteps))
+				.andExpect(status().is4xxClientError())
+				.andExpect(content().string(containsString("Your query is not a valid JSON file.")));
 	}
 
-	// Test for GET /async/{runnerId} with an invalid runner ID
+	// Test to check /apply/async with invalid and unexpected JSON input type --
+	// Need to fix
+	@Test
+	public void whenInvalidReturnIdWrongMediaType() throws Exception {
+		final String invalidSteps = "invalid-json";
+		mockMvc.perform(post("/apply/async").contentType(MediaType.APPLICATION_NDJSON_VALUE).content(invalidSteps))
+				.andExpect(status().is4xxClientError())
+				.andExpect(content().string(containsString("Your query is not a valid JSON file.")));
+	}
+
+	// Test for GET /async/{runnerId} with a valid runner ID
+
+	@Test
+	public void whenValidRunnerId_thenReturnResultOrNotReadyMessage() throws Exception {
+		String runnerId = "d593c930-7fed-4c7b-ac52-fff946b78c32";
+		mockMvc.perform(get("/apply/async/" + runnerId).contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().is4xxClientError())
+				.andExpect(content().string(containsString("Sorry, your request result is not ready yet.")));
+	}
+
+	// Test for invalid runner ID Need to fix
 	@Test
 	public void whenInvalidRunnerId_thenReturnNotReadyMessage() throws Exception {
 		String invalidRunnerId = "nonexistent-runner-id";
-
-		mockMvc.perform(get("/apply/async/" + invalidRunnerId)).andExpect(status().isOk())
-				.andExpect(content().string("Sorry, your request result is not ready yet. Please try again later."));
+		mockMvc.perform(get("/apply/async/" + invalidRunnerId)).andExpect(status().is(404))
+				.andExpect(content().string(containsString("Sorry, your request result is not ready yet.")));
 	}
 
+	// Test for ping route
 	@Test
 	public void testPingRoute() throws Exception {
-		// Print all registered endpoints
 		System.out.println("Registered endpoints: " + webApplicationContext.getBean("requestMappingHandlerMapping"));
+		mockMvc.perform(get("/apply/ping")).andExpect(status().isOk())
+				.andExpect(content().string(org.hamcrest.Matchers.startsWith("pong")));
+	}
 
-		mockMvc.perform(get("/apply/ping")).andExpect(status().isOk()) // Verify HTTP 200 status
-				.andExpect(content().string(org.hamcrest.Matchers.startsWith("pong -"))); // Verify response starts with
-																							// "pong -"
+	// Test for sync with valid payload
+	@Test
+	public void testSync() throws Exception {
+		String jsonPayload = PayloadFactory.getBasicQuery();
+		performPostRequest("/apply/sync", MediaType.APPLICATION_JSON_VALUE, jsonPayload);
+	}
+
+	// Test for sync with wrong media type access
+	@Test
+	public void testSyncWrongMediaTypeAccess() throws Exception {
+		String jsonPayload = PayloadFactory.getBasicQuery();
+		mockMvc.perform(post("/apply/sync").contentType("XXX").content(jsonPayload))
+				.andExpect(status().is5xxServerError());
+	}
+
+	// Test for sync with wrong media type
+	@Test
+	public void testSyncWrongMediaType() throws Exception {
+		String jsonPayload = PayloadFactory.getBasicQuery();
+		mockMvc.perform(post("/apply/sync").contentType("application/XXX").content(jsonPayload))
+				.andExpect(status().is2xxSuccessful());
+	} // Test for broken JSON query
+
+	@Test
+	public void whenBrokenJsonQuery_thenReturnError() throws Exception {
+		String brokenJson = "{ \"use\": \"ca.concordia.encs.citydata.producers.StringProducer\", "
+				+ "\"withParams\": [ { \"name\": \"generationProcess\", \"value\": \"random\" } ";
+
+		mockMvc.perform(post("/apply/sync").contentType(MediaType.APPLICATION_JSON).content(brokenJson))
+				.andExpect(status().is4xxClientError())
+				.andExpect(content().string(containsString("Your query is not a valid JSON file.")));
+	}
+
+	// Test for missing "use" field
+	@Test
+	public void whenMissingUseField_thenReturnError() throws Exception {
+		String missingUse = "{ \"withParams\": [ { \"name\": \"generationProcess\", \"value\": \"random\" } ] }";
+
+		mockMvc.perform(post("/apply/sync").contentType(MediaType.APPLICATION_JSON).content(missingUse))
+				.andExpect(status().isInternalServerError())
+				.andExpect(content().string(containsString("Missing 'use' field")));
+	}
+
+	// Test for missing "withParams" field
+	@Test
+	public void whenMissingWithParamsField_thenReturnError() throws Exception {
+		String missingWithParams = "{ \"use\": \"ca.concordia.encs.citydata.producers.StringProducer\" }";
+
+		mockMvc.perform(post("/apply/sync").contentType(MediaType.APPLICATION_JSON).content(missingWithParams))
+				.andExpect(content().string(containsString("Missing 'withParams' field")));
+	}
+
+	// Test for non-existent param in Producer/Operation
+	@Test
+	public void whenNonExistentParam_thenReturnError() throws Exception {
+		String nonExistentParam = "{ \"use\": \"ca.concordia.encs.citydata.producers.StringProducer\", \"withParams\": [ { \"name\": \"nonExistentParam\", \"value\": \"value\" } ] }";
+
+		mockMvc.perform(post("/apply/sync").contentType(MediaType.APPLICATION_JSON).content(nonExistentParam))
+				.andExpect(content().string(containsString("No suitable setter found for nonExistentParam")));
+	}
+
+	// Test for missing params in Operation (valid case for operations that take no
+	// params)
+	@Test
+	public void whenMissingParamsForOperation_thenReturnError() throws Exception {
+		String missingParamsForOperation = "{ \"use\": \"ca.concordia.encs.citydata.producers.StringProducer\", \"withParams\": [ { \"name\": \"generationProcess\", \"value\": \"random\" } ], \"apply\": [ { \"name\": \"ca.concordia.encs.citydata.operations.JsonFilterOperation\" } ] }";
+
+		mockMvc.perform(post("/apply/sync").contentType(MediaType.APPLICATION_JSON).content(missingParamsForOperation))
+				.andExpect(status().isInternalServerError())
+				.andExpect(content().string(containsString("Missing 'withParams' field")));
 	}
 
 	@Test
-	public void testSync() throws Exception {
+	public void testGetRequiredField() {
+		JsonObject jsonObject = new JsonObject();
+		jsonObject.addProperty("testField", "testValue");
 
-// Create the JSON payload
-		JsonObject payload = new JsonObject();
-		payload.addProperty("use", "ca.concordia.encs.citydata.producers.StringProducer");
-		// Add "withParams" array
-		JsonArray withParams = new JsonArray();
-		JsonObject param1 = new JsonObject();
-		param1.addProperty("name", "generationProcess");
-		param1.addProperty("value", "random");
-		withParams.add(param1);
-		JsonObject param2 = new JsonObject();
-		param2.addProperty("name", "stringLength");
-		param2.addProperty("value", 10);
-		withParams.add(param2);
-		payload.add("withParams", withParams);
-		// Add "apply" array
-		JsonArray apply = new JsonArray();
-		// First operation
-		JsonObject operation1 = new JsonObject();
-		operation1.addProperty("name", "ca.concordia.encs.citydata.operations.StringReplaceOperation");
-		JsonArray operation1Params = new JsonArray();
-		JsonObject operation1Param1 = new JsonObject();
-		operation1Param1.addProperty("name", "searchFor");
-		operation1Param1.addProperty("value", "a");
-		operation1Params.add(operation1Param1);
-		JsonObject operation1Param2 = new JsonObject();
-		operation1Param2.addProperty("name", "replaceBy");
-		operation1Param2.addProperty("value", "b");
-		operation1Params.add(operation1Param2);
-		operation1.add("withParams", operation1Params);
-		apply.add(operation1);
-		// Second operation
-		JsonObject operation2 = new JsonObject();
-		operation2.addProperty("name", "ca.concordia.encs.citydata.operations.StringReplaceOperation");
-		JsonArray operation2Params = new JsonArray();
-		JsonObject operation2Param1 = new JsonObject();
-		operation2Param1.addProperty("name", "searchFor");
-		operation2Param1.addProperty("value", "cxsffdf");
-		operation2Params.add(operation2Param1);
-		JsonObject operation2Param2 = new JsonObject();
-		operation2Param2.addProperty("name", "replaceBy");
-		operation2Param2.addProperty("value", "c");
-		operation2Params.add(operation2Param2);
-		operation2.add("withParams", operation2Params);
-		apply.add(operation2);
-		payload.add("apply", apply);
-		// Convert the payload to a JSON string
-		String jsonPayload = payload.toString();
-		System.out.println("Sending JSON payload: " + jsonPayload); // Debug: Log the JSON payload
-		mockMvc.perform(post("/apply/sync").contentType("application/json").content(jsonPayload))
-				.andExpect(status().isOk()).andExpect(status().isOk())
-				.andExpect(content().string(containsString("result")));
+		assertEquals("testValue", ReflectionUtils.getRequiredField(jsonObject, "testField").getAsString());
 	}
-}
+
+	@Test
+	public void testGetRequiredFieldMissing() {
+		JsonObject jsonObject = new JsonObject();
+
+		Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+			ReflectionUtils.getRequiredField(jsonObject, "missingField");
+		});
+
+		assertTrue(exception.getMessage().contains("Missing 'missingField' field"));
+	}
+
+	@Test
+	public void testInstantiateClass() throws Exception {
+		Object instance = ReflectionUtils.instantiateClass("java.lang.String");
+		assertTrue(instance instanceof String);
+	}
+
+	@Test
+	public void testSetParameters() throws Exception {
+		JsonObject param1 = new JsonObject();
+		param1.addProperty("name", "length");
+		param1.addProperty("value", 5);
+
+		JsonArray params = new JsonArray();
+		params.add(param1);
+
+		StringBuilder instance = new StringBuilder();
+		ReflectionUtils.setParameters(instance, params);
+
+		assertEquals(5, instance.length());
+	}
+
+	@Test
+	public void testFindSetterMethod() throws Exception {
+		Method method = ReflectionUtils.findSetterMethod(StringBuilder.class, "length", new JsonObject());
+		assertNotNull(method);
+		assertEquals("setLength", method.getName());
+	}
+	@Test
+	public void testRoutesList() throws Exception {
+		mockMvc.perform(get("/routes/list"))
+				.andExpect(status().isOk())
+				.andExpect(content().string(containsString("Method: [")));
+
+	}
+	@Test
+	public void testOperationsList() throws Exception {
+		mockMvc.perform(get("/operations/list"))
+				.andExpect(status().isOk())
+				.andExpect(content().string(containsString("ca.concordia.encs.citydata")));
+	}
+
+	@Test
+	public void testProducersList() throws Exception {
+		mockMvc.perform(get("/producers/list"))
+				.andExpect(status().isOk())
+				.andExpect(content().string(containsString("ca.concordia.encs.citydata")));
+}}

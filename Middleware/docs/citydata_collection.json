@@ -1,0 +1,233 @@
+{
+	"info": {
+		"_postman_id": "add2204a-2ea3-4a55-a6a4-799b4c7f5ee6",
+		"name": "Middleware",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "38433140"
+	},
+	"item": [
+		{
+			"name": "Discovery",
+			"item": [
+				{
+					"name": "routes/list",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/routes/list",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"routes",
+								"list"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "operations/list",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/operations/list",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"operations",
+								"list"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "producers/list",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/producers/list",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"producers",
+								"list"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Apply",
+			"item": [
+				{
+					"name": "apply/sync (StringProducer)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"use\": \"ca.concordia.encs.citydata.producers.StringProducer\",\n    \"withParams\": [\n        {\n            \"name\": \"generationProcess\",\n            \"value\": \"random\"\n        },\n        {\n            \"name\": \"stringLength\",\n            \"value\": 50\n        }\n    ],\n    \"apply\": [\n        {\n            \"name\": \"ca.concordia.encs.citydata.operations.StringReplaceOperation\",\n            \"withParams\": [\n                {\n                    \"name\": \"searchFor\",\n                    \"value\": \"a\"\n                },\n                {\n                    \"name\": \"replaceBy\",\n                    \"value\": \"==HELLO==\"\n                }\n            ]\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/apply/sync",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"apply",
+								"sync"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "apply/sync (EnergyConsumptionProducer)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"use\": \"ca.concordia.encs.citydata.producers.EnergyConsumptionProducer\",\n    \"withParams\": [\n        {\n            \"name\": \"city\",\n            \"value\": \"montreal\"\n        }\n    ],\n    \"apply\": [\n        {\n            \"name\": \"ca.concordia.encs.citydata.operations.StringFilterOperation\",\n            \"withParams\": [\n                {\n                    \"name\": \"filterBy\",\n                    \"value\": \"09:45:00\"\n                }\n            ]\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/apply/sync",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"apply",
+								"sync"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "apply/async",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"use\": \"ca.concordia.encs.citydata.producers.StringProducer\",\n    \"withParams\": [\n        {\n            \"name\": \"generationProcess\",\n            \"value\": \"gabriel\"\n        }\n    ],\n    \"apply\": [\n        {\n            \"name\": \"ca.concordia.encs.citydata.operations.StringReplaceOperation\",\n            \"withParams\": [\n                {\n                    \"name\": \"searchFor\",\n                    \"value\": \"a\"\n                },\n                {\n                    \"name\": \"replaceBy\",\n                    \"value\": \"b\"\n                }\n            ]\n        },\n        {\n            \"name\": \"ca.concordia.encs.citydata.operations.StringReplaceOperation\",\n            \"withParams\": [\n                {\n                    \"name\": \"searchFor\",\n                    \"value\": \"l\"\n                },\n                {\n                    \"name\": \"replaceBy\",\n                    \"value\": \"k\"\n                }\n            ]\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/apply/async",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"apply",
+								"async"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "apply/async/{runnerId}",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/apply/async/51cb857f-0e11-432d-8674-b231fafd2f05",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"apply",
+								"async",
+								"51cb857f-0e11-432d-8674-b231fafd2f05"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Other",
+			"item": [
+				{
+					"name": "helloworld",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/helloworld/",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"helloworld",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "apply/ping",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/apply/ping",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"apply",
+								"ping"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

@@ -1,11 +1,14 @@
 package ca.concordia.encs.citydata.core;
 
+import java.util.ArrayList;
+
 /**
  *
  * The Producer entity is responsible for: - Fetching data - Applying a
  * operation on the result - Notify observers when both tasks are done
  * 
  */
+
 public interface IProducer<E> {
 
 	// 1 - prepare producer
@@ -22,6 +25,8 @@ public interface IProducer<E> {
 	void notifyObservers();
 
 	// 4 - output data
+	ArrayList<E> getResult();
+
 	String getResultJSONString();
 
 }

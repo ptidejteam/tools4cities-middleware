@@ -1,0 +1,10 @@
+{
+    "use": "ca.concordia.encs.citydata.producers.CKANMetadataProducer",
+    "withParams": [
+        {
+            "name": "url",
+            "value": "https://ngci.encs.concordia.ca/ckan/api/3"
+        }
+    ],
+    "apply": [ ]
+}

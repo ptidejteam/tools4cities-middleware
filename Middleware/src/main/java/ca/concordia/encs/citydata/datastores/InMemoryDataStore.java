@@ -7,26 +7,27 @@ import ca.concordia.encs.citydata.core.IProducer;
 import ca.concordia.encs.citydata.core.MiddlewareEntity;
 
 /**
-*
-* A DataStore that stores information in RAM only rather than an actual database.
-* There is no persistence! Once the application is killed, all data is lost.
-*  
-*/
-public class InMemoryDataStore extends MiddlewareEntity implements IDataStore{
+ *
+ * A DataStore that stores information in RAM only rather than an actual
+ * database. There is no persistence! Once the application is killed, all data
+ * is lost.
+ * 
+ */
+public class InMemoryDataStore extends MiddlewareEntity implements IDataStore<IProducer<?>> {
 
 	private HashMap<String, IProducer<?>> map = new HashMap<>();
-	
-    private static final InMemoryDataStore storeInstance = new InMemoryDataStore();
 
-    // Private constructor prevents instantiation (this is a singleton)
-    private InMemoryDataStore() {
+	private static final InMemoryDataStore storeInstance = new InMemoryDataStore();
+
+	// Private constructor prevents instantiation (this is a singleton)
+	private InMemoryDataStore() {
 		this.setMetadata("role", "datastore");
-    }
+	}
 
-    // Public method to provide access to the instance
-    public static InMemoryDataStore getInstance() {
-        return storeInstance;
-    }
+	// Public method to provide access to the instance
+	public static InMemoryDataStore getInstance() {
+		return storeInstance;
+	}
 
 	@Override
 	public void set(String key, IProducer<?> value) {
@@ -42,7 +43,7 @@ public class InMemoryDataStore extends MiddlewareEntity implements IDataStore{
 	public void delete(String key) {
 		map.remove(key);
 	}
-	
+
 	public void truncate() {
 		this.map = new HashMap<>();
 	}

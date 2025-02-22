@@ -26,6 +26,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import ca.concordia.encs.citydata.core.exceptions.Exceptions;
+
 /**
  *
  * This implements features common to all Producers, such as reading data from
@@ -44,18 +46,37 @@ public abstract class AbstractProducer<E> extends MiddlewareEntity implements IP
 		this.setMetadata("role", "producer");
 	}
 
-	@Override
-	public void setOperation(IOperation operation) {
-		this.operation = operation;
-	}
+	/*
+	 * @Override public void setOperation(IOperation operation) { this.operation =
+	 * operation; }
+	 */
 
 	@Override
 	public void addObserver(final IRunner aRunner) {
 		this.runners.add(aRunner);
 	}
 
+	/*
+	 * @Override public void fetch() { System.out.
+	 * println("Unimplemented method! This method must be implemented by a subclass."
+	 * ); }
+	 */
+
+	@Override
+	public void setOperation(IOperation operation) {
+		if (operation == null) {
+			throw new Exceptions.InvalidOperationException(
+					"Operation cannot be null. Please provide a valid operation.");
+		}
+		this.operation = operation;
+	}
+
 	@Override
 	public void fetch() {
+		if (this.filePath == null || this.filePath.isEmpty()) {
+			throw new Exceptions.InvalidProducerParameterException(
+					"Producer file path is missing or empty. Please set a valid file path.");
+		}
 		System.out.println("Unimplemented method! This method must be implemented by a subclass.");
 	}
 
@@ -79,6 +100,11 @@ public abstract class AbstractProducer<E> extends MiddlewareEntity implements IP
 			this.result = this.operation.apply(this.result);
 		}
 		this.notifyObservers();
+	}
+
+	@Override
+	public ArrayList<E> getResult() {
+		return this.result;
 	}
 
 	@Override
@@ -168,13 +194,21 @@ public abstract class AbstractProducer<E> extends MiddlewareEntity implements IP
 
 	protected byte[] fetchFromPath() {
 		try {
-			// Read the content of the file into a string
-			return Files.readAllBytes(Paths.get(this.filePath));
+			// If the file path is a URL and there are RequestOptions
+			if (this.filePath != null && this.filePath.contains("://") && this.fileOptions != null) {
+				return this.doHTTPRequest();
+			}
+
+			// else, fetch from the filesystem
+			return this.readFile();
+
 		} catch (FileNotFoundException e) {
 			throw new RuntimeException("File not found: " + this.filePath, e);
 		} catch (IOException e) {
 			throw new RuntimeException("Cannot read file: " + this.filePath, e);
+		} catch (Exception e) {
+			throw new RuntimeException("An error occured while fetching the data: ", e);
 		}
-	}
 
+	}
 }

@@ -1,0 +1,10 @@
+{
+    "use": "ca.concordia.encs.citydata.producers.RetrofitResultsProducer",
+    "withParams": [
+        {
+            "name": "buildingIds",
+            "value": [ "05071763", "05191025", "01027176" ]
+        }
+    ],
+    "apply": [ ]
+}
