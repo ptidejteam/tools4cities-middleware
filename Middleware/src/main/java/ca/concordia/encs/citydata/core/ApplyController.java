@@ -4,8 +4,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,124 +11,139 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 
 import ca.concordia.encs.citydata.datastores.InMemoryDataStore;
-import ca.concordia.encs.citydata.producers.ExceptionProducer;
 import ca.concordia.encs.citydata.runners.SequentialRunner;
 
+// TODO: rename to ApplyController
 @RestController
 @RequestMapping("/apply")
 public class ApplyController {
+    
+    private InMemoryDataStore dataStore = InMemoryDataStore.getInstance();
+    
+    @RequestMapping(value = "/applyQuery", method = RequestMethod.POST)
+    public void applyQuery(@RequestBody String body) {
+        JsonObject request = JsonParser.parseString(body).getAsJsonObject();
+        String producerId = request.get("producerId").getAsString();
+        String queryBody = request.get("query").getAsString();
 
-	@RequestMapping(value = "/sync", method = RequestMethod.POST)
-	public ResponseEntity<String> sync(@RequestBody String steps) {
-		String runnerId = "";
-		String errorMessage = "";
-		HttpStatus responseCode = HttpStatus.OK;
+        // Store the query
+        dataStore.addQuery(producerId, queryBody);
 
-		try {
-			JsonObject stepsObject = JsonParser.parseString(steps).getAsJsonObject();
-			SequentialRunner deckard = new SequentialRunner(stepsObject);
-			runnerId = deckard.getMetadataString("id");
-			Thread runnerTask = new Thread() {
-				public void run() {
-					try {
-						deckard.runSteps();
-						while (!deckard.isDone()) {
-							System.out.println("Busy waiting!");
-						}
-					} catch (Exception e) {
-						// stop runner as soon as an exception is thrown to avoid infinite loops
-						deckard.setAsDone();
-						InMemoryDataStore store = InMemoryDataStore.getInstance();
-						store.set(deckard.getMetadataString("id"), new ExceptionProducer(e));
-					}
-				}
-			};
-			runnerTask.start();
-			runnerTask.join();
-		} catch (IllegalStateException | JsonParseException e) {
-			String detailedMessage = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
-			errorMessage = "Your query is not a valid JSON file. Details: " + detailedMessage;
-			responseCode = HttpStatus.BAD_REQUEST;
-		} catch (Exception e) {
-			errorMessage = "An error occurred while processing your query. Details: " + e.getClass().getName() + ": "
-					+ e.getMessage();
-			responseCode = HttpStatus.INTERNAL_SERVER_ERROR;
-		}
+        // Execute the query
+        dataStore.executeQuery(producerId, queryBody);
 
-		// if there are execution errors, return an error message
-		if (responseCode.isError()) {
-			return ResponseEntity.status(responseCode).body(errorMessage);
-		}
+        // Check if the producer exists after storing the query and results
+        boolean exists = dataStore.producerExists(producerId);
+        int queryCount = dataStore.getQueryCount(producerId, queryBody);
+        System.out.println("Query count for producer " + producerId + ": " + queryCount);
+        System.out.println("Producer exists: " + exists);
+    }
 
-		// else, return the data
-		InMemoryDataStore store = InMemoryDataStore.getInstance();
-		IProducer<?> resultProducer = store.get(runnerId);
+    @RequestMapping(value = "/sync", method = RequestMethod.POST)
+    public String sync(@RequestBody String steps) {
+        String runnerId = "";
+        JsonObject errorLog = new JsonObject();
 
-		// if the thread, which cannot throw exceptions, produces an ExceptionProducer,
-		// return an error code
-		if (resultProducer.getClass() == ExceptionProducer.class) {
-			responseCode = HttpStatus.INTERNAL_SERVER_ERROR;
-			return ResponseEntity.status(responseCode).body(resultProducer.getResultJSONString());
-		}
+        try {
+            JsonObject stepsObject = JsonParser.parseString(steps).getAsJsonObject();
+            SequentialRunner deckard = new SequentialRunner(stepsObject);
+            runnerId = deckard.getMetadata("id").toString();
+            
+            // Store as a runner instead of trying to cast to IProducer
+            System.out.println("Storing runner with ID: " + runnerId);
+            dataStore.setRunner(runnerId, deckard);
+            
+            Thread runnerTask = new Thread() {
+                public void run() {
+                    try {
+                        deckard.runSteps();
+                        while (!deckard.isDone()) {
+                            System.out.println("Busy waiting!");
+                        }
+                    } catch (Exception e) {
+                        errorLog.addProperty("runnerError", e.getClass().getName() + ": " + e.getMessage());
+                    }
+                }
+            };
+            runnerTask.start();
+            runnerTask.join();
+        } catch (Exception e) {
+            errorLog.addProperty("threadError", e.getClass().getName() + ": " + e.getMessage());
+        }
 
-		return ResponseEntity.status(responseCode).body(resultProducer.getResultJSONString());
-	}
+        // if there are execution errors, return an error message
+        if (errorLog.keySet().size() > 0) {
+            return errorLog.toString();
+        }
 
-	@RequestMapping(value = "/async", method = RequestMethod.POST)
-	public ResponseEntity<String> async(@RequestBody String steps) {
-		String runnerId = "";
-		String errorMessage = "";
-		HttpStatus responseCode = HttpStatus.OK;
+        // Get result from the producer stored by the SequentialRunner's storeResults method
+        IDataStore store = InMemoryDataStore.getInstance();
+        return store.get(runnerId).getResultJSONString();
+    }
 
-		try {
-			JsonObject stepsObject = JsonParser.parseString(steps).getAsJsonObject();
-			SequentialRunner deckard = new SequentialRunner(stepsObject);
-			runnerId = deckard.getMetadata("id").toString();
-			deckard.runSteps();
-		} catch (IllegalStateException | JsonParseException e) {
-			String detailedMessage = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
-			errorMessage = "Your query is not a valid JSON file. Details: " + detailedMessage;
-			responseCode = HttpStatus.BAD_REQUEST;
-		} catch (Exception e) {
-			errorMessage = "An error occurred while processing your query. Details: " + e.getClass().getName() + ": "
-					+ e.getMessage();
-			responseCode = HttpStatus.INTERNAL_SERVER_ERROR;
-		}
+    @RequestMapping(value = "/async", method = RequestMethod.POST)
+    public String async(@RequestBody String steps) {
+        String runnerId = "";
+        JsonObject errorLog = new JsonObject();
+        try {
+            JsonObject stepsObject = JsonParser.parseString(steps).getAsJsonObject();
+            SequentialRunner deckard = new SequentialRunner(stepsObject);
+            runnerId = deckard.getMetadata("id").toString();
+            
+            // Store as a runner instead of trying to cast to IProducer
+            System.out.println("Storing runner with ID: " + runnerId);
+            dataStore.setRunner(runnerId, deckard);
+            
+            deckard.runSteps();
+        } catch (Exception e) {
+            errorLog.addProperty("runnerError", e.getClass().getName() + ": " + e.getMessage());
+        }
 
-		// if there are execution errors, return an error message
-		if (responseCode.isError()) {
-			return ResponseEntity.status(responseCode).body(errorMessage);
-		}
+        // if there are execution errors, return an error message
+        if (errorLog.keySet().size() > 0) {
+            return errorLog.toString();
+        }
 
-		return ResponseEntity.status(responseCode)
-				.body("Hello! The runner " + runnerId
-						+ " is currently working on your request. Please make a GET request to /apply/async/ "
-						+ runnerId + " to retrieve request results.");
-	}
+        return "Hello! The runner " + runnerId
+                + " is currently working on your request. Please make a GET request to /apply/async/ " + runnerId
+                + " to find out your request status.";
+    }
 
-	@RequestMapping(value = "/async/{runnerId}", method = RequestMethod.GET)
-	public ResponseEntity<String> asyncId(@PathVariable("runnerId") String runnerId) {
+    @RequestMapping(value = "/async/{runnerId}", method = RequestMethod.GET)
+    public String asyncId(@PathVariable("runnerId") String runnerId) {
+        InMemoryDataStore store = InMemoryDataStore.getInstance();
+        
+        // Try to get as producer first (this is what the runner would have stored)
+        IProducer<?> producer = store.get(runnerId);
+        if (producer != null) {
+            return producer.getResultJSONString();
+        }
+        
+        // Check if we have a runner
+        IRunner runner = store.getRunner(runnerId);
+        if (runner != null) {
+            if (runner.isDone()) {
+                // If done, try to get the producer that should have been stored
+                producer = store.get(runnerId);
+                if (producer != null) {
+                    return producer.getResultJSONString();
+                }
+                return "Runner completed but no results found.";
+            } else {
+                return "Runner is still processing your request. Please try again later.";
+            }
+        }
+        
+        return "Sorry, your request result is not ready yet. Please try again later.";
+    }
 
-		InMemoryDataStore store = InMemoryDataStore.getInstance();
-		IProducer<?> storeResult = store.get(runnerId);
-
-		if (storeResult != null) {
-			return ResponseEntity.status(HttpStatus.OK).body(storeResult.getResultJSONString());
-		} else {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND)
-					.body("Sorry, your request result is not ready yet. Please try again later.");
-		}
-
-	}
-
-	@RequestMapping(value = "/ping", method = RequestMethod.GET)
-	public ResponseEntity<String> ping() {
-		Date timeObject = Calendar.getInstance().getTime();
-		String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timeObject);
-		return ResponseEntity.status(HttpStatus.OK).body("pong at " + timeStamp);
-	}
+    @RequestMapping(value = "/ping", method = RequestMethod.GET)
+    public String ping() {
+        Date timeObject = Calendar.getInstance().getTime();
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(timeObject);
+        return "pong - " + timeStamp;
+    }
 }

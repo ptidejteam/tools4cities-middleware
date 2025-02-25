@@ -7,12 +7,17 @@ package ca.concordia.encs.citydata.core;
  * method) - Delete records in a key/value database (delete method)
  * 
  */
-public interface IDataStore<E> {
+public interface IDataStore {
 
-	void set(String key, E value);
+	void set(String key, IProducer<?> value);
 
-	E get(String key);
+	IProducer<?> get(String key);
 
 	void delete(String key);
+	
+	// New methods for query management
+    void addQuery(String producerId, String queryBody);
+    void executeQuery(String producerId, String queryBody);
+    int getQueryCount(String producerId, String queryBody);
 
 }
