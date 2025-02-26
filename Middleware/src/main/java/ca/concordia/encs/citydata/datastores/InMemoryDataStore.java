@@ -1,6 +1,7 @@
 package ca.concordia.encs.citydata.datastores;
 
 import java.util.HashMap;
+import java.util.Iterator;
 
 import ca.concordia.encs.citydata.core.IDataStore;
 import ca.concordia.encs.citydata.core.IProducer;
@@ -37,6 +38,11 @@ public class InMemoryDataStore extends MiddlewareEntity implements IDataStore<IP
 	@Override
 	public IProducer<?> get(String key) {
 		return map.get(key);
+	}
+
+	@Override
+	public Iterator<IProducer<?>> getValues() {
+		return map.values().iterator();
 	}
 
 	@Override
