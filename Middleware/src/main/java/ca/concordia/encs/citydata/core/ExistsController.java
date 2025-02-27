@@ -33,7 +33,7 @@ public class ExistsController {
         try {
             // Parse the user query
             JsonObject queryFromUserRequest = JsonParser.parseString(query).getAsJsonObject();
-            String queryId = queryFromUserRequest.get("id").getAsString();  // assuming the query contains an "id"
+            String queryId = queryFromUserRequest.get("id").getAsString();  
 
             // Initialize the DataStore and retrieve all producers
             InMemoryDataStore store = InMemoryDataStore.getInstance();
@@ -47,7 +47,6 @@ public class ExistsController {
                 String producerId = (String) producer.getMetadata("id");
                 String timestamp = (String) producer.getMetadata("timestamp");
 
-                // If the producer's id matches the query id, add it to the results
                 if (producerId != null && producerId.equals(queryId)) {
                     JsonObject producerDetails = new JsonObject();
                     producerDetails.addProperty("timestamp", timestamp);
@@ -55,14 +54,10 @@ public class ExistsController {
                 }
             }
 
-            // Log the results for debugging
-            System.out.println("Results: " + results.toString());
-
             if (results.size() > 0) {
                 return ResponseEntity.status(200)
                         .body("Exists! Matching producers: " + results.toString());
             } else {
-                // Return 404 when no producers are found
                 return ResponseEntity.status(404).body("Does not exist.");
             }
 
