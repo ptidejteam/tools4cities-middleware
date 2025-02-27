@@ -41,11 +41,10 @@ public class ExistsTest {
     @Autowired
     private MockMvc mockMvc;
     
-    // We'll use these test producer IDs in our tests
+    // We'll use these test producers IDs to be able to run the tests
     private String randomProducerId;
     private String occupancyProducerId;
     
-    // To ensure at least a producer exists
     @BeforeEach
     void setUp() throws Exception {
         // Clear the data store before each test
@@ -55,7 +54,7 @@ public class ExistsTest {
         randomProducerId = UUID.randomUUID().toString();
         occupancyProducerId = UUID.randomUUID().toString();
         
-        // Create timestamp for today
+        // Any date for a test timestamp
         String timestamp = "2025-02-26T10:30:00Z";
         
         // Create RandomNumberProducer with valid data
@@ -77,14 +76,12 @@ public class ExistsTest {
         store.set(occupancyProducerId, occupancyProducer);
     }
 
-    // Creating a sample query payload based on producer ID
     private String createQueryPayload(String producerId) {
         JsonObject query = new JsonObject();
         query.addProperty("id", producerId);
         return query.toString();
     }
-    
-    // Test 1: Query is found
+
     @Test
     void testQueryExists() throws Exception {
         String jsonPayload = createQueryPayload(randomProducerId);
@@ -97,21 +94,18 @@ public class ExistsTest {
 				.andExpect(content().string(containsString(randomProducerId)))
                 .andExpect(content().string(containsString("timestamp")));
     }
-    
-    // Test 2: Query is not found (empty result)
+	
     @Test
     void testQueryNotExists() throws Exception {
     	String queryPayload = "{\"id\": \"FakeProducerId\"}";
 
-        // Perform the POST request and assert the response status and content
         mockMvc.perform(post("/exists/")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(queryPayload))
                .andExpect(status().isNotFound()) 
                .andExpect(content().string("Does not exist."));
     }
-    
-    // Test 3: Query is broken JSON
+
     @Test
     void testBrokenJsonQuery() throws Exception {
         String jsonPayload = "{broken_json:}";
@@ -121,19 +115,16 @@ public class ExistsTest {
                 .content(jsonPayload))
                 .andExpect(status().isInternalServerError());
     }
-    
-    // Test 4: Query is found and after that you call /apply/async/{runnerId}
+
     @Test
     void testQueryExistsFollowedByAsync() throws Exception {
     	String runnerId = "";
 		String jsonPayload = PayloadFactory.getExampleQuery("ckanProducerWithReplace");
 
-		// do async request
 		MvcResult asyncRequestResult = mockMvc
 				.perform(post("/apply/async").contentType(MediaType.APPLICATION_JSON).content(jsonPayload))
 				.andExpect(status().isOk()).andReturn();
 
-		// Regular expression for extracting the runner ID
 		String text = asyncRequestResult.getResponse().getContentAsString();
 		String uuidRegex = "\\b[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\\b";
 		Pattern pattern = Pattern.compile(uuidRegex);
