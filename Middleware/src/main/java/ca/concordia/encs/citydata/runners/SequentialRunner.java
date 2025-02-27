@@ -1,24 +1,28 @@
 package ca.concordia.encs.citydata.runners;
 
 import java.lang.reflect.Method;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import ca.concordia.encs.citydata.core.AbstractRunner;
-import ca.concordia.encs.citydata.core.IDataStore;
 import ca.concordia.encs.citydata.core.IOperation;
 import ca.concordia.encs.citydata.core.IProducer;
 import ca.concordia.encs.citydata.core.IRunner;
+import ca.concordia.encs.citydata.core.ReflectionUtils;
 import ca.concordia.encs.citydata.datastores.InMemoryDataStore;
+import ca.concordia.encs.citydata.producers.ExceptionProducer;
 
-/**
- *
- * This Runner starts with data provided by a producer P1, then applies
+/* This Runner starts with data provided by a producer P1, then applies
  * operations in order based on P1' (P1 prime). For example: P1 + O1 = P1'. P1'
- * + O2 -> P1'', etc.
- * 
+ * + O2 -> P1'', etc. It is notified via the Observer pattern when P1' is ready, 
+ * then proceeds to the next Operation until all operations are completed.
+ *
+ * Author: Gabriel C. Ullmann 
+ * Date: 2025-02-14
  */
 public class SequentialRunner extends AbstractRunner implements IRunner {
 
@@ -29,58 +33,6 @@ public class SequentialRunner extends AbstractRunner implements IRunner {
 		this.steps = steps;
 	}
 
-	// REFLECTION METHODS
-	private JsonElement getRequiredField(JsonObject jsonObject, String fieldName) {
-		if (!jsonObject.has(fieldName)) {
-			throw new IllegalArgumentException("Error: Missing '" + fieldName + "' field");
-		}
-		return jsonObject.get(fieldName);
-	}
-
-	private Object instantiateClass(String className) throws Exception {
-		Class<?> clazz = Class.forName(className);
-		return clazz.getDeclaredConstructor().newInstance();
-	}
-
-	private void setParameters(Object instance, JsonArray params) throws Exception {
-		Class<?> clazz = instance.getClass();
-		for (JsonElement paramElement : params) {
-			JsonObject paramObject = paramElement.getAsJsonObject();
-			String paramName = paramObject.get("name").getAsString();
-			JsonElement paramValue = paramObject.get("value");
-			Method setter = findSetterMethod(clazz, paramName, paramValue);
-			setter.invoke(instance, convertValue(setter.getParameterTypes()[0], paramValue));
-		}
-	}
-
-	private Method findSetterMethod(Class<?> clazz, String paramName, JsonElement paramValue)
-			throws NoSuchMethodException {
-		String methodName = "set" + capitalize(paramName);
-		for (Method method : clazz.getMethods()) {
-			if (method.getName().equals(methodName) && method.getParameterCount() == 1) {
-				return method;
-			}
-		}
-		throw new NoSuchMethodException("No suitable setter found for " + paramName);
-	}
-
-	private Object convertValue(Class<?> targetType, JsonElement value) {
-		if (targetType == int.class || targetType == Integer.class) {
-			return value.getAsInt();
-		} else if (targetType == boolean.class || targetType == Boolean.class) {
-			return value.getAsBoolean();
-		} else if (targetType == double.class || targetType == Double.class) {
-			return value.getAsDouble();
-		} else {
-			return value.getAsString();
-		}
-	}
-
-	private String capitalize(String str) {
-		return str == null || str.isEmpty() ? str : str.substring(0, 1).toUpperCase() + str.substring(1);
-	}
-
-	// RUNNER METHODS
 	@Override
 	public void runSteps() throws Exception {
 		// if there are no steps to run, warn the user and stop
@@ -91,12 +43,16 @@ public class SequentialRunner extends AbstractRunner implements IRunner {
 
 		// start by extracting Producers, Operations and their params from the query
 		System.out.println("Run started!");
-		String producerName = getRequiredField(this.steps, "use").getAsString();
-		JsonArray producerParams = getRequiredField(this.steps, "withParams").getAsJsonArray();
+		String producerName = ReflectionUtils.getRequiredField(this.steps, "use").getAsString();
+		JsonArray producerParams = ReflectionUtils.getRequiredField(this.steps, "withParams").getAsJsonArray();
 
 		// instantiate a new Producer instance and set its params
-		Object producerInstance = instantiateClass(producerName);
-		setParameters(producerInstance, producerParams);
+		Object producerInstance = ReflectionUtils.instantiateClass(producerName);
+		ReflectionUtils.setParameters(producerInstance, producerParams);
+
+		// set query to producer so we can check it later against other queries
+		Method setMetadataMethod = producerInstance.getClass().getMethod("setMetadata", String.class, Object.class);
+		setMetadataMethod.invoke(producerInstance, "query", this.steps);
 
 		// add this Runner as an observer of the Producer instance
 		Method addObserverMethod = producerInstance.getClass().getMethod("addObserver", IRunner.class);
@@ -114,22 +70,24 @@ public class SequentialRunner extends AbstractRunner implements IRunner {
 		 * get list of operations and choose which one to execute next based on the
 		 * sequential operation counter
 		 */
-		JsonArray operationsToApply = getRequiredField(this.steps, "apply").getAsJsonArray();
+		JsonArray operationsToApply = ReflectionUtils.getRequiredField(this.steps, "apply").getAsJsonArray();
 		int totalOperations = operationsToApply.size();
-		if (totalOperations > 0) {
+		if (producer != null && totalOperations > 0) {
+
 			JsonObject currentOperation = operationsToApply.get(this.operationCounter).getAsJsonObject();
 
 			// instantiate current operation
-			JsonObject operationNode = currentOperation.getAsJsonObject();
-			String operationName = getRequiredField(operationNode, "name").getAsString();
-			Object operationInstance = instantiateClass(operationName);
+			String operationName = ReflectionUtils.getRequiredField(currentOperation, "name").getAsString();
+			Object operationInstance = ReflectionUtils.instantiateClass(operationName);
 
 			// extract operation parameters and set them
-			JsonArray operationParams = getRequiredField(operationNode, "withParams").getAsJsonArray();
-			setParameters(operationInstance, operationParams);
+			JsonArray operationParams = ReflectionUtils.getRequiredField(currentOperation, "withParams")
+					.getAsJsonArray();
+			ReflectionUtils.setParameters(operationInstance, operationParams);
 
 			// set operation to producer
 			Method setOperationMethod = producer.getClass().getMethod("setOperation", IOperation.class);
+
 			setOperationMethod.invoke(producer, operationInstance);
 
 			// trigger data fetching, which will in turn apply the operation
@@ -143,21 +101,30 @@ public class SequentialRunner extends AbstractRunner implements IRunner {
 	}
 
 	@Override
-	public void newDataAvailable(IProducer<?> producer) throws Exception {
+	public void newDataAvailable(IProducer<?> producer) {
 
 		// congratulations, you are done with your operation, go to the next one
 		this.operationCounter += 1;
 
-		// but is there really a next one? if not, stop
-		JsonArray operationsToApply = getRequiredField(this.steps, "apply").getAsJsonArray();
-		if (this.operationCounter >= operationsToApply.size()) {
-			this.storeResults(producer);
+		try {
+			// but is there really a next one? if not, stop
+			JsonArray operationsToApply = ReflectionUtils.getRequiredField(this.steps, "apply").getAsJsonArray();
+			if (this.operationCounter >= operationsToApply.size()) {
+				this.storeResults(producer);
+				this.setAsDone();
+				System.out.println("Run completed!");
+			} else {
+				// if there are operations to be applied, apply the first one
+				// subsequent operations will be applied on the P1' once the first is done
+				this.applyNextOperation(producer);
+			}
+		} catch (Exception e) {
+			InMemoryDataStore store = InMemoryDataStore.getInstance();
+			store.set(this.getMetadataString("id"), new ExceptionProducer(e));
+
+			// stop runner as soon as an exception is thrown to avoid infinite loops
 			this.setAsDone();
-			System.out.println("Run completed!");
-		} else {
-			// if there are operations to be applied, apply the first one
-			// subsequent operations will be applied on the P1' once the first is done
-			this.applyNextOperation(producer);
+			System.out.println(e.getMessage());
 		}
 
 	}
@@ -169,11 +136,20 @@ public class SequentialRunner extends AbstractRunner implements IRunner {
 	}
 
 	@Override
-	public void storeResults(IProducer<?> producer) {
-		IDataStore store = InMemoryDataStore.getInstance();
+	public void storeResults(IProducer<?> producer) throws Exception {
+
+		// the task is done, register a timestamp in the producer so we can keep track
+		// of when it is done
+		Method setMetadataMethod = producer.getClass().getMethod("setMetadata", String.class, Object.class);
+		Date timeObject = Calendar.getInstance().getTime();
+		String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timeObject);
+		setMetadataMethod.invoke(producer, "timestamp", timestamp);
+
+		// store producer in the datastore
+		InMemoryDataStore store = InMemoryDataStore.getInstance();
 		String runnerId = this.getMetadata("id").toString();
-		 System.out.println("Storing producer with key: " + runnerId); // Add debugging line
 		store.set(runnerId, producer);
+
 	}
 
 }

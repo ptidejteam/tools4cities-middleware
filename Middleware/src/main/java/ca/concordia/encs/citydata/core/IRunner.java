@@ -18,7 +18,7 @@ public interface IRunner {
 
 	void applyNextOperation(IProducer<?> producer) throws Exception;
 
-	void storeResults(IProducer<?> producer);
+	void storeResults(IProducer<?> producer) throws Exception;
 
 	// execution state control
 	boolean isDone();

@@ -1,5 +1,7 @@
 package ca.concordia.encs.citydata.core;
 
+import java.util.Iterator;
+
 /**
  *
  * The DataStore entity is responsible for: - Create and Update records in a
@@ -7,17 +9,14 @@ package ca.concordia.encs.citydata.core;
  * method) - Delete records in a key/value database (delete method)
  * 
  */
-public interface IDataStore {
+public interface IDataStore<E> {
 
-	void set(String key, IProducer<?> value);
+	void set(String key, E value);
 
-	IProducer<?> get(String key);
+	E get(String key);
+
+	Iterator<E> getValues();
 
 	void delete(String key);
-	
-	// New methods for query management
-    void addQuery(String producerId, String queryBody);
-    void executeQuery(String producerId, String queryBody);
-    int getQueryCount(String producerId, String queryBody);
 
 }
