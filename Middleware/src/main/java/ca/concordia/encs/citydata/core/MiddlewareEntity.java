@@ -34,16 +34,5 @@ public class MiddlewareEntity {
 	public String getMetadataString(String key) {
 		return metadata.get(key).toString();
 	}
-    
-    // New helper methods for query metadata
-    protected boolean hasQuery(String queryId) {
-        return metadata.containsKey("query_" + queryId);
-    }
-    
-    protected void incrementQueryCount(String queryId) {
-        String countKey = "query_count_" + queryId;
-        int currentCount = (Integer) metadata.getOrDefault(countKey, 0);
-        metadata.put(countKey, currentCount + 1);
-    }
 
 }
