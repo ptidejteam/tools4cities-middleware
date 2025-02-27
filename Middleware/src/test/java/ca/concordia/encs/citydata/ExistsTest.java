@@ -29,7 +29,7 @@ import ca.concordia.encs.citydata.producers.OccupancyProducer;
 import ca.concordia.encs.citydata.producers.RandomNumberProducer;
 
 /* ExistsController tests
- * Author: [Your Name]
+ * Author: [Minette]
  * Date: 2025-02-26
  */
 
