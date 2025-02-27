@@ -40,6 +40,9 @@ build/
 ### VS Code ###
 .vscode/
 
+## macOS ##
+.DS_Store
+
 ## Exceptions to the .gitignore ##
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
