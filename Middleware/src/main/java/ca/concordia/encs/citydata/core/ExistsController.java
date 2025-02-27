@@ -17,10 +17,8 @@ import ca.concordia.encs.citydata.datastores.InMemoryDataStore;
  * in the middleware's DataStore. If so, it returns the list of producers with that match the query,
  * along with their generation timestamps.
  * 
- * TODO: report all producers, not only the first one found
- * 
  * Author: Minette
- * Date: 21-02-2025
+ * Date: 26-02-2025
  */
 
 @RestController
