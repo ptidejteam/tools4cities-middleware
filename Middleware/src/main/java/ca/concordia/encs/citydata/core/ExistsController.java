@@ -28,12 +28,10 @@ public class ExistsController {
     	@RequestMapping(value = "/", method = RequestMethod.GET)
     public ResponseEntity<String> sync(@RequestBody String query) {
         try {
-            // Parse the query
             JsonObject queryFromUserRequest = JsonParser.parseString(query).getAsJsonObject();
             InMemoryDataStore store = InMemoryDataStore.getInstance();
             Iterator<IProducer<?>> storedProducers = store.getValues();
 
-            // Create a list to store matching producers
             List<String> matchingProducerMessages = new ArrayList<>();
 
             while (storedProducers.hasNext()) {
@@ -47,18 +45,13 @@ public class ExistsController {
                 }
             }
 
-            // Check if any producers were found
             if (!matchingProducerMessages.isEmpty()) {
-                // Combine all matching producer messages
                 String responseBody = "Exists! " + String.join("; ", matchingProducerMessages);
                 return ResponseEntity.status(200).body(responseBody);
             }
-
             return ResponseEntity.status(404).body("Does not exist.");
-
         } catch (Exception e) {
             return ResponseEntity.status(500).body(e.getMessage());
         }
     }
-
 }
