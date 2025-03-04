@@ -25,42 +25,40 @@ import ca.concordia.encs.citydata.datastores.InMemoryDataStore;
 @RequestMapping("/exists")
 public class ExistsController {
 
-	@RequestMapping(value = "/", method = RequestMethod.POST) 
+    	@RequestMapping(value = "/", method = RequestMethod.GET)
     public ResponseEntity<String> sync(@RequestBody String query) {
-
         try {
-            // Parse the user query
+            // Parse the query
             JsonObject queryFromUserRequest = JsonParser.parseString(query).getAsJsonObject();
-            String queryId = queryFromUserRequest.get("id").getAsString();  
-
-            // Initialize the DataStore and retrieve all producers
             InMemoryDataStore store = InMemoryDataStore.getInstance();
             Iterator<IProducer<?>> storedProducers = store.getValues();
-            
-            // Create a JsonObject to hold the matching producer data
-            JsonObject results = new JsonObject();
-            
+
+            // Create a list to store matching producers
+            List<String> matchingProducerMessages = new ArrayList<>();
+
             while (storedProducers.hasNext()) {
                 AbstractProducer producer = (AbstractProducer) storedProducers.next();
-                String producerId = (String) producer.getMetadata("id");
+                JsonObject queryInProducer = (JsonObject) producer.getMetadata("query");
                 String timestamp = (String) producer.getMetadata("timestamp");
 
-                if (producerId != null && producerId.equals(queryId)) {
-                    JsonObject producerDetails = new JsonObject();
-                    producerDetails.addProperty("timestamp", timestamp);
-                    results.add(producerId, producerDetails);  // Add the producer to the results
+                if (queryInProducer != null && queryInProducer.equals(queryFromUserRequest)) {
+                    // Add message for each matching producer
+                    matchingProducerMessages.add("Last producer with this query finished running at " + timestamp);
                 }
             }
 
-            if (results.size() > 0) {
-                return ResponseEntity.status(200)
-                        .body("Exists! Matching producers: " + results.toString());
-            } else {
-                return ResponseEntity.status(404).body("Does not exist.");
+            // Check if any producers were found
+            if (!matchingProducerMessages.isEmpty()) {
+                // Combine all matching producer messages
+                String responseBody = "Exists! " + String.join("; ", matchingProducerMessages);
+                return ResponseEntity.status(200).body(responseBody);
             }
 
+            return ResponseEntity.status(404).body("Does not exist.");
+
         } catch (Exception e) {
-            return ResponseEntity.status(500).body("Error: " + e.getMessage());
+            return ResponseEntity.status(500).body(e.getMessage());
         }
     }
+
 }
