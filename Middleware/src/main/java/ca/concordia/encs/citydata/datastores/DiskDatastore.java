@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Iterator;
 
 import ca.concordia.encs.citydata.core.IDataStore;
 import ca.concordia.encs.citydata.core.MiddlewareEntity;
@@ -58,6 +59,12 @@ public class DiskDatastore extends MiddlewareEntity implements IDataStore<byte[]
 			e.printStackTrace();
 			return null;
 		}
+	}
+
+	@Override
+	public Iterator<byte[]> getValues() {
+		System.out.println("Not yet implemented.");
+		return null;
 	}
 
 	@Override

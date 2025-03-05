@@ -76,4 +76,8 @@ public abstract class PayloadFactory {
 		}
 	}
 
+	public static String getInvalidJson() throws Exception {
+		return "{broken_json:}";
+	}
+
 }
