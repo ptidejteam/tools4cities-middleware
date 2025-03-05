@@ -15,7 +15,7 @@ import ca.concordia.encs.citydata.core.exceptions.Exceptions;
  * Date: 2-8-2025
  */
 
-public class ExcceptionsTest {
+public class ExceptionsTest {
 	private AbstractOperation<String> abstractOperation;
 
 	@BeforeEach
