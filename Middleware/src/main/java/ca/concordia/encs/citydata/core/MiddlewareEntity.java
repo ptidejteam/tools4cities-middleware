@@ -32,7 +32,10 @@ public class MiddlewareEntity {
 	}
 
 	public String getMetadataString(String key) {
-		return metadata.get(key).toString();
+		Object value = metadata.get(key);
+		if (value != null) {
+			return metadata.get(key).toString();
+		}
+		return "";
 	}
-
 }
