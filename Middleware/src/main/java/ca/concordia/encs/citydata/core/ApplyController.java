@@ -1,16 +1,11 @@
+// ApplyController.java
 package ca.concordia.encs.citydata.core;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-
+import ca.concordia.encs.citydata.datastores.MongoDataStore;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
@@ -20,9 +15,14 @@ import ca.concordia.encs.citydata.datastores.InMemoryDataStore;
 import ca.concordia.encs.citydata.producers.ExceptionProducer;
 import ca.concordia.encs.citydata.runners.SequentialRunner;
 
+import java.text.SimpleDateFormat;
+import java.util.*;
+
 @RestController
 @RequestMapping("/apply")
 public class ApplyController {
+	@Autowired
+	private MongoDataStore mongoDataStore;
 
 	@RequestMapping(value = "/sync", method = RequestMethod.POST)
 	public ResponseEntity<String> sync(@RequestBody String steps) {
@@ -42,7 +42,6 @@ public class ApplyController {
 							System.out.println("Busy waiting!");
 						}
 					} catch (Exception e) {
-						// stop runner as soon as an exception is thrown to avoid infinite loops
 						deckard.setAsDone();
 						InMemoryDataStore store = InMemoryDataStore.getInstance();
 						store.set(deckard.getMetadataString("id"), new ExceptionProducer(e));
@@ -51,6 +50,9 @@ public class ApplyController {
 			};
 			runnerTask.start();
 			runnerTask.join();
+			String producerName = stepsObject.get("use").getAsString();
+			storeProducerCallInfo(runnerId, steps, producerName);
+
 		} catch (IllegalStateException | JsonParseException e) {
 			String detailedMessage = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
 			errorMessage = "Your query is not a valid JSON file. Details: " + detailedMessage;
@@ -91,6 +93,8 @@ public class ApplyController {
 			SequentialRunner deckard = new SequentialRunner(stepsObject);
 			runnerId = deckard.getMetadata("id").toString();
 			deckard.runSteps();
+			String producerName = stepsObject.get("use").getAsString();
+			storeProducerCallInfo(runnerId, steps, producerName);
 		} catch (IllegalStateException | JsonParseException e) {
 			String detailedMessage = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
 			errorMessage = "Your query is not a valid JSON file. Details: " + detailedMessage;
@@ -133,4 +137,17 @@ public class ApplyController {
 		String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timeObject);
 		return ResponseEntity.status(HttpStatus.OK).body("pong at " + timeStamp);
 	}
-}
+
+	private void storeProducerCallInfo(String runnerId, String requestBody, String producerName) {
+		ProducerCallInfo callInfo = new ProducerCallInfo("anonymous", new Date(), requestBody, producerName);
+		List<ProducerCallInfo> callInfoList = mongoDataStore.findByProducerName(producerName);
+		if (callInfoList.isEmpty()) {
+			mongoDataStore.save(callInfo);
+		} else {
+			ProducerCallInfo existingCallInfo = callInfoList.get(0);
+			existingCallInfo.setTimestamp(new Date());
+			mongoDataStore.save(existingCallInfo);
+		}
+	}
+
+	}
