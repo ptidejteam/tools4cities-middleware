@@ -36,6 +36,7 @@ public class ListProducerController {
 			if (packageURL == null) {
 				return List.of(Map.of("error", "Package not found."));
 			}
+			System.out.println(packageURL);
 
 			// Scan for class files in the package directory
 			File[] files = new File(packageURL.getFile()).listFiles((dir, name) -> name.endsWith(".class"));
