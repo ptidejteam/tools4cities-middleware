@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -24,7 +26,9 @@ public class ListProducerController {
 
 	@GetMapping("/list")
 	public List<Map<String, String>> listProducers() throws IOException, ClassNotFoundException {
-		System.out.println("Starting!!!");
+		Path projectRoot = Paths.get("").toAbsolutePath();
+
+		System.out.println("Starting!!! at " + projectRoot);
 		try {
 
 			List<Map<String, String>> producersDetailsList = new ArrayList<>();
