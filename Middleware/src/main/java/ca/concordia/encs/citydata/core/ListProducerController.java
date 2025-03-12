@@ -42,7 +42,7 @@ public class ListProducerController {
 			System.out.println(packageURL);
 
 			// Scan for class files in the package directory
-			File[] files = new File(packageURL.getFile()).listFiles((dir, name) -> name.endsWith(".class"));
+			File[] files = new File(packageURL.getFile()).listFiles((dir, name) -> name.endsWith(".java"));
 
 			if (files != null) {
 				for (File file : files) {
