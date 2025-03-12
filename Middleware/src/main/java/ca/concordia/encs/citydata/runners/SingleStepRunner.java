@@ -11,6 +11,7 @@ import ca.concordia.encs.citydata.core.IOperation;
 import ca.concordia.encs.citydata.core.IProducer;
 import ca.concordia.encs.citydata.core.IRunner;
 import ca.concordia.encs.citydata.core.ReflectionUtils;
+import ca.concordia.encs.citydata.core.StringUtils;
 import ca.concordia.encs.citydata.datastores.InMemoryDataStore;
 import ca.concordia.encs.citydata.producers.ExceptionProducer;
 
@@ -50,7 +51,7 @@ public class SingleStepRunner extends AbstractRunner implements IRunner {
 			// set Producer params
 			for (JsonElement param : this.targetProducerParams) {
 				final JsonObject paramObject = param.getAsJsonObject();
-				final String methodName = "set" + ReflectionUtils.capitalize(paramObject.get("name").getAsString());
+				final String methodName = "set" + StringUtils.capitalize(paramObject.get("name").getAsString());
 				for (Method method : targetProducerClass.getMethods()) {
 					if (method.getName().equals(methodName) && method.getParameterCount() == 1) {
 						final Object targetProducerParamValue = ReflectionUtils

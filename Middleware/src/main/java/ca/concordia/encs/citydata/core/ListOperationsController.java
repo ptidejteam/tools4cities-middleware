@@ -1,10 +1,8 @@
 package ca.concordia.encs.citydata.core;
 
 import java.io.File;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
+import java.lang.reflect.Method;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -49,18 +47,9 @@ public class ListOperationsController {
 					// Set class name
 					operationDetails.addProperty("name", clazz.getName());
 
-					// Collect fields and method signatures
-					List<String> paramList = new ArrayList<>();
-
-					// List fields
-					Field[] fields = clazz.getDeclaredFields();
-					for (Field field : fields) {
-						int fieldModifiers = field.getModifiers();
-						if (Modifier.isPublic(fieldModifiers)) {
-							paramList.add(field.getName() + " (" + field.getType().getSimpleName() + ")");
-						}
-					}
-
+					// List setter methods, which correspond to user-accessible params
+					Method[] methods = clazz.getMethods();
+					List<String> paramList = StringUtils.getParamDescriptions(methods);
 					operationDetails.addProperty("params", String.join(", ", paramList));
 					operationDetailsList.add(operationDetails);
 				}
