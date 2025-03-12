@@ -229,10 +229,9 @@ public class ApplyTest {
 				.andExpect(content().string(containsString("ca.concordia.encs.citydata")));
 	}
 
-//	@Test
-//	public void testProducersList() throws Exception {
-//		mockMvc.perform(get("/producers/list"))
-//				.andExpect(status().isOk())
-//				.andExpect(content().string(containsString("ca.concordia.encs.citydata")));
-//}
+	@Test
+	public void testProducersList() throws Exception {
+		mockMvc.perform(get("/producers/list")).andExpect(status().isOk())
+				.andExpect(content().string(containsString("ca.concordia.encs.citydata")));
+	}
 }
