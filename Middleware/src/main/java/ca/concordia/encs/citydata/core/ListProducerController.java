@@ -36,12 +36,13 @@ public class ListProducerController {
 			File myFile = new File(projectRoot + Constants.PRODUCER_ROOT_PACKAGE);
 
 			// Scan for class files in the package directory
+			String targetExtension = ".java";
 			File[] files = myFile.listFiles((dir, name) -> name.endsWith(".java"));
 
 			if (files != null) {
 				for (File file : files) {
 					// Remove .class extension
-					String className = file.getName().substring(0, file.getName().length() - 6);
+					String className = file.getName().replace(targetExtension, "");
 
 					// Load the class using reflection
 					Class<?> clazz = Class.forName("ca.concordia.encs.citydata.producers." + className);
