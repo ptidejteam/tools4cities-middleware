@@ -24,11 +24,11 @@ public class ReportController {
     @RequestMapping(value = "/producers", method = RequestMethod.GET)
     public ResponseEntity<List<Map<String, String>>> report() {
         List<Map<String, String>> report = new ArrayList<>();
-        List<ProducerCallInfo> callInfoList = mongoDataStore.findAll();
+        List<ProducerUsageData> callInfoList = mongoDataStore.findAll();
         Map<String, Integer> producerCountMap = new HashMap<>();
         Map<String, Date> lastRequestDateMap = new HashMap<>();
 
-        for (ProducerCallInfo callInfo : callInfoList) {
+        for (ProducerUsageData callInfo : callInfoList) {
             String producerName = callInfo.getProducerName();
             producerCountMap.put(producerName, producerCountMap.getOrDefault(producerName, 0) + 1);
             lastRequestDateMap.put(producerName, callInfo.getTimestamp());

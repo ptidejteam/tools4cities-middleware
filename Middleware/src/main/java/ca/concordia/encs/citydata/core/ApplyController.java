@@ -139,12 +139,12 @@ public class ApplyController {
 	}
 
 	private void storeProducerCallInfo(String runnerId, String requestBody, String producerName) {
-		ProducerCallInfo callInfo = new ProducerCallInfo("anonymous", new Date(), requestBody, producerName);
-		List<ProducerCallInfo> callInfoList = mongoDataStore.findByProducerName(producerName);
+		ProducerUsageData callInfo = new ProducerUsageData("anonymous", new Date(), requestBody, producerName);
+		List<ProducerUsageData> callInfoList = mongoDataStore.findByProducerName(producerName);
 		if (callInfoList.isEmpty()) {
 			mongoDataStore.save(callInfo);
 		} else {
-			ProducerCallInfo existingCallInfo = callInfoList.get(0);
+			ProducerUsageData existingCallInfo = callInfoList.get(0);
 			existingCallInfo.setTimestamp(new Date());
 			mongoDataStore.save(existingCallInfo);
 		}

@@ -7,13 +7,13 @@ import java.util.Date;
  * @Author: Rushin Makwana
  * @Date: 26/2/2024
  */
-public class ProducerCallInfo {
+public class ProducerUsageData {
 		private String user;
 		private Date timestamp;
 		private String requestBody;
 		private String producerName;
 
-		public ProducerCallInfo(String user, Date timestamp, String requestBody, String producerName) {
+		public ProducerUsageData(String user, Date timestamp, String requestBody, String producerName) {
 			this.user = user;
 			this.timestamp = timestamp;
 			this.requestBody = requestBody;
