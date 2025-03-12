@@ -5,10 +5,10 @@ import java.util.List;
 
 import com.google.gson.JsonObject;
 
-import ca.concordia.encs.citydata.core.AbstractProducer;
-import ca.concordia.encs.citydata.core.AbstractRunner;
-import ca.concordia.encs.citydata.core.IProducer;
-import ca.concordia.encs.citydata.core.RequestOptions;
+import ca.concordia.encs.citydata.core.implementations.AbstractProducer;
+import ca.concordia.encs.citydata.core.implementations.AbstractRunner;
+import ca.concordia.encs.citydata.core.contracts.IProducer;
+import ca.concordia.encs.citydata.core.utils.RequestOptions;
 import ca.concordia.encs.citydata.datastores.DiskDatastore;
 import ca.concordia.encs.citydata.datastores.InMemoryDataStore;
 import ca.concordia.encs.citydata.runners.SingleStepRunner;

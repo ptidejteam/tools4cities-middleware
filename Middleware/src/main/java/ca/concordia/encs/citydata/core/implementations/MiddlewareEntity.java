@@ -1,4 +1,4 @@
-package ca.concordia.encs.citydata.core;
+package ca.concordia.encs.citydata.core.implementations;
 
 import java.util.HashMap;
 import java.util.Set;

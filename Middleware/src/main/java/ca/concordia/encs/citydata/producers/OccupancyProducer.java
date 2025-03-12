@@ -3,8 +3,8 @@ package ca.concordia.encs.citydata.producers;
 import java.util.ArrayList;
 import java.util.Random;
 
-import ca.concordia.encs.citydata.core.AbstractProducer;
-import ca.concordia.encs.citydata.core.IProducer;
+import ca.concordia.encs.citydata.core.implementations.AbstractProducer;
+import ca.concordia.encs.citydata.core.contracts.IProducer;
 
 public class OccupancyProducer extends AbstractProducer<String> implements IProducer<String> {
 	private int listSize;

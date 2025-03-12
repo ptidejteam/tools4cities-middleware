@@ -5,6 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import ca.concordia.encs.citydata.datastores.DiskDatastore;
 import ca.concordia.encs.citydata.datastores.InMemoryDataStore;
+import org.springframework.context.annotation.ComponentScan;
 
 /**
  *
@@ -12,6 +13,7 @@ import ca.concordia.encs.citydata.datastores.InMemoryDataStore;
  */
 
 @SpringBootApplication
+@ComponentScan(basePackages = "ca.concordia.encs.citydata.core.controllers")
 public class Application {
 
 	// initialize all datastore for later use

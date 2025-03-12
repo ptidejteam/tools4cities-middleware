@@ -4,8 +4,8 @@ import java.util.ArrayList;
 
 import com.google.gson.JsonObject;
 
-import ca.concordia.encs.citydata.core.AbstractOperation;
-import ca.concordia.encs.citydata.core.IOperation;
+import ca.concordia.encs.citydata.core.implementations.AbstractOperation;
+import ca.concordia.encs.citydata.core.contracts.IOperation;
 
 /**
  * This operation filters an array of JsonObjects by a given key and value.

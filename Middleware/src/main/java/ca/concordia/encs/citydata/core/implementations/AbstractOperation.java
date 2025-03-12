@@ -1,10 +1,12 @@
-package ca.concordia.encs.citydata.core;
+package ca.concordia.encs.citydata.core.implementations;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import ca.concordia.encs.citydata.core.contracts.IOperation;
+import ca.concordia.encs.citydata.core.contracts.IRunner;
 import ca.concordia.encs.citydata.core.exceptions.Exceptions;
 
 /**

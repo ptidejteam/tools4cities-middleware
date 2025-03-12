@@ -1,7 +1,7 @@
 /**
  * 
  */
-package ca.concordia.encs.citydata.core;
+package ca.concordia.encs.citydata.core.implementations;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -21,6 +21,10 @@ import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import ca.concordia.encs.citydata.core.utils.RequestOptions;
+import ca.concordia.encs.citydata.core.contracts.IOperation;
+import ca.concordia.encs.citydata.core.contracts.IProducer;
+import ca.concordia.encs.citydata.core.contracts.IRunner;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;

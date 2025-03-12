@@ -25,7 +25,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import ca.concordia.encs.citydata.core.AppConfig;
-import ca.concordia.encs.citydata.core.ReflectionUtils;
+import ca.concordia.encs.citydata.core.utils.ReflectionUtils;
 
 @SpringBootTest(classes = AppConfig.class)
 @AutoConfigureMockMvc

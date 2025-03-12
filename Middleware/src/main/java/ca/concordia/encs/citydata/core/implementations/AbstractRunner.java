@@ -1,4 +1,6 @@
-package ca.concordia.encs.citydata.core;
+package ca.concordia.encs.citydata.core.implementations;
+
+import ca.concordia.encs.citydata.core.contracts.IRunner;
 
 /**
  *

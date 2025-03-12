@@ -3,9 +3,9 @@ package ca.concordia.encs.citydata.producers;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import ca.concordia.encs.citydata.core.AbstractProducer;
-import ca.concordia.encs.citydata.core.IProducer;
-import ca.concordia.encs.citydata.core.RequestOptions;
+import ca.concordia.encs.citydata.core.implementations.AbstractProducer;
+import ca.concordia.encs.citydata.core.contracts.IProducer;
+import ca.concordia.encs.citydata.core.utils.RequestOptions;
 
 /**
  * This producer can load CSV from a file or remotely via an HTTP request.

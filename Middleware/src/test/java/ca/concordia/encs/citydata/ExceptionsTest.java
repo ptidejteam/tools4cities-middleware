@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import ca.concordia.encs.citydata.core.AbstractOperation;
+import ca.concordia.encs.citydata.core.implementations.AbstractOperation;
 import ca.concordia.encs.citydata.core.exceptions.Exceptions;
 
 /* This java class contains tests for custom exceptions
