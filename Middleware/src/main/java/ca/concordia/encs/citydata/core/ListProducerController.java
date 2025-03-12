@@ -3,7 +3,6 @@ package ca.concordia.encs.citydata.core;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.net.URL;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,16 +33,10 @@ public class ListProducerController {
 
 			// Get the path to the package
 			System.out.println(projectRoot + Constants.PRODUCER_ROOT_PACKAGE);
-			URL packageURL = Thread.currentThread().getContextClassLoader()
-					.getResource(projectRoot + Constants.PRODUCER_ROOT_PACKAGE);
-
-			if (packageURL == null) {
-				return List.of(Map.of("error", "Package not found."));
-			}
-			System.out.println(packageURL);
+			File myFile = new File(projectRoot + Constants.PRODUCER_ROOT_PACKAGE);
 
 			// Scan for class files in the package directory
-			File[] files = new File(packageURL.getFile()).listFiles((dir, name) -> name.endsWith(".java"));
+			File[] files = myFile.listFiles((dir, name) -> name.endsWith(".java"));
 
 			if (files != null) {
 				for (File file : files) {
