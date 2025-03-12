@@ -25,7 +25,7 @@ public class ListProducerController {
 
 	@GetMapping("/list")
 	public List<Map<String, String>> listProducers() throws IOException, ClassNotFoundException {
-		String projectRoot = Paths.get("").toAbsolutePath().toString() + "/";
+		String projectRoot = Paths.get("").toAbsolutePath().toString();
 
 		System.out.println("Starting!!! at " + projectRoot);
 		try {
