@@ -3,9 +3,9 @@ package ca.concordia.encs.citydata.datastores;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import ca.concordia.encs.citydata.core.IDataStore;
-import ca.concordia.encs.citydata.core.IProducer;
-import ca.concordia.encs.citydata.core.MiddlewareEntity;
+import ca.concordia.encs.citydata.core.contracts.IDataStore;
+import ca.concordia.encs.citydata.core.contracts.IProducer;
+import ca.concordia.encs.citydata.core.implementations.MiddlewareEntity;
 
 /**
  *
