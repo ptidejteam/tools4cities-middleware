@@ -33,6 +33,7 @@ public class ListProducerController {
 			List<Map<String, String>> producersDetailsList = new ArrayList<>();
 
 			// Get the path to the package
+			System.out.println(projectRoot + Constants.PRODUCER_ROOT_PACKAGE);
 			URL packageURL = Thread.currentThread().getContextClassLoader()
 					.getResource(projectRoot + Constants.PRODUCER_ROOT_PACKAGE);
 
