@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.net.URL;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,7 +25,7 @@ public class ListProducerController {
 
 	@GetMapping("/list")
 	public List<Map<String, String>> listProducers() throws IOException, ClassNotFoundException {
-		Path projectRoot = Paths.get("").toAbsolutePath();
+		String projectRoot = Paths.get("").toAbsolutePath().toString() + "/";
 
 		System.out.println("Starting!!! at " + projectRoot);
 		try {
@@ -35,7 +34,7 @@ public class ListProducerController {
 
 			// Get the path to the package
 			URL packageURL = Thread.currentThread().getContextClassLoader()
-					.getResource(Constants.PRODUCER_ROOT_PACKAGE);
+					.getResource(projectRoot + Constants.PRODUCER_ROOT_PACKAGE);
 
 			if (packageURL == null) {
 				return List.of(Map.of("error", "Package not found."));
