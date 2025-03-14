@@ -5,7 +5,11 @@ import java.lang.reflect.Method;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-
+/***
+ * This class contains all helping methods for reflection
+ * @Author: Rushin Makwana
+ * @Date: 7th Feb 2024
+ */
 public class ReflectionUtils {
 
 	public static JsonElement getRequiredField(JsonObject jsonObject, String fieldName) {

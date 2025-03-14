@@ -11,7 +11,11 @@ import com.google.gson.JsonObject;
 import ca.concordia.encs.citydata.core.AbstractProducer;
 import ca.concordia.encs.citydata.core.IProducer;
 import com.google.gson.JsonParser;
-
+/***
+ * This is the Producer class for Firebase, which fetches data from Firebase
+ * @Author: Rushin Makwana
+ * @Date: 7th Feb 2024
+ */
 public class FirebaseProducer extends AbstractProducer<JsonObject> implements IProducer<JsonObject> {
 
 	private final String databaseURL;
