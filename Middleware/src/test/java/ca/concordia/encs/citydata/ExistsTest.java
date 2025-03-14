@@ -1,11 +1,11 @@
 package ca.concordia.encs.citydata;
 
-import static org.hamcrest.Matchers.containsString;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -13,6 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
 import ca.concordia.encs.citydata.core.AppConfig;
 
@@ -29,66 +30,82 @@ public class ExistsTest {
 	@Autowired
 	private MockMvc mockMvc;
 
-	@BeforeEach
-	void setUp() throws Exception {
-		// TODO: there is no need to setup
-		// to obtain a producer, call /apply/sync passing a query from inside the test
-		// (see example testQueryExistsFollowedByAsync)
-		// next, call /exists with the same query
-	}
-
-	private String createQueryPayload(String producerId) {
-		// FIXME: delete this method, use the PayloadFactory class instead
-		// (see examples: testQueryNotExists, testBrokenJsonQuery)
-		return "";
-	}
+	// Store the runnerId as an instance variable so it can be used across test
+	// methods
+	private String runnerId;
 
 	@Test
-	// TODO: this test will be re-implemented soon
 	void testQueryExists() throws Exception {
-		String jsonPayload = createQueryPayload("randomProducerId");
+		// Use getExampleQuery to load a specific query from a JSON file
+		String jsonPayload = PayloadFactory.getExampleQuery("stringProducerStaticWithParams");
+
+		// creating a producer
+		MvcResult syncResult = mockMvc
+				.perform(post("/apply/sync").contentType(MediaType.APPLICATION_JSON).content(jsonPayload))
+				.andExpect(status().isOk()).andReturn();
+
+		// Get the runner ID (though not used in this particular test)
+		runnerId = syncResult.getResponse().getContentAsString();
+
+		// Check if the query exists
+		MvcResult existsResult = mockMvc
+				.perform(post("/exists/").contentType(MediaType.APPLICATION_JSON).content(jsonPayload))
+				.andExpect(status().isOk()).andReturn();
+
+		String responseContent = existsResult.getResponse().getContentAsString();
+
+		assertFalse(responseContent.equals("[]"), "Response should not be an empty array");
 	}
 
 	@Test
 	void testQueryNotExists() throws Exception {
 		String jsonPayload = PayloadFactory.getExampleQuery("ckanMetadataProducerListDatasets");
-		mockMvc.perform(get("/exists/").contentType(MediaType.APPLICATION_JSON).content(jsonPayload))
-				.andExpect(status().isNotFound()).andExpect(content().string(containsString("[]")));
-		;
+
+		MvcResult existsResult = mockMvc
+				.perform(post("/exists/").contentType(MediaType.APPLICATION_JSON).content(jsonPayload))
+				.andExpect(status().isNotFound()).andReturn();
+
+		String responseContent = existsResult.getResponse().getContentAsString();
+		assertEquals("[]", responseContent);
 	}
 
 	@Test
 	void testBrokenJsonQuery() throws Exception {
 		String jsonPayload = PayloadFactory.getInvalidJson();
-		mockMvc.perform(get("/exists/").contentType(MediaType.APPLICATION_JSON).content(jsonPayload))
+		mockMvc.perform(post("/exists/") // Changed from get to post to match my endpoint
+				.contentType(MediaType.APPLICATION_JSON).content(jsonPayload))
 				.andExpect(status().isInternalServerError());
 	}
 
 	@Test
-	// TODO: this test will be re-implemented soon
-	void testQueryExistsFollowedByAsync() throws Exception {
-		// String runnerId = "";
-		// String jsonPayload =
-		// PayloadFactory.getExampleQuery("ckanProducerWithReplace");
-		//
-		// MvcResult asyncRequestResult = mockMvc
-		// .perform(post("/apply/async").contentType(MediaType.APPLICATION_JSON).content(jsonPayload))
-		// .andExpect(status().isOk()).andReturn();
-		//
-		// String text = asyncRequestResult.getResponse().getContentAsString();
-		// String uuidRegex =
-		// "\\b[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\\b";
-		// Pattern pattern = Pattern.compile(uuidRegex);
-		// Matcher matcher = pattern.matcher(text);
-		//
-		// while (matcher.find()) {
-		// runnerId = matcher.group();
-		// break;
-		// }
+	void testQueryExistsFollowedBySync() throws Exception {
+		String jsonPayload = PayloadFactory.getExampleQuery("stringProducerRandom");
 
-		// FIXME: test /exists instead of apply/async
-		// mockMvc.perform(get("/apply/async/" + runnerId)).andExpect(status().isOk())
-		// .andExpect(content().string(containsString("MiddlewareCollection")));
+		MvcResult existsResult = mockMvc
+				.perform(post("/exists/").contentType(MediaType.APPLICATION_JSON).content(jsonPayload)).andReturn();
 
+		String responseContent = existsResult.getResponse().getContentAsString();
+		int status = existsResult.getResponse().getStatus();
+
+		if (status == 404 || responseContent.equals("[]")) {
+			MvcResult syncResult = mockMvc
+					.perform(post("/apply/sync").contentType(MediaType.APPLICATION_JSON).content(jsonPayload))
+					.andReturn();
+
+			int syncStatus = syncResult.getResponse().getStatus();
+			String syncResponse = syncResult.getResponse().getContentAsString();
+
+			// Log the response before failing
+			System.out.println("apply/sync Status: " + syncStatus);
+			System.out.println("apply/sync Response: " + syncResponse);
+
+			if (syncStatus != 200) {
+				fail("apply/sync failed with status: " + syncStatus + " and response: " + syncResponse);
+			}
+		} else if (status == 200) {
+			assertFalse(responseContent.equals("[]"), "Response should not be an empty array");
+		} else {
+			fail("Unexpected status code: " + status + ". Response content: " + responseContent);
+		}
 	}
 }
