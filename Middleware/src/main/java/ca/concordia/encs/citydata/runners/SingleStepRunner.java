@@ -1,7 +1,9 @@
 package ca.concordia.encs.citydata.runners;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import ca.concordia.encs.citydata.core.exceptions.MiddlewareException;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -14,13 +16,13 @@ import ca.concordia.encs.citydata.core.ReflectionUtils;
 import ca.concordia.encs.citydata.datastores.InMemoryDataStore;
 import ca.concordia.encs.citydata.producers.ExceptionProducer;
 
-/* This Runner executes a single Producer with no Operations. 
- * It can be used for tests when you want to quickly inspect the output of 
- * a given Producer with parameters. This Runner is also used by Operations 
- * that need to spawn other Producers as part of the transformation they 
+/* This Runner executes a single Producer with no Operations.
+ * It can be used for tests when you want to quickly inspect the output of
+ * a given Producer with parameters. This Runner is also used by Operations
+ * that need to spawn other Producers as part of the transformation they
  * are applying (e.g. MergeOperation).
- * 
- * Author: Gabriel C. Ullmann 
+ *
+ * Author: Gabriel C. Ullmann, Rushin D. Makwana
  * Date: 2025-02-14
  */
 public class SingleStepRunner extends AbstractRunner implements IRunner {
@@ -39,39 +41,41 @@ public class SingleStepRunner extends AbstractRunner implements IRunner {
 	}
 
 	@Override
-	public void runSteps() throws Exception {
+	public void runSteps() throws MiddlewareException {
+		try {
+			if (this.targetProducerName != null) {
+				// instantiate a new Producer instance
+				final Class<?> targetProducerClass = Class.forName(this.targetProducerName);
+				this.targetProducerInstance = (IProducer<?>) targetProducerClass.getDeclaredConstructor().newInstance();
 
-		if (this.targetProducerName != null) {
-
-			// instantiate a new Producer instance
-			final Class<?> targetProducerClass = Class.forName(this.targetProducerName);
-			this.targetProducerInstance = (IProducer<?>) targetProducerClass.getDeclaredConstructor().newInstance();
-
-			// set Producer params
-			for (JsonElement param : this.targetProducerParams) {
-				final JsonObject paramObject = param.getAsJsonObject();
-				final String methodName = "set" + ReflectionUtils.capitalize(paramObject.get("name").getAsString());
-				for (Method method : targetProducerClass.getMethods()) {
-					if (method.getName().equals(methodName) && method.getParameterCount() == 1) {
-						final Object targetProducerParamValue = ReflectionUtils
-								.convertValue(method.getParameterTypes()[0], paramObject.get("value"));
-						method.invoke(this.targetProducerInstance, targetProducerParamValue);
-						break;
+				// set Producer params
+				for (JsonElement param : this.targetProducerParams) {
+					final JsonObject paramObject = param.getAsJsonObject();
+					final String methodName = "set" + ReflectionUtils.capitalize(paramObject.get("name").getAsString());
+					for (Method method : targetProducerClass.getMethods()) {
+						if (method.getName().equals(methodName) && method.getParameterCount() == 1) {
+							final Object targetProducerParamValue = ReflectionUtils.convertValue(method.getParameterTypes()[0], paramObject.get("value"));
+							method.invoke(this.targetProducerInstance, targetProducerParamValue);
+							break;
+						}
 					}
 				}
 			}
-
+			// if there is a Producer instance, execute it
+			// otherwise, stop Runner
+			if (this.targetProducerInstance != null) {
+				this.targetProducerInstance.addObserver(this);
+				this.targetProducerInstance.fetch();
+			} else {
+				this.setAsDone();
+			}
+		} catch (ClassNotFoundException e) {
+			throw new MiddlewareException.InvalidProducerException(this.targetProducerName);
+		} catch (InvocationTargetException | InstantiationException | IllegalAccessException | NoSuchMethodException e) {
+			throw new MiddlewareException.ReflectionOperationException("Error during reflection operation", e);
+		} catch (Exception e) {
+			throw new MiddlewareException("Error running steps: " + e.getMessage(), e);
 		}
-
-		// if there is a Producer instance, execute it
-		// otherwise, stop Runner
-		if (this.targetProducerInstance != null) {
-			this.targetProducerInstance.addObserver(this);
-			this.targetProducerInstance.fetch();
-		} else {
-			this.setAsDone();
-		}
-
 	}
 
 	@Override
@@ -106,5 +110,4 @@ public class SingleStepRunner extends AbstractRunner implements IRunner {
 		String runnerId = this.getMetadata("id").toString();
 		store.set(runnerId, producer);
 	}
-
 }

@@ -1,5 +1,7 @@
 package ca.concordia.encs.citydata.core;
 
+import ca.concordia.encs.citydata.core.exceptions.MiddlewareException;
+
 import java.util.ArrayList;
 
 /**
@@ -17,7 +19,7 @@ public interface IProducer<E> {
 	void setOperation(IOperation operation);
 
 	// 2 - fetch data
-	void fetch() throws Exception;
+	void fetch() throws MiddlewareException;
 
 	// 3 - transform data and notify when done
 	void applyOperation();

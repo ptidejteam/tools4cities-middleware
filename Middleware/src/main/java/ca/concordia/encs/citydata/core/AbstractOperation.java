@@ -5,7 +5,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import ca.concordia.encs.citydata.core.exceptions.Exceptions;
+import ca.concordia.encs.citydata.core.exceptions.MiddlewareException;
 
 /**
  *
@@ -43,7 +43,7 @@ public abstract class AbstractOperation<E> extends MiddlewareEntity implements I
 	@Override
 	public ArrayList<E> apply(ArrayList<E> input) {
 		if (input == null || input.isEmpty()) {
-			throw new Exceptions.InvalidOperationParameterException(
+			throw new MiddlewareException.InvalidOperationParameterException(
 					"Input data is null or empty. Cannot perform the operation.");
 		}
 		System.out.println("Unimplemented method! This method must be implemented by a subclass.");

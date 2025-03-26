@@ -26,7 +26,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-import ca.concordia.encs.citydata.core.exceptions.Exceptions;
+import ca.concordia.encs.citydata.core.exceptions.MiddlewareException;
 
 /**
  *
@@ -65,7 +65,7 @@ public abstract class AbstractProducer<E> extends MiddlewareEntity implements IP
 	@Override
 	public void setOperation(IOperation operation) {
 		if (operation == null) {
-			throw new Exceptions.InvalidOperationException(
+			throw new MiddlewareException.InvalidOperationException(
 					"Operation cannot be null. Please provide a valid operation.");
 		}
 		this.operation = operation;
@@ -74,7 +74,7 @@ public abstract class AbstractProducer<E> extends MiddlewareEntity implements IP
 	@Override
 	public void fetch() {
 		if (this.filePath == null || this.filePath.isEmpty()) {
-			throw new Exceptions.InvalidProducerParameterException(
+			throw new MiddlewareException.InvalidProducerParameterException(
 					"Producer file path is missing or empty. Please set a valid file path.");
 		}
 		System.out.println("Unimplemented method! This method must be implemented by a subclass.");
