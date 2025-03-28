@@ -37,7 +37,7 @@ public class ReflectionUtils {
 
 	public static Method findSetterMethod(Class<?> clazz, String paramName, JsonElement paramValue)
 			throws NoSuchMethodException {
-		String methodName = "set" + capitalize(paramName);
+		String methodName = "set" + StringUtils.capitalize(paramName);
 		for (Method method : clazz.getMethods()) {
 			if (method.getName().equals(methodName) && method.getParameterCount() == 1) {
 				return method;
@@ -61,7 +61,4 @@ public class ReflectionUtils {
 		return value.getAsString();
 	}
 
-	public static String capitalize(String str) {
-		return str == null || str.isEmpty() ? str : str.substring(0, 1).toUpperCase() + str.substring(1);
-	}
 }

@@ -69,7 +69,7 @@ For now, the amount of Producers, Operations and parameters is quite limited, bu
 Project manager: gabriel.cavalheiroullmann at concordia.ca
 
 ## Development Guidelines
-
-- If you wish to integrate your changes into the middleware, please create a new branch from develop, make your changes, and then open a PR requesting merge into develop.
-- The branch develop is the working branch for developers. We will merge develop into master from time to time when we reckon to have a stable version or major new features.
-- Tests shall be written to show the proper way Producers and Operations should be used. Consequently, the tests will also ensure these classes are working as intended by the developer.
+- The develop branch is the working branch for CityData middleware developers. To integrate your changes, please create a new branch based on develop, apply your changes, then open a **pull request** and set develop as a target.
+- One or more members of the CityData development team will **review every pull request** and provide improvement suggestions to the PR authors, if necessary.
+- The CityData development team merges the develop branch into master **monthly** or whenever we have enough major features to justify a new release.
+- All developers **must write tests** to demonstrate the correct usage of Producers and Operations while ensuring these classes function as intended.

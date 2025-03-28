@@ -1,6 +1,8 @@
 package ca.concordia.encs.citydata.runners;
 
 import java.lang.reflect.Method;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -55,6 +57,10 @@ public class SequentialRunner extends AbstractRunner implements IRunner {
 		// instantiate a new Producer instance and set its params
 		Object producerInstance = ReflectionUtils.instantiateClass(producerName);
 		ReflectionUtils.setParameters(producerInstance, producerParams);
+
+		// set query to producer so we can check it later against other queries
+		Method setMetadataMethod = producerInstance.getClass().getMethod("setMetadata", String.class, Object.class);
+		setMetadataMethod.invoke(producerInstance, "query", this.steps);
 
 		// add this Runner as an observer of the Producer instance
 		Method addObserverMethod = producerInstance.getClass().getMethod("addObserver", IRunner.class);
@@ -139,6 +145,15 @@ public class SequentialRunner extends AbstractRunner implements IRunner {
 
 	@Override
 	public void storeResults(IProducer<?> producer) throws Exception {
+
+		// the task is done, register a timestamp in the producer so we can keep track
+		// of when it is done
+		Method setMetadataMethod = producer.getClass().getMethod("setMetadata", String.class, Object.class);
+		Date timeObject = Calendar.getInstance().getTime();
+		String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timeObject);
+		setMetadataMethod.invoke(producer, "timestamp", timestamp);
+
+		// store producer in the datastore
 		InMemoryDataStore store = InMemoryDataStore.getInstance();
 		String runnerId = this.getMetadata("id").toString();
 		store.set(runnerId, producer);

@@ -3,6 +3,7 @@ package ca.concordia.encs.citydata.datastores;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static org.springframework.data.mongodb.core.query.Query.query;
 
+import java.util.Iterator;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -86,5 +87,11 @@ public class MongoDataStore extends MiddlewareEntity implements IDataStore<Produ
 		if (mongoTemplate != null) {
 			mongoTemplate.remove(new Query(), ProducerUsageData.class);
 		}
+	}
+
+	@Override
+	public Iterator<ProducerUsageData> getValues() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

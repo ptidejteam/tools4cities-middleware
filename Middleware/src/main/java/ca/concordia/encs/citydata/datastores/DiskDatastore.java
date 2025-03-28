@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Iterator;
 
 import ca.concordia.encs.citydata.core.IDataStore;
 import ca.concordia.encs.citydata.core.MiddlewareEntity;
@@ -16,7 +17,7 @@ import ca.concordia.encs.citydata.core.MiddlewareEntity;
 public class DiskDatastore extends MiddlewareEntity implements IDataStore<byte[]> {
 
 	private static final String filePrefix = ".citydata";
-	private static final String baseFolderPath = "./citydata-files";
+	private static final String baseFolderPath = "./citydata-files/";
 	private static final DiskDatastore storeInstance = new DiskDatastore();
 
 	// Private constructor prevents instantiation (this is a singleton)
@@ -40,7 +41,7 @@ public class DiskDatastore extends MiddlewareEntity implements IDataStore<byte[]
 
 	@Override
 	public void set(String key, byte[] value) {
-		String path = baseFolderPath + "/" + key + filePrefix;
+		String path = baseFolderPath + key + filePrefix;
 		try (FileOutputStream fos = new FileOutputStream(path)) {
 			fos.write(value);
 			System.out.println("Data saved successfully!");
@@ -51,18 +52,23 @@ public class DiskDatastore extends MiddlewareEntity implements IDataStore<byte[]
 
 	@Override
 	public byte[] get(String key) {
-		Path filePath = Path.of(baseFolderPath + "/" + key + filePrefix);
+		Path filePath = Path.of(baseFolderPath + key + filePrefix);
 		try {
 			return Files.readAllBytes(filePath);
 		} catch (IOException e) {
-			e.printStackTrace();
 			return null;
 		}
 	}
 
 	@Override
+	public Iterator<byte[]> getValues() {
+		System.out.println("Not yet implemented.");
+		return null;
+	}
+
+	@Override
 	public void delete(String key) {
-		Path filePath = Path.of(baseFolderPath + "/" + key + filePrefix);
+		Path filePath = Path.of(baseFolderPath + key + filePrefix);
 		try {
 			Files.delete(filePath);
 		} catch (IOException e) {
