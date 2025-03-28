@@ -6,11 +6,12 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-import ca.concordia.encs.citydata.core.implementations.AbstractRunner;
 import ca.concordia.encs.citydata.core.contracts.IOperation;
 import ca.concordia.encs.citydata.core.contracts.IProducer;
 import ca.concordia.encs.citydata.core.contracts.IRunner;
+import ca.concordia.encs.citydata.core.implementations.AbstractRunner;
 import ca.concordia.encs.citydata.core.utils.ReflectionUtils;
+import ca.concordia.encs.citydata.core.utils.StringUtils;
 import ca.concordia.encs.citydata.datastores.InMemoryDataStore;
 import ca.concordia.encs.citydata.producers.ExceptionProducer;
 
@@ -50,7 +51,7 @@ public class SingleStepRunner extends AbstractRunner implements IRunner {
 			// set Producer params
 			for (JsonElement param : this.targetProducerParams) {
 				final JsonObject paramObject = param.getAsJsonObject();
-				final String methodName = "set" + ReflectionUtils.capitalize(paramObject.get("name").getAsString());
+				final String methodName = "set" + StringUtils.capitalize(paramObject.get("name").getAsString());
 				for (Method method : targetProducerClass.getMethods()) {
 					if (method.getName().equals(methodName) && method.getParameterCount() == 1) {
 						final Object targetProducerParamValue = ReflectionUtils
