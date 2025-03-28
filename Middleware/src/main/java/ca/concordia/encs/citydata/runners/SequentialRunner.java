@@ -1,6 +1,10 @@
 package ca.concordia.encs.citydata.runners;
 
 import java.lang.reflect.Method;
+import java.util.Date;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -9,20 +13,25 @@ import ca.concordia.encs.citydata.core.AbstractRunner;
 import ca.concordia.encs.citydata.core.IOperation;
 import ca.concordia.encs.citydata.core.IProducer;
 import ca.concordia.encs.citydata.core.IRunner;
+import ca.concordia.encs.citydata.core.ProducerUsageData;
 import ca.concordia.encs.citydata.core.ReflectionUtils;
 import ca.concordia.encs.citydata.datastores.InMemoryDataStore;
+import ca.concordia.encs.citydata.datastores.MongoDataStore;
 import ca.concordia.encs.citydata.producers.ExceptionProducer;
 
-/* This Runner starts with data provided by a producer P1, then applies
+/***
+ * This Runner starts with data provided by a producer P1, then applies
  * operations in order based on P1' (P1 prime). For example: P1 + O1 = P1'. P1'
- * + O2 -> P1'', etc. It is notified via the Observer pattern when P1' is ready, 
+ * + O2 -> P1'', etc. It is notified via the Observer pattern when P1' is ready,
  * then proceeds to the next Operation until all operations are completed.
  *
- * Author: Gabriel C. Ullmann 
- * Date: 2025-02-14
+ * @Author: Gabriel C. Ullmann
+ * @Date: 2025-02-14
  */
 public class SequentialRunner extends AbstractRunner implements IRunner {
 
+	@Autowired
+	private MongoDataStore mongoDataStore; // this is set by the method of same name in OptionalMongoConfig.java
 	private JsonObject steps = null;
 	private int operationCounter = 0;
 
@@ -133,6 +142,29 @@ public class SequentialRunner extends AbstractRunner implements IRunner {
 		InMemoryDataStore store = InMemoryDataStore.getInstance();
 		String runnerId = this.getMetadata("id").toString();
 		store.set(runnerId, producer);
+
+		String producerName = this.steps.get("use").getAsString();
+		this.storeProducerCallInfo(runnerId, this.steps.toString(), producerName);
+	}
+
+	private void storeProducerCallInfo(String runnerId, String requestBody, String producerName) {
+		ProducerUsageData callInfo = new ProducerUsageData("anonymous", new Date(), requestBody, producerName);
+		/*
+		 * If Spring does not find a MongoDB connection string in its properties, this
+		 * variable will be null. Otherwise, it will contain a value, which means a
+		 * connection to MongoDB is available.
+		 */
+		if (mongoDataStore != null) {
+			List<ProducerUsageData> callInfoList = mongoDataStore.findByProducerName(producerName);
+			if (callInfoList.isEmpty()) {
+				mongoDataStore.save(callInfo);
+			} else {
+				ProducerUsageData existingCallInfo = callInfoList.get(0);
+				existingCallInfo.setTimestamp(new Date());
+				mongoDataStore.save(existingCallInfo);
+			}
+		}
+
 	}
 
 }
