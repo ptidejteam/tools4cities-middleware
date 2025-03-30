@@ -1,17 +1,16 @@
 package ca.concordia.encs.citydata.core;
 
 import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.Field;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.lang.reflect.Method;
+import java.nio.file.Paths;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 
 /* This java class is to print all available producers and their characteristics
  * Author: Sikandar Ejaz
@@ -22,52 +21,51 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/producers")
 public class ListProducerController {
 
-
 	@GetMapping("/list")
-	public List<Map<String, String>> listProducers() throws IOException, ClassNotFoundException {
-		List<Map<String, String>> producersDetailsList = new ArrayList<>();
-
+	public String listProducers() {
+		JsonArray producerDetailsList = new JsonArray();
 		// Get the path to the package
-		URL packageURL = Thread.currentThread().getContextClassLoader().getResource(Constants.PRODUCER_ROOT_PACKAGE);
+		String projectRootPath = Paths.get("").toAbsolutePath().toString() + "/";
+		String packagePath = projectRootPath + Constants.PRODUCER_ROOT_PACKAGE;
 
-		if (packageURL == null) {
-			return List.of(Map.of("error", "Package not found."));
-		}
+		try {
+			// Scan for class files in the package directory
+			String fileExtension = ".java";
+			File[] files = new File(packagePath).listFiles((dir, name) -> name.endsWith(fileExtension));
 
-		// Scan for class files in the package directory
-		File[] files = new File(packageURL.getFile()).listFiles((dir, name) -> name.endsWith(".class"));
+			if (files != null) {
+				for (File file : files) {
+					// Remove .class extension
+					String className = file.getName().replace(fileExtension, "");
 
-		if (files != null) {
-			for (File file : files) {
-				// Remove .class extension
-				String className = file.getName().substring(0, file.getName().length() - 6);
+					// Load the class using reflection
+					Class<?> clazz = Class.forName("ca.concordia.encs.citydata.producers." + className);
 
-				// Load the class using reflection
-				Class<?> clazz = Class.forName("ca.concordia.encs.citydata.producers." + className);
+					// Map to hold operation details
+					JsonObject operationDetails = new JsonObject();
 
-				// Map to hold operation details
-				Map<String, String> producersDetails = new HashMap<>();
+					// Set class name
+					operationDetails.addProperty("name", clazz.getName());
 
-				// Set class name
-				producersDetails.put("name", clazz.getName());
-
-				// Collect fields and method signatures
-				List<String> paramList = new ArrayList<>();
-
-				// List fields
-				Field[] fields = clazz.getDeclaredFields();
-				for (Field field : fields) {
-					paramList.add(field.getName() + " (" + field.getType().getSimpleName() + ")");
+					// List setter methods, which correspond to user-accessible params
+					Method[] methods = clazz.getMethods();
+					List<String> paramList = StringUtils.getParamDescriptions(methods);
+					operationDetails.addProperty("params", String.join(", ", paramList));
+					producerDetailsList.add(operationDetails);
 				}
-
-				producersDetails.put("params", String.join(", ", paramList));
-
-				producersDetailsList.add(producersDetails);
+			} else {
+				JsonObject errorObject = new JsonObject();
+				errorObject.addProperty("error", "No files found in " + packagePath);
+				producerDetailsList.add(errorObject);
 			}
+
+		} catch (ClassNotFoundException e) {
+			JsonObject errorObject = new JsonObject();
+			errorObject.addProperty("error", e.getMessage());
+			producerDetailsList.add(errorObject);
 		}
 
-		return producersDetailsList.isEmpty()
-				? List.of(Map.of("message", "No producers found in package: " + Constants.PRODUCER_ROOT_PACKAGE))
-				: producersDetailsList;
+		return producerDetailsList.toString();
+
 	}
 }
