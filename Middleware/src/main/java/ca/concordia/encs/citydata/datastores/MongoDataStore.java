@@ -14,9 +14,9 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Component;
 
-import ca.concordia.encs.citydata.core.IDataStore;
-import ca.concordia.encs.citydata.core.MiddlewareEntity;
 import ca.concordia.encs.citydata.core.ProducerUsageData;
+import ca.concordia.encs.citydata.core.contracts.IDataStore;
+import ca.concordia.encs.citydata.core.implementations.MiddlewareEntity;
 
 /***
  * This class is responsible for storing and retrieving data from MongoDB. Data

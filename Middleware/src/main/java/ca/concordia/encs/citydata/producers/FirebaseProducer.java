@@ -3,13 +3,13 @@ package ca.concordia.encs.citydata.producers;
 import java.util.ArrayList;
 import java.util.List;
 
-import ca.concordia.encs.citydata.core.RequestOptions;
+import ca.concordia.encs.citydata.core.utils.RequestOptions;
 import com.google.firebase.database.*;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-import ca.concordia.encs.citydata.core.AbstractProducer;
-import ca.concordia.encs.citydata.core.IProducer;
+import ca.concordia.encs.citydata.core.implementations.AbstractProducer;
+import ca.concordia.encs.citydata.core.contracts.IProducer;
 import com.google.gson.JsonParser;
 /***
  * This is the Producer class for Firebase, which fetches data from Firebase

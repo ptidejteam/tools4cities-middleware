@@ -1,4 +1,4 @@
-package ca.concordia.encs.citydata.core;
+package ca.concordia.encs.citydata.core.controllers;
 
 import java.io.File;
 import java.lang.reflect.Method;
@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+
+import ca.concordia.encs.citydata.core.utils.Constants;
+import ca.concordia.encs.citydata.core.utils.StringUtils;
 
 /* This java class is to print all available producers and their characteristics
  * Author: Sikandar Ejaz

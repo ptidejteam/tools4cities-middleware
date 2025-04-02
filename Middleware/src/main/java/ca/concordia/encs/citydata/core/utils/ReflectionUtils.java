@@ -1,16 +1,19 @@
-package ca.concordia.encs.citydata.core;
+package ca.concordia.encs.citydata.core.utils;
 
 import java.lang.reflect.Method;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-/***
- * This class contains all helping methods for reflection
+
+/**
+ * This class contains Reflection functions used throughout the code to
+ * instantiate classes, methods and fields dynamically.
+ * 
  * @Author: Rushin Makwana
- * @Date: 7th Feb 2024
+ * @Date: 1st Feb 2025
  */
-public class ReflectionUtils {
+public abstract class ReflectionUtils {
 
 	public static JsonElement getRequiredField(JsonObject jsonObject, String fieldName) {
 		if (!jsonObject.has(fieldName)) {

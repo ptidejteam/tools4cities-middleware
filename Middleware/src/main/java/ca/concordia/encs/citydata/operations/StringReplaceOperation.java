@@ -2,8 +2,8 @@ package ca.concordia.encs.citydata.operations;
 
 import java.util.ArrayList;
 
-import ca.concordia.encs.citydata.core.AbstractOperation;
-import ca.concordia.encs.citydata.core.IOperation;
+import ca.concordia.encs.citydata.core.implementations.AbstractOperation;
+import ca.concordia.encs.citydata.core.contracts.IOperation;
 
 /**
  *
