@@ -20,8 +20,6 @@ import ca.concordia.encs.citydata.datastores.InMemoryDataStore;
  * in the middleware's DataStore. If so, it returns the list of producers with that match the query,
  * along with their generation timestamps.
  * 
- * TODO: report all producers, not only the first one found
- * 
  * Author: Minette
  * Date: 21-02-2025
  */
@@ -30,7 +28,7 @@ import ca.concordia.encs.citydata.datastores.InMemoryDataStore;
 @RequestMapping("/exists")
 public class ExistsController {
 
-	@RequestMapping(value = "/", method = RequestMethod.GET)
+	@RequestMapping(value = "/", method = RequestMethod.POST)
 	public ResponseEntity<String> sync(@RequestBody String query) {
 
 		try {
