@@ -21,6 +21,14 @@ import ca.concordia.encs.citydata.datastores.InMemoryDataStore;
 import ca.concordia.encs.citydata.producers.ExceptionProducer;
 import ca.concordia.encs.citydata.runners.SequentialRunner;
 
+/***
+ * This controller is responsible to listen to all requests sent to the /apply
+ * route.
+ * 
+ * @Author: Gabriel C. Ullmann
+ * @Date: 01/01/2025
+ */
+
 @RestController
 @RequestMapping("/apply")
 public class ApplyController {
@@ -43,7 +51,6 @@ public class ApplyController {
 							System.out.println("Busy waiting!");
 						}
 					} catch (Exception e) {
-						// stop runner as soon as an exception is thrown to avoid infinite loops
 						deckard.setAsDone();
 						InMemoryDataStore store = InMemoryDataStore.getInstance();
 						store.set(deckard.getMetadataString("id"), new ExceptionProducer(e));
@@ -134,4 +141,5 @@ public class ApplyController {
 		String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timeObject);
 		return ResponseEntity.status(HttpStatus.OK).body("pong at " + timeStamp);
 	}
+
 }
