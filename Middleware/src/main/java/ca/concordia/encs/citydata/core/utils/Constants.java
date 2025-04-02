@@ -1,4 +1,4 @@
-package ca.concordia.encs.citydata.core;
+package ca.concordia.encs.citydata.core.utils;
 
 /***
  * This is the interface for the storing all constants

@@ -7,8 +7,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Iterator;
 
-import ca.concordia.encs.citydata.core.IDataStore;
-import ca.concordia.encs.citydata.core.MiddlewareEntity;
+import ca.concordia.encs.citydata.core.contracts.IDataStore;
+import ca.concordia.encs.citydata.core.implementations.MiddlewareEntity;
 
 /* A DataStore that persists information in the disk. 
  * Author: Gabriel C. Ullmann

@@ -2,8 +2,8 @@ package ca.concordia.encs.citydata.producers;
 
 import java.util.ArrayList;
 
-import ca.concordia.encs.citydata.core.AbstractProducer;
-import ca.concordia.encs.citydata.core.IProducer;
+import ca.concordia.encs.citydata.core.implementations.AbstractProducer;
+import ca.concordia.encs.citydata.core.contracts.IProducer;
 
 /**
  * This producer was created for the sole purpose of returning Exceptions when

@@ -1,10 +1,11 @@
-package ca.concordia.encs.citydata.core;
+package ca.concordia.encs.citydata.core.controllers;
 
 import java.io.File;
 import java.lang.reflect.Method;
 import java.nio.file.Paths;
 import java.util.List;
 
+import ca.concordia.encs.citydata.core.utils.Constants;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -12,21 +13,21 @@ import org.springframework.web.bind.annotation.RestController;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
-/* This java class is to print all available operations and their characteristics 
+/* This java class is to print all available producers and their characteristics
  * Author: Sikandar Ejaz
  * Date: 2-6-2025
  */
 
 @RestController
-@RequestMapping("/operations")
-public class ListOperationsController {
+@RequestMapping("/producers")
+public class ListProducerController {
 
 	@GetMapping("/list")
-	public String listOperations() {
-		JsonArray operationDetailsList = new JsonArray();
+	public String listProducers() {
+		JsonArray producerDetailsList = new JsonArray();
 		// Get the path to the package
 		String projectRootPath = Paths.get("").toAbsolutePath().toString() + "/";
-		String packagePath = projectRootPath + Constants.OPERATION_ROOT_PACKAGE;
+		String packagePath = projectRootPath + Constants.PRODUCER_ROOT_PACKAGE;
 
 		try {
 			// Scan for class files in the package directory
@@ -39,7 +40,7 @@ public class ListOperationsController {
 					String className = file.getName().replace(fileExtension, "");
 
 					// Load the class using reflection
-					Class<?> clazz = Class.forName("ca.concordia.encs.citydata.operations." + className);
+					Class<?> clazz = Class.forName("ca.concordia.encs.citydata.producers." + className);
 
 					// Map to hold operation details
 					JsonObject operationDetails = new JsonObject();
@@ -51,21 +52,21 @@ public class ListOperationsController {
 					Method[] methods = clazz.getMethods();
 					List<String> paramList = StringUtils.getParamDescriptions(methods);
 					operationDetails.addProperty("params", String.join(", ", paramList));
-					operationDetailsList.add(operationDetails);
+					producerDetailsList.add(operationDetails);
 				}
 			} else {
 				JsonObject errorObject = new JsonObject();
 				errorObject.addProperty("error", "No files found in " + packagePath);
-				operationDetailsList.add(errorObject);
+				producerDetailsList.add(errorObject);
 			}
 
 		} catch (ClassNotFoundException e) {
 			JsonObject errorObject = new JsonObject();
 			errorObject.addProperty("error", e.getMessage());
-			operationDetailsList.add(errorObject);
+			producerDetailsList.add(errorObject);
 		}
 
-		return operationDetailsList.toString();
+		return producerDetailsList.toString();
 
 	}
 }

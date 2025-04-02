@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.UUID;
 
-import ca.concordia.encs.citydata.core.AbstractProducer;
-import ca.concordia.encs.citydata.core.IProducer;
+import ca.concordia.encs.citydata.core.implementations.AbstractProducer;
+import ca.concordia.encs.citydata.core.contracts.IProducer;
 
 /**
  *
