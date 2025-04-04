@@ -1,29 +1,21 @@
 package ca.concordia.encs.citydata;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.ComponentScan;
 
-import ca.concordia.encs.citydata.core.AppConfig;
-
-@SpringBootTest(classes = AppConfig.class)
-@AutoConfigureMockMvc
-@ComponentScan(basePackages = "ca.concordia.encs.citydata.core")
 public class VarsTest {
 
 	// Test for valid steps
 	@Test
 	public void test1() throws Exception {
+		String targetSubstring = "p";
 		String sensitive = System.getenv("CITYDATA_BLA");
 		String nonSensitive = System.getenv("CITYDATA_NOT_SENSITIVE");
 
 		assertEquals(nonSensitive, "abc123");
-		assertThat(sensitive, CoreMatchers.containsString("p"));
+		assertTrue(sensitive.contains(targetSubstring), "Expected the string to contain '" + targetSubstring + "'");
 
 	}
 
