@@ -27,8 +27,7 @@ jobs:
     environment: main
     env:
         CITYDATA_BLA: ${{ secrets.CITYDATA_BLA }},
-        CITYDATA_NOT_SENSITIVE: ${{ env.CITYDATA_NOT_SENSITIVE }}
-
+        CITYDATA_NOT_SENSITIVE: ${{ vars.CITYDATA_NOT_SENSITIVE }}
     steps:
     - uses: actions/checkout@v4
     - name: Set up JDK 21
