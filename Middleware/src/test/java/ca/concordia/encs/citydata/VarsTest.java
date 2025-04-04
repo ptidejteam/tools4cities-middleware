@@ -14,7 +14,7 @@ public class VarsTest {
 		String sensitive = System.getenv("CITYDATA_BLA");
 		String nonSensitive = System.getenv("CITYDATA_NOT_SENSITIVE");
 
-		assertEquals("abc123", nonSensitive);
+		assertEquals(nonSensitive, "abc123");
 		assertTrue(sensitive.contains(targetSubstring), "Expected the string to contain '" + targetSubstring + "'");
 
 	}
