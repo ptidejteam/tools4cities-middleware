@@ -19,6 +19,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import ca.concordia.encs.citydata.core.AppConfig;
+import ca.concordia.encs.citydata.core.utils.StringUtils;
 
 @SpringBootTest(classes = AppConfig.class)
 @AutoConfigureMockMvc
@@ -27,37 +28,47 @@ public class RetrofitResultsTest {
 
 	private static String retrofitResultsProducer;
 	private static String retrofitResultsProducerReadPath;
+	private static String hubApplicationUUID;
 
 	@Autowired
 	private MockMvc mockMvc;
 
 	@BeforeAll
 	public static void setUp() throws Exception {
+		hubApplicationUUID = StringUtils.getEnvVariable("HUB_APPLICATION_UUID");
 		retrofitResultsProducer = PayloadFactory.getExampleQuery("retrofitResultsProducer");
 		retrofitResultsProducerReadPath = PayloadFactory.getExampleQuery("retrofitResultsProducerReadPath");
 	}
 
 	@Test
 	public void testMultipleBuildings() throws Exception {
-		mockMvc.perform(post("/apply/sync").contentType(MediaType.APPLICATION_JSON).content(retrofitResultsProducer))
-				.andExpect(status().isOk()).andExpect(content().string(containsString("results")));
+		if (hubApplicationUUID != null) {
+			mockMvc.perform(
+					post("/apply/sync").contentType(MediaType.APPLICATION_JSON).content(retrofitResultsProducer))
+					.andExpect(status().isOk()).andExpect(content().string(containsString("results")));
+		}
+
 	}
 
 	@Test
 	public void testMultipleBuildingsAndReadPath() throws Exception {
-		mockMvc.perform(
-				post("/apply/sync").contentType(MediaType.APPLICATION_JSON).content(retrofitResultsProducerReadPath))
-				.andExpect(status().isOk()).andExpect(content().string(containsString("B2010_opaque_walls")));
+		if (hubApplicationUUID != null) {
+			mockMvc.perform(post("/apply/sync").contentType(MediaType.APPLICATION_JSON)
+					.content(retrofitResultsProducerReadPath)).andExpect(status().isOk())
+					.andExpect(content().string(containsString("B2010_opaque_walls")));
+		}
 	}
 
 	@Test
 	public void testNoBuildings() throws Exception {
-		JsonObject jsonPayloadObject = JsonParser.parseString(retrofitResultsProducer).getAsJsonObject();
-		jsonPayloadObject.get("withParams").getAsJsonArray().get(0).getAsJsonObject().add("value", new JsonArray());
+		if (hubApplicationUUID != null) {
+			JsonObject jsonPayloadObject = JsonParser.parseString(retrofitResultsProducer).getAsJsonObject();
+			jsonPayloadObject.get("withParams").getAsJsonArray().get(0).getAsJsonObject().add("value", new JsonArray());
 
-		mockMvc.perform(
-				post("/apply/sync").contentType(MediaType.APPLICATION_JSON).content(jsonPayloadObject.toString()))
-				.andExpect(status().isOk()).andExpect(content().string(containsString("No buildingIds informed")));
+			mockMvc.perform(
+					post("/apply/sync").contentType(MediaType.APPLICATION_JSON).content(jsonPayloadObject.toString()))
+					.andExpect(status().isOk()).andExpect(content().string(containsString("No buildingIds informed")));
+		}
 	}
 
 	@Test
