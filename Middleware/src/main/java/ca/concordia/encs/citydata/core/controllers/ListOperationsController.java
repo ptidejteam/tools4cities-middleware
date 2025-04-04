@@ -5,7 +5,6 @@ import java.lang.reflect.Method;
 import java.nio.file.Paths;
 import java.util.List;
 
-import ca.concordia.encs.citydata.core.utils.Constants;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,11 +12,15 @@ import org.springframework.web.bind.annotation.RestController;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
-/* This java class is to print all available operations and their characteristics 
- * Author: Sikandar Ejaz
- * Date: 2-6-2025
- */
+import ca.concordia.encs.citydata.core.utils.Constants;
+import ca.concordia.encs.citydata.core.utils.StringUtils;
 
+/***
+ * This class is to print all available operations and their characteristics
+ * 
+ * @author Sikandar Ejaz
+ * @date 2025-06-02
+ */
 @RestController
 @RequestMapping("/operations")
 public class ListOperationsController {

@@ -6,8 +6,8 @@ import java.util.HashMap;
  * This class represents HTTP request options, such as headers. It is used by
  * the AbstractProducer to fetch files via HTTP.
  * 
- * @Author: Gabriel C. Ullmann
- * @Date: 28th Mar 2025
+ * @author Gabriel C. Ullmann
+ * @date 2025-03-28
  */
 public class RequestOptions {
 	public String method;

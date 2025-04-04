@@ -10,8 +10,8 @@ import com.google.gson.JsonObject;
  * This class contains Reflection functions used throughout the code to
  * instantiate classes, methods and fields dynamically.
  * 
- * @Author: Rushin Makwana
- * @Date: 1st Feb 2025
+ * @author: Rushin Makwana
+ * @date: 2025-02-01
  */
 public abstract class ReflectionUtils {
 
@@ -24,6 +24,7 @@ public abstract class ReflectionUtils {
 
 	public static Object instantiateClass(String className) throws Exception {
 		Class<?> clazz = Class.forName(className);
+		System.out.println(className);
 		return clazz.getDeclaredConstructor().newInstance();
 	}
 
