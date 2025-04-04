@@ -1,27 +1,37 @@
 package ca.concordia.encs.citydata.core.utils;
 
+import java.io.IOException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 /**
  * This class contains functions to perform transformations on strings.
  * 
- * @Author: Rushin Makwana and Gabriel C. Ullmann
- * @Date: 28th Mar 2025
+ * @author Rushin Makwana and Gabriel C. Ullmann
+ * @date 2025-03-28
  */
 public abstract class StringUtils {
+
+	public static final Path ENV_PATH = Paths.get("env.json").toAbsolutePath();
 
 	public static String capitalize(String str) {
 		return str == null || str.isEmpty() ? str : str.substring(0, 1).toUpperCase() + str.substring(1);
 	}
 
 	public static List<String> getParamDescriptions(Method[] methods) {
-		List<String> descriptions = new ArrayList<>();
+		final List<String> descriptions = new ArrayList<>();
 		for (Method method : methods) {
-			Parameter[] params = method.getParameters();
-			String methodName = method.getName();
+			final Parameter[] params = method.getParameters();
+			final String methodName = method.getName();
 			if (methodName != "setMetadata" && methodName.startsWith("set") && params.length > 0) {
 				String paramName = method.getName().replace("set", "");
 				paramName = paramName.substring(0, 1).toLowerCase() + paramName.substring(1, paramName.length());
@@ -29,5 +39,23 @@ public abstract class StringUtils {
 			}
 		}
 		return descriptions;
+	}
+
+	public static String getEnvVariable(String variableKey) {
+		String value = System.getenv(variableKey);
+		if (value == null || value.length() == 0) {
+			final JsonElement envVariables = StringUtils.getEnvVariables();
+			value = envVariables.getAsJsonObject().get(variableKey).getAsString();
+		}
+		return value;
+	}
+
+	public static JsonElement getEnvVariables() {
+		try {
+			final String values = new String(Files.readAllBytes(ENV_PATH));
+			return JsonParser.parseString(values);
+		} catch (IOException e) {
+			return new JsonObject();
+		}
 	}
 }

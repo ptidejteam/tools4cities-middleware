@@ -1,25 +1,27 @@
 package ca.concordia.encs.citydata.producers;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 
-import ca.concordia.encs.citydata.core.implementations.AbstractProducer;
 import ca.concordia.encs.citydata.core.contracts.IOperation;
 import ca.concordia.encs.citydata.core.contracts.IProducer;
 import ca.concordia.encs.citydata.core.contracts.IRunner;
+import ca.concordia.encs.citydata.core.implementations.AbstractProducer;
 import ca.concordia.encs.citydata.core.utils.RequestOptions;
+import ca.concordia.encs.citydata.core.utils.StringUtils;
 import ca.concordia.encs.citydata.datastores.InMemoryDataStore;
 import ca.concordia.encs.citydata.runners.SingleStepRunner;
 
+/**
+ * This producer fetches data from the HUB API. Credentials are needed to access
+ * this API in your environment variables.
+ * 
+ * @author Gabriel C. Ullmann
+ * @date 2025-04-04
+ */
 public class RetrofitResultsProducer extends AbstractProducer<JsonObject> implements IProducer<JsonObject> {
 
 	private JsonArray buildingIds;
@@ -27,9 +29,11 @@ public class RetrofitResultsProducer extends AbstractProducer<JsonObject> implem
 	private IOperation<JsonObject> jsonProducerOperation;
 	private IRunner runnerObserver;
 
-	final Path path = Paths.get("env.json").toAbsolutePath();
-	private String HUB_START_URL = "https://ngci.encs.concordia.ca/api/v1.4/session/start";
-	private String HUB_RETROFIT_URL = "https://ngci.encs.concordia.ca/api/v1.4/persistence/full-retrofit-results";
+	private final String HUB_APPLICATION_UUID = StringUtils.getEnvVariable("HUB_APPLICATION_UUID");
+	private final String HUB_USERNAME = StringUtils.getEnvVariable("HUB_USERNAME");
+	private final String HUB_PASSWORD = StringUtils.getEnvVariable("HUB_PASSWORD");
+	private final String HUB_START_URL = "https://ngci.encs.concordia.ca/api/v1.4/session/start";
+	private final String HUB_RETROFIT_URL = "https://ngci.encs.concordia.ca/api/v1.4/persistence/full-retrofit-results";
 
 	public void setBuildingIds(JsonArray buildingIds) {
 		this.buildingIds = buildingIds;
@@ -55,26 +59,13 @@ public class RetrofitResultsProducer extends AbstractProducer<JsonObject> implem
 		return wrapper.toString();
 	}
 
-	private JsonObject getEnvVariables() {
-		final Path path = Paths.get("env.json").toAbsolutePath();
-		String envVariables = "";
-		try {
-			envVariables = new String(Files.readAllBytes(path));
-		} catch (IOException e) {
-			// do not throw this error to users
-			System.out.println(e.getMessage());
-		}
-		final JsonElement jsonElement = JsonParser.parseString(envVariables);
-		return jsonElement.getAsJsonObject();
-	}
-
 	private RequestOptions getStartOptions() {
-		JsonObject jsonEnv = getEnvVariables();
+
 		RequestOptions startOptions = new RequestOptions();
 		startOptions.returnHeaders = true;
-		startOptions.addToHeaders("Username", jsonEnv.get("REACT_APP_HUB_API_USERNAME").getAsString());
-		startOptions.addToHeaders("Password", jsonEnv.get("REACT_APP_HUB_API_PASSWORD").getAsString());
-		startOptions.addToHeaders("Application-Uuid", jsonEnv.get("REACT_APP_HUB_API_APPLICATION_UUID").getAsString());
+		startOptions.addToHeaders("Application-Uuid", HUB_APPLICATION_UUID);
+		startOptions.addToHeaders("Username", HUB_USERNAME);
+		startOptions.addToHeaders("Password", HUB_PASSWORD);
 		startOptions.addToHeaders("accept", "application/json");
 		startOptions.addToHeaders("content-type", "application/json");
 		startOptions.method = "PUT";
@@ -82,13 +73,11 @@ public class RetrofitResultsProducer extends AbstractProducer<JsonObject> implem
 	}
 
 	private RequestOptions getRetrofitOptions(JsonObject startResponseHeaders) {
-		JsonObject jsonEnv = getEnvVariables();
 		RequestOptions retrofitOptions = new RequestOptions();
 		retrofitOptions.requestBody = getBody();
 		retrofitOptions.addToHeaders("token", startResponseHeaders.get("token").getAsString());
 		retrofitOptions.addToHeaders("session-id", startResponseHeaders.get("session_id").getAsString());
-		retrofitOptions.addToHeaders("Application-Uuid",
-				jsonEnv.get("REACT_APP_HUB_API_APPLICATION_UUID").getAsString());
+		retrofitOptions.addToHeaders("Application-Uuid", HUB_APPLICATION_UUID);
 		retrofitOptions.addToHeaders("accept", "application/json");
 		retrofitOptions.addToHeaders("content-type", "application/json");
 		retrofitOptions.method = "POST";
@@ -109,7 +98,6 @@ public class RetrofitResultsProducer extends AbstractProducer<JsonObject> implem
 						}
 					} catch (Exception e) {
 						deckard.setAsDone();
-						System.out.println(e.getMessage());
 					}
 
 				}

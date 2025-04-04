@@ -4,7 +4,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import ca.concordia.encs.citydata.core.contracts.IProducer;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,10 +16,17 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 
+import ca.concordia.encs.citydata.core.contracts.IProducer;
 import ca.concordia.encs.citydata.datastores.InMemoryDataStore;
 import ca.concordia.encs.citydata.producers.ExceptionProducer;
 import ca.concordia.encs.citydata.runners.SequentialRunner;
 
+/***
+ * This class manages all requests sent to the /apply route
+ * 
+ * @author Gabriel C. Ullmann
+ * @date 2024-12-01
+ */
 @RestController
 @RequestMapping("/apply")
 public class ApplyController {
@@ -43,6 +49,7 @@ public class ApplyController {
 							System.out.println("Busy waiting!");
 						}
 					} catch (Exception e) {
+						System.out.println(e.getMessage());
 						// stop runner as soon as an exception is thrown to avoid infinite loops
 						deckard.setAsDone();
 						InMemoryDataStore store = InMemoryDataStore.getInstance();
