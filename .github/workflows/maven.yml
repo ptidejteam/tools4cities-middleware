@@ -24,7 +24,7 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-    environment: main
+    environment: test
 
     steps:
     - uses: actions/checkout@v4
