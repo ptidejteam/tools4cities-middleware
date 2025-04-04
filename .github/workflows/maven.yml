@@ -25,6 +25,9 @@ jobs:
 
     runs-on: ubuntu-latest
     environment: main
+    env:
+        CITYDATA_BLA: ${{ secrets.CITYDATA_BLA }},
+        CITYDATA_NOT_SENSITIVE: ${{ env.CITYDATA_NOT_SENSITIVE }}
 
     steps:
     - uses: actions/checkout@v4
