@@ -1,6 +1,6 @@
-package ca.concordia.encs.citydata.core;
+package ca.concordia.encs.citydata.core.controllers;
 
-import ca.concordia.encs.citydata.datastores.MongoDataStore;
+import ca.concordia.encs.citydata.core.ProducerUsageData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +18,7 @@ import java.util.*;
 @RestController
 @RequestMapping("/report")
 public class ReportController {
-@Autowired
+    @Autowired
     private MongoDataStore mongoDataStore;
 
     @RequestMapping(value = "/producers", method = RequestMethod.GET)

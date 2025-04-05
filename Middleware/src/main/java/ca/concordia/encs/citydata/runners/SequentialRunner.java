@@ -18,7 +18,7 @@ import ca.concordia.encs.citydata.core.contracts.IRunner;
 import ca.concordia.encs.citydata.core.implementations.AbstractRunner;
 import ca.concordia.encs.citydata.core.utils.ReflectionUtils;
 import ca.concordia.encs.citydata.datastores.InMemoryDataStore;
-import ca.concordia.encs.citydata.datastores.MongoDataStore;
+import ca.concordia.encs.citydata.core.controllers.MongoDataStore;
 import ca.concordia.encs.citydata.producers.ExceptionProducer;
 
 /***

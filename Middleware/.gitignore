@@ -7,6 +7,7 @@
 env.json
 /src/test/data/citylayer-middleware.json
 /citydata-files/*
+src/test/data/*
 
 ## Joularjx results ##
 joularjx-result/*/all/total/methods/joularJX-*-all-methods-energy.csv

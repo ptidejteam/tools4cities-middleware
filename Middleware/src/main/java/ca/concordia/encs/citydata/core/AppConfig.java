@@ -1,7 +1,8 @@
 package ca.concordia.encs.citydata.core;
 
-import org.springframework.boot.SpringBootConfiguration;
+import ca.concordia.encs.citydata.core.controllers.MongoDataStore;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 /***
  * This is the Spring Boot base configuration file.
@@ -10,12 +11,17 @@ import org.springframework.context.annotation.Bean;
  * @Date: 01/01/2025
  */
 
-@SpringBootConfiguration
+@Configuration
 public class AppConfig {
-
+//
+//	@Bean
+//	public MongoDataStore mongoDataStore() {
+//		return new MongoDataStore();
+//	}
 	@Bean
 	public String exampleBean() {
 		return "Hello, Spring Boot!";
 	}
+
 
 }

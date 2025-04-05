@@ -1,22 +1,25 @@
-package ca.concordia.encs.citydata.datastores;
+package ca.concordia.encs.citydata.core.controllers;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static org.springframework.data.mongodb.core.query.Query.query;
 
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
 
+import com.mongodb.client.MongoClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.stereotype.Component;
 
 import ca.concordia.encs.citydata.core.ProducerUsageData;
 import ca.concordia.encs.citydata.core.contracts.IDataStore;
 import ca.concordia.encs.citydata.core.implementations.MiddlewareEntity;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 /***
  * This class is responsible for storing and retrieving data from MongoDB. Data
@@ -25,20 +28,15 @@ import ca.concordia.encs.citydata.core.implementations.MiddlewareEntity;
  * @Author: Rushin Makwana
  * @Date: 26/2/2024
  */
+
 @Component
 public class MongoDataStore extends MiddlewareEntity implements IDataStore<ProducerUsageData> {
 
-	@Autowired(required = false)
-	private MongoTemplate mongoTemplate;
+	private final MongoTemplate mongoTemplate;
 
-	@Value("${spring.data.mongodb.uri:}")
-	private String mongoUri;
-
-	@PostConstruct
-	private void init() {
-		if (mongoUri.isEmpty()) {
-			mongoTemplate = null;
-		}
+	@Autowired
+	public MongoDataStore(@Autowired(required = false) MongoTemplate mongoTemplate) {
+		this.mongoTemplate = mongoTemplate;
 	}
 
 	@Override
@@ -73,14 +71,14 @@ public class MongoDataStore extends MiddlewareEntity implements IDataStore<Produ
 		if (mongoTemplate != null) {
 			return mongoTemplate.find(query(where("producerName").is(producerName)), ProducerUsageData.class);
 		}
-		return null;
+		return Collections.emptyList();
 	}
 
 	public List<ProducerUsageData> findAll() {
 		if (mongoTemplate != null) {
 			return mongoTemplate.findAll(ProducerUsageData.class);
 		}
-		return null;
+		return Collections.emptyList();
 	}
 
 	public void deleteAll() {
