@@ -1,16 +1,17 @@
+## CityData .gitignore ##
+## Build folders ##
 /bin/
-/target/
+/target/*
+
+## Config files and datastores folders ##
 env.json
-./src/test/data/citylayer-middleware.json
+/src/test/data/citylayer-middleware.json
+/citydata-files/*
+/src/test/data/*
+
+## Joularjx results ##
 joularjx-result/*/all/total/methods/joularJX-*-all-methods-energy.csv
 joularjx-result/*/app/total/methods/joularJX-*-filtered-methods-energy.csv
-/citydata-files
-src/test/data/db/*
-HELP.md
-target/
-!.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
-!**/src/test/**/target/
 
 ### STS ###
 .apt_generated
@@ -39,4 +40,12 @@ build/
 
 ### VS Code ###
 .vscode/
+
+## macOS ##
+*.DS_Store
+
+## Exceptions to the .gitignore ##
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**
 

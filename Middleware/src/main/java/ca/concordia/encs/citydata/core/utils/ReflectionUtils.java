@@ -24,7 +24,6 @@ public abstract class ReflectionUtils {
 
 	public static Object instantiateClass(String className) throws Exception {
 		Class<?> clazz = Class.forName(className);
-		System.out.println(className);
 		return clazz.getDeclaredConstructor().newInstance();
 	}
 

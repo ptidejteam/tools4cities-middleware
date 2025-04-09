@@ -21,7 +21,6 @@ import ca.concordia.encs.citydata.core.utils.StringUtils;
  * @author Sikandar Ejaz
  * @date 2025-06-02
  */
-
 @RestController
 @RequestMapping("/producers")
 public class ListProducerController {

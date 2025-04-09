@@ -49,8 +49,6 @@ public class ApplyController {
 							System.out.println("Busy waiting!");
 						}
 					} catch (Exception e) {
-						System.out.println(e.getMessage());
-						// stop runner as soon as an exception is thrown to avoid infinite loops
 						deckard.setAsDone();
 						InMemoryDataStore store = InMemoryDataStore.getInstance();
 						store.set(deckard.getMetadataString("id"), new ExceptionProducer(e));
@@ -141,4 +139,5 @@ public class ApplyController {
 		String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timeObject);
 		return ResponseEntity.status(HttpStatus.OK).body("pong at " + timeStamp);
 	}
+
 }
