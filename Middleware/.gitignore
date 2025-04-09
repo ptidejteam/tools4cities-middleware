@@ -7,7 +7,7 @@
 env.json
 /src/test/data/citylayer-middleware.json
 /citydata-files/*
-src/test/data/*
+/src/test/data/*
 
 ## Joularjx results ##
 joularjx-result/*/all/total/methods/joularJX-*-all-methods-energy.csv
@@ -42,7 +42,7 @@ build/
 .vscode/
 
 ## macOS ##
-.DS_Store
+*.DS_Store
 
 ## Exceptions to the .gitignore ##
 !.mvn/wrapper/maven-wrapper.jar
