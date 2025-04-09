@@ -20,7 +20,7 @@ public class Application {
 	// initialize all datastore for later use
 	InMemoryDataStore memoryStore = InMemoryDataStore.getInstance();
 	DiskDatastore diskStore = DiskDatastore.getInstance();
-	MongoDataStore mongoDataStore = new MongoDataStore();
+	MongoDataStore mongoDataStore = MongoDataStore.getInstance();
 
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);

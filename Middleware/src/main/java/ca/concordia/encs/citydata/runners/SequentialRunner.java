@@ -6,7 +6,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -30,10 +30,10 @@ import ca.concordia.encs.citydata.producers.ExceptionProducer;
  * @Author: Gabriel C. Ullmann
  * @Date: 2025-02-14
  */
+@Component
 public class SequentialRunner extends AbstractRunner implements IRunner {
 
-	@Autowired
-	private MongoDataStore mongoDataStore; // this is set by the method of same name in OptionalMongoConfig.java
+	private MongoDataStore mongoDataStore = MongoDataStore.getInstance();
 	private JsonObject steps = null;
 	private int operationCounter = 0;
 
@@ -169,7 +169,7 @@ public class SequentialRunner extends AbstractRunner implements IRunner {
 		 * variable will be null. Otherwise, it will contain a value, which means a
 		 * connection to MongoDB is available.
 		 */
-		if (mongoDataStore != null) {
+		if (mongoDataStore != null && mongoDataStore.hasConnection()) {
 			List<ProducerUsageData> callInfoList = mongoDataStore.findByProducerName(producerName);
 			if (callInfoList.isEmpty()) {
 				mongoDataStore.save(callInfo);

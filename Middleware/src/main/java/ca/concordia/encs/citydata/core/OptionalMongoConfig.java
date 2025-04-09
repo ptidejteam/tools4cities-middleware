@@ -46,7 +46,7 @@ public class OptionalMongoConfig {
 
 	@Bean
 	public MongoDataStore mongoDataStore() {
-		return new MongoDataStore();
+		return MongoDataStore.getInstance();
 	}
 
 	// Checks whether the MongoDB configurations should be applied or not

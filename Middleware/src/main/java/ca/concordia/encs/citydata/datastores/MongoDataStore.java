@@ -34,11 +34,27 @@ public class MongoDataStore extends MiddlewareEntity implements IDataStore<Produ
 	@Value("${spring.data.mongodb.uri:}")
 	private String mongoUri;
 
+	private static final MongoDataStore storeInstance = new MongoDataStore();
+
+	// Private constructor prevents instantiation (this is a singleton)
+	private MongoDataStore() {
+		this.setMetadata("role", "datastore");
+	}
+
+	// Public method to provide access to the instance
+	public static MongoDataStore getInstance() {
+		return storeInstance;
+	}
+
 	@PostConstruct
 	private void init() {
 		if (mongoUri.isEmpty()) {
 			mongoTemplate = null;
 		}
+	}
+
+	public boolean hasConnection() {
+		return mongoTemplate != null;
 	}
 
 	@Override
