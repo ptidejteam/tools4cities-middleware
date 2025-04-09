@@ -1,4 +1,4 @@
-package ca.concordia.encs.citydata.core.controllers;
+package ca.concordia.encs.citydata.datastores;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static org.springframework.data.mongodb.core.query.Query.query;
@@ -14,16 +14,16 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Component;
 
-import ca.concordia.encs.citydata.core.ProducerUsageData;
 import ca.concordia.encs.citydata.core.contracts.IDataStore;
 import ca.concordia.encs.citydata.core.implementations.MiddlewareEntity;
+import ca.concordia.encs.citydata.core.utils.ProducerUsageData;
 
 /***
  * This class is responsible for storing and retrieving data from MongoDB. Data
  * remains persists even after the application stops.
  * 
- * @Author: Rushin Makwana
- * @Date: 26/2/2024
+ * @author Rushin Makwana
+ * @date 2024-02-26
  */
 @Component
 public class MongoDataStore extends MiddlewareEntity implements IDataStore<ProducerUsageData> {

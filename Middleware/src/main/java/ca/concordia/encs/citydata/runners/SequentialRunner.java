@@ -11,14 +11,14 @@ import org.springframework.stereotype.Component;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
-import ca.concordia.encs.citydata.core.ProducerUsageData;
 import ca.concordia.encs.citydata.core.contracts.IOperation;
 import ca.concordia.encs.citydata.core.contracts.IProducer;
 import ca.concordia.encs.citydata.core.contracts.IRunner;
-import ca.concordia.encs.citydata.core.controllers.MongoDataStore;
 import ca.concordia.encs.citydata.core.implementations.AbstractRunner;
+import ca.concordia.encs.citydata.core.utils.ProducerUsageData;
 import ca.concordia.encs.citydata.core.utils.ReflectionUtils;
 import ca.concordia.encs.citydata.datastores.InMemoryDataStore;
+import ca.concordia.encs.citydata.datastores.MongoDataStore;
 import ca.concordia.encs.citydata.producers.ExceptionProducer;
 
 /***
@@ -27,8 +27,8 @@ import ca.concordia.encs.citydata.producers.ExceptionProducer;
  * + O2 -> P1'', etc. It is notified via the Observer pattern when P1' is ready,
  * then proceeds to the next Operation until all operations are completed.
  *
- * @Author: Gabriel C. Ullmann
- * @Date: 2025-02-14
+ * @author Gabriel C. Ullmann
+ * @date 2025-02-14
  */
 @Component
 public class SequentialRunner extends AbstractRunner implements IRunner {

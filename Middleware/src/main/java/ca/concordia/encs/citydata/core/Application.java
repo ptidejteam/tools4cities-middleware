@@ -5,19 +5,20 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 
-import ca.concordia.encs.citydata.core.controllers.MongoDataStore;
 import ca.concordia.encs.citydata.datastores.DiskDatastore;
 import ca.concordia.encs.citydata.datastores.InMemoryDataStore;
+import ca.concordia.encs.citydata.datastores.MongoDataStore;
 
 /***
  * This is the Spring Boot application entry point.
  * 
- * @Author: Gabriel C. Ullmann, Sikandar Ejaz, Rushin Makwana
- * @Date: 01/01/2025
+ * @author Gabriel C. Ullmann, Sikandar Ejaz, Rushin Makwana
+ * @date 2025-01-01
  */
 
 @SpringBootApplication
-@ComponentScan(basePackages = "ca.concordia.encs.citydata.core.controllers")
+@ComponentScan(basePackages = { "ca.concordia.encs.citydata.core.controllers",
+		"ca.concordia.encs.citydata.core.configs", "ca.concordia.encs.citydata.datastores" })
 public class Application {
 
 	// initialize all datastore for later use

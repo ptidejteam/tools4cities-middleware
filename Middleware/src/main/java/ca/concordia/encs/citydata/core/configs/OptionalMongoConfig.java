@@ -1,4 +1,4 @@
-package ca.concordia.encs.citydata.core.controllers;
+package ca.concordia.encs.citydata.core.configs;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,6 +13,8 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 
+import ca.concordia.encs.citydata.datastores.MongoDataStore;
+
 /***
  * This is the Spring Boot configuration file which contains configuration
  * related to MongoDB. This will run on every application startup, just like
@@ -20,8 +22,8 @@ import com.mongodb.client.MongoClients;
  * is enabled and if a database connection string is found in the
  * application.properties file.
  * 
- * @Author: Gabriel C. Ullmann, Rushin Makwana
- * @Date: 28/03/2025
+ * @author: Gabriel C. Ullmann, Rushin Makwana
+ * @date: 2025-03-28
  */
 
 @Configuration

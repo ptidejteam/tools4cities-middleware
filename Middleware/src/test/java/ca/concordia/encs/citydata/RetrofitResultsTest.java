@@ -18,7 +18,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-import ca.concordia.encs.citydata.core.AppConfig;
+import ca.concordia.encs.citydata.core.configs.AppConfig;
 import ca.concordia.encs.citydata.core.utils.StringUtils;
 
 @SpringBootTest(classes = AppConfig.class)
