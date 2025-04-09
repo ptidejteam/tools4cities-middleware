@@ -15,11 +15,12 @@ import com.google.gson.JsonObject;
 import ca.concordia.encs.citydata.core.utils.Constants;
 import ca.concordia.encs.citydata.core.utils.StringUtils;
 
-/* This java class is to print all available operations and their characteristics 
- * Author: Sikandar Ejaz
- * Date: 2-6-2025
+/***
+ * This class is to print all available operations and their characteristics
+ * 
+ * @author Sikandar Ejaz
+ * @date 2025-06-02
  */
-
 @RestController
 @RequestMapping("/operations")
 public class ListOperationsController {

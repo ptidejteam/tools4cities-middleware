@@ -4,7 +4,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import ca.concordia.encs.citydata.core.contracts.IProducer;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,18 +16,17 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 
+import ca.concordia.encs.citydata.core.contracts.IProducer;
 import ca.concordia.encs.citydata.datastores.InMemoryDataStore;
 import ca.concordia.encs.citydata.producers.ExceptionProducer;
 import ca.concordia.encs.citydata.runners.SequentialRunner;
 
 /***
- * This controller is responsible to listen to all requests sent to the /apply
- * route.
+ * This class manages all requests sent to the /apply route
  * 
- * @Author: Gabriel C. Ullmann
- * @Date: 01/01/2025
+ * @author Gabriel C. Ullmann
+ * @date 2024-12-01
  */
-
 @RestController
 @RequestMapping("/apply")
 public class ApplyController {
