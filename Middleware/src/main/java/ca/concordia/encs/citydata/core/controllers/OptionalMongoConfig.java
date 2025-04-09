@@ -45,9 +45,8 @@ public class OptionalMongoConfig {
 
 	@Bean
 	public MongoDataStore mongoDataStore(@Autowired(required = false) MongoTemplate mongoTemplate) {
-		return new MongoDataStore(mongoTemplate);
+		return MongoDataStore.getInstance();
 	}
-
 
 	// Checks whether the MongoDB configurations should be applied or not
 	public static class MongoUriProvidedCondition implements Condition {
