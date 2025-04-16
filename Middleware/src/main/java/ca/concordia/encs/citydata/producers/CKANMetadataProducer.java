@@ -4,11 +4,11 @@ import java.util.ArrayList;
 
 import com.google.gson.JsonObject;
 
-import ca.concordia.encs.citydata.core.AbstractProducer;
-import ca.concordia.encs.citydata.core.IOperation;
-import ca.concordia.encs.citydata.core.IProducer;
-import ca.concordia.encs.citydata.core.IRunner;
-import ca.concordia.encs.citydata.core.RequestOptions;
+import ca.concordia.encs.citydata.core.implementations.AbstractProducer;
+import ca.concordia.encs.citydata.core.contracts.IOperation;
+import ca.concordia.encs.citydata.core.contracts.IProducer;
+import ca.concordia.encs.citydata.core.contracts.IRunner;
+import ca.concordia.encs.citydata.core.utils.RequestOptions;
 
 /*This producer can connect to a CKAN instance and fetch either dataset or resource metadata.
  * Author: Gabriel C. Ullmann 

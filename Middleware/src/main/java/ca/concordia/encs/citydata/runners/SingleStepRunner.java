@@ -6,11 +6,12 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-import ca.concordia.encs.citydata.core.AbstractRunner;
-import ca.concordia.encs.citydata.core.IOperation;
-import ca.concordia.encs.citydata.core.IProducer;
-import ca.concordia.encs.citydata.core.IRunner;
-import ca.concordia.encs.citydata.core.ReflectionUtils;
+import ca.concordia.encs.citydata.core.implementations.AbstractRunner;
+import ca.concordia.encs.citydata.core.contracts.IOperation;
+import ca.concordia.encs.citydata.core.contracts.IProducer;
+import ca.concordia.encs.citydata.core.contracts.IRunner;
+import ca.concordia.encs.citydata.core.utils.ReflectionUtils;
+import ca.concordia.encs.citydata.core.utils.StringUtils;
 import ca.concordia.encs.citydata.datastores.InMemoryDataStore;
 import ca.concordia.encs.citydata.producers.ExceptionProducer;
 
@@ -19,8 +20,8 @@ import ca.concordia.encs.citydata.producers.ExceptionProducer;
  * a given Producer with parameters. This Runner is also used by Operations 
  * that need to spawn other Producers as part of the transformation they 
  * are applying (e.g. MergeOperation).
- *
- * Author: Gabriel C. Ullmann, Rushin D. Makwana
+ * 
+ * Author: Gabriel C. Ullmann 
  * Date: 2025-02-14
  */
 public class SingleStepRunner extends AbstractRunner implements IRunner {
@@ -50,7 +51,7 @@ public class SingleStepRunner extends AbstractRunner implements IRunner {
 			// set Producer params
 			for (JsonElement param : this.targetProducerParams) {
 				final JsonObject paramObject = param.getAsJsonObject();
-				final String methodName = "set" + ReflectionUtils.capitalize(paramObject.get("name").getAsString());
+				final String methodName = "set" + StringUtils.capitalize(paramObject.get("name").getAsString());
 				for (Method method : targetProducerClass.getMethods()) {
 					if (method.getName().equals(methodName) && method.getParameterCount() == 1) {
 						final Object targetProducerParamValue = ReflectionUtils

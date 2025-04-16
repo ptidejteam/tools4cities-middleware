@@ -1,11 +1,13 @@
-package ca.concordia.encs.citydata.core;
+package ca.concordia.encs.citydata.core.implementations;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import ca.concordia.encs.citydata.core.exceptions.MiddlewareException;
+import ca.concordia.encs.citydata.core.contracts.IOperation;
+import ca.concordia.encs.citydata.core.contracts.IRunner;
+import ca.concordia.encs.citydata.core.exceptions.Exceptions;
 
 /**
  *
@@ -43,7 +45,7 @@ public abstract class AbstractOperation<E> extends MiddlewareEntity implements I
 	@Override
 	public ArrayList<E> apply(ArrayList<E> input) {
 		if (input == null || input.isEmpty()) {
-			throw new MiddlewareException.InvalidOperationParameterException(
+			throw new Exceptions.InvalidOperationParameterException(
 					"Input data is null or empty. Cannot perform the operation.");
 		}
 		System.out.println("Unimplemented method! This method must be implemented by a subclass.");

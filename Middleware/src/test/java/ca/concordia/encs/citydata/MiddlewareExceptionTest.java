@@ -8,14 +8,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import ca.concordia.encs.citydata.core.AbstractOperation;
-import ca.concordia.encs.citydata.core.exceptions.MiddlewareException;
+import ca.concordia.encs.citydata.core.exceptions.Exceptions;
 
 /* This java class contains tests for custom exceptions
  * Author: Sikandar Ejaz
  * Date: 2-8-2025
  */
 
-public class MiddlewareExceptionTest {
+public class ExceptionsTest {
 	private AbstractOperation<String> abstractOperation;
 
 	@BeforeEach
@@ -30,7 +30,7 @@ public class MiddlewareExceptionTest {
 
 	@Test
 	void testNullInputThrowsInvalidOperationParameterException() {
-		assertThatExceptionOfType(MiddlewareException.InvalidOperationParameterException.class)
+		assertThatExceptionOfType(Exceptions.InvalidOperationParameterException.class)
 				.isThrownBy(() -> abstractOperation.apply(null))
 				.withMessageContaining("Input data is null or empty. Cannot perform the operation.");
 	}

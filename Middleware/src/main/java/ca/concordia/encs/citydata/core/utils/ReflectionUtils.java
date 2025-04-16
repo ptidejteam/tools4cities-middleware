@@ -1,5 +1,4 @@
-
-package ca.concordia.encs.citydata.core;
+package ca.concordia.encs.citydata.core.utils;
 
 import java.lang.reflect.Method;
 
@@ -7,7 +6,14 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-public class ReflectionUtils {
+/**
+ * This class contains Reflection functions used throughout the code to
+ * instantiate classes, methods and fields dynamically.
+ * 
+ * @author: Rushin Makwana
+ * @date: 2025-02-01
+ */
+public abstract class ReflectionUtils {
 
 	public static JsonElement getRequiredField(JsonObject jsonObject, String fieldName) {
 		if (!jsonObject.has(fieldName)) {
@@ -58,7 +64,4 @@ public class ReflectionUtils {
 		return value.getAsString();
 	}
 
-	public static String capitalize(String str) {
-		return str == null || str.isEmpty() ? str : str.substring(0, 1).toUpperCase() + str.substring(1);
-	}
 }

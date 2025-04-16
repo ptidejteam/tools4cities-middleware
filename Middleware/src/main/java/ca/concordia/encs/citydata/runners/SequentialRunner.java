@@ -4,29 +4,36 @@ import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
-import ca.concordia.encs.citydata.core.exceptions.MiddlewareException;
+import org.springframework.stereotype.Component;
+
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
-import ca.concordia.encs.citydata.core.AbstractRunner;
-import ca.concordia.encs.citydata.core.IOperation;
-import ca.concordia.encs.citydata.core.IProducer;
-import ca.concordia.encs.citydata.core.IRunner;
-import ca.concordia.encs.citydata.core.ReflectionUtils;
+import ca.concordia.encs.citydata.core.contracts.IOperation;
+import ca.concordia.encs.citydata.core.contracts.IProducer;
+import ca.concordia.encs.citydata.core.contracts.IRunner;
+import ca.concordia.encs.citydata.core.implementations.AbstractRunner;
+import ca.concordia.encs.citydata.core.utils.ProducerUsageData;
+import ca.concordia.encs.citydata.core.utils.ReflectionUtils;
 import ca.concordia.encs.citydata.datastores.InMemoryDataStore;
+import ca.concordia.encs.citydata.datastores.MongoDataStore;
 import ca.concordia.encs.citydata.producers.ExceptionProducer;
 
-/* This Runner starts with data provided by a producer P1, then applies
+/***
+ * This Runner starts with data provided by a producer P1, then applies
  * operations in order based on P1' (P1 prime). For example: P1 + O1 = P1'. P1'
  * + O2 -> P1'', etc. It is notified via the Observer pattern when P1' is ready,
  * then proceeds to the next Operation until all operations are completed.
  *
- * Author: Gabriel C. Ullmann
- * Date: 2025-02-14
+ * @author Gabriel C. Ullmann
+ * @date 2025-02-14
  */
+@Component
 public class SequentialRunner extends AbstractRunner implements IRunner {
 
+	private MongoDataStore mongoDataStore = MongoDataStore.getInstance();
 	private JsonObject steps = null;
 	private int operationCounter = 0;
 
@@ -35,18 +42,18 @@ public class SequentialRunner extends AbstractRunner implements IRunner {
 	}
 
 	@Override
-	public void runSteps() throws MiddlewareException {
+	public void runSteps() throws Exception {
 		// if there are no steps to run, warn the user and stop
 		if (this.steps == null) {
 			this.setAsDone();
-			throw new MiddlewareException.NoStepsToRunException("No steps to run! Please provide steps so the runner can execute them.");
+			throw new RuntimeException("No steps to run! Please provide steps so the runner can execute them.");
 		}
 
 		// start by extracting Producers, Operations and their params from the query
 		System.out.println("Run started!");
 		String producerName = ReflectionUtils.getRequiredField(this.steps, "use").getAsString();
 		JsonArray producerParams = ReflectionUtils.getRequiredField(this.steps, "withParams").getAsJsonArray();
-		try {
+
 		// instantiate a new Producer instance and set its params
 		Object producerInstance = ReflectionUtils.instantiateClass(producerName);
 		ReflectionUtils.setParameters(producerInstance, producerParams);
@@ -62,9 +69,7 @@ public class SequentialRunner extends AbstractRunner implements IRunner {
 		// if there are operations, apply the first one
 		// subsequent operation will be applied on P1' once the first is done
 		this.applyNextOperation((IProducer<?>) producerInstance);
-		} catch (Exception e) {
-			throw new MiddlewareException.ReflectionOperationException("Error during reflection operation", e);
-		}
+
 	}
 
 	@Override
@@ -73,7 +78,6 @@ public class SequentialRunner extends AbstractRunner implements IRunner {
 		 * get list of operations and choose which one to execute next based on the
 		 * sequential operation counter
 		 */
-		try {
 		JsonArray operationsToApply = ReflectionUtils.getRequiredField(this.steps, "apply").getAsJsonArray();
 		int totalOperations = operationsToApply.size();
 		if (producer != null && totalOperations > 0) {
@@ -101,9 +105,6 @@ public class SequentialRunner extends AbstractRunner implements IRunner {
 		}
 
 		producer.fetch();
-		} catch (Exception e) {
-			throw new MiddlewareException.ReflectionOperationException("Error during reflection operation", e);
-		}
 
 	}
 
@@ -119,7 +120,7 @@ public class SequentialRunner extends AbstractRunner implements IRunner {
 			if (this.operationCounter >= operationsToApply.size()) {
 				this.storeResults(producer);
 				this.setAsDone();
-
+				System.out.println("Run completed!");
 			} else {
 				// if there are operations to be applied, apply the first one
 				// subsequent operations will be applied on the P1' once the first is done
@@ -156,6 +157,28 @@ public class SequentialRunner extends AbstractRunner implements IRunner {
 		InMemoryDataStore store = InMemoryDataStore.getInstance();
 		String runnerId = this.getMetadata("id").toString();
 		store.set(runnerId, producer);
+
+		String producerName = this.steps.get("use").getAsString();
+		this.storeProducerCallInfo(runnerId, this.steps.toString(), producerName);
+	}
+
+	private void storeProducerCallInfo(String runnerId, String requestBody, String producerName) {
+		ProducerUsageData callInfo = new ProducerUsageData("anonymous", new Date(), requestBody, producerName);
+		/*
+		 * If Spring does not find a MongoDB connection string in its properties, this
+		 * variable will be null. Otherwise, it will contain a value, which means a
+		 * connection to MongoDB is available.
+		 */
+		if (mongoDataStore != null && mongoDataStore.hasConnection()) {
+			List<ProducerUsageData> callInfoList = mongoDataStore.findByProducerName(producerName);
+			if (callInfoList.isEmpty()) {
+				mongoDataStore.save(callInfo);
+			} else {
+				ProducerUsageData existingCallInfo = callInfoList.get(0);
+				existingCallInfo.setTimestamp(new Date());
+				mongoDataStore.save(existingCallInfo);
+			}
+		}
 
 	}
 
