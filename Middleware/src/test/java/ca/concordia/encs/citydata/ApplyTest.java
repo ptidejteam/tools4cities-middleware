@@ -81,13 +81,14 @@ public class ApplyTest {
 				.andExpect(content().string(containsString("Sorry, your request result is not ready yet.")));
 	}
 
-	// Test for invalid runner ID Need to fix
+	// Test for invalid runner ID Need to fix -- I (Minette) fixed it, changed 404 to 400 in the status and updated expected message
 	@Test
 	public void whenInvalidRunnerId_thenReturnNotReadyMessage() throws Exception {
 		String invalidRunnerId = "nonexistent-runner-id";
-		mockMvc.perform(get("/apply/async/" + invalidRunnerId)).andExpect(status().is(404))
-				.andExpect(content().string(containsString("Sorry, your request result is not ready yet.")));
-	}
+		mockMvc.perform(get("/apply/async/" + invalidRunnerId))
+        .andExpect(status().is(400))  // Changed from 404 to 400
+        .andExpect(content().string(containsString("Invalid runner ID format. Please provide a valid UUID.")));
+	}	
 
 	// Test for ping route
 	@Test

@@ -4,6 +4,7 @@ import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.UUID;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -120,7 +121,8 @@ public class SequentialRunner extends AbstractRunner implements IRunner {
 			}
 		} catch (Exception e) {
 			InMemoryDataStore store = InMemoryDataStore.getInstance();
-			store.set(this.getMetadataString("id"), new ExceptionProducer(e));
+			// store.set(this.getMetadataString("id"), new ExceptionProducer(e));
+			store.set(this.getId(), new ExceptionProducer(e));
 
 			// stop runner as soon as an exception is thrown to avoid infinite loops
 			this.setAsDone();
@@ -147,8 +149,8 @@ public class SequentialRunner extends AbstractRunner implements IRunner {
 
 		// store producer in the datastore
 		InMemoryDataStore store = InMemoryDataStore.getInstance();
-		String runnerId = this.getMetadata("id").toString();
-		store.set(runnerId, producer);
+		UUID runnerId = this.getId();
+        store.set(runnerId, producer);
 
 	}
 

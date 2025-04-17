@@ -6,6 +6,8 @@ import static org.junit.jupiter.api.Assertions.fail;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.UUID;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -32,29 +34,32 @@ public class ExistsTest {
 
 	// Store the runnerId as an instance variable so it can be used across test
 	// methods
-	private String runnerId;
+	private UUID runnerId;
 
 	@Test
 	void testQueryExists() throws Exception {
-		// Use getExampleQuery to load a specific query from a JSON file
-		String jsonPayload = PayloadFactory.getExampleQuery("stringProducerStaticWithParams");
+	    // Use getExampleQuery to load a specific query from a JSON file
+	    String jsonPayload = PayloadFactory.getExampleQuery("stringProducerStaticWithParams");
 
-		// creating a producer
-		MvcResult syncResult = mockMvc
-				.perform(post("/apply/sync").contentType(MediaType.APPLICATION_JSON).content(jsonPayload))
-				.andExpect(status().isOk()).andReturn();
+	    // creating a producer
+	    MvcResult syncResult = mockMvc
+	        .perform(post("/apply/sync").contentType(MediaType.APPLICATION_JSON).content(jsonPayload))
+	        .andExpect(status().isOk()).andReturn();
 
-		// Get the runner ID (though not used in this particular test)
-		runnerId = syncResult.getResponse().getContentAsString();
+	    // Get the response but don't try to parse it as a UUID
+	    String resultJson = syncResult.getResponse().getContentAsString();
+	    
+	    // Store this result for later use if needed, but don't parse as UUID
+	    // If you really need a UUID for later, you'll need to extract it from the JSON
+	    
+	    // Check if the query exists
+	    MvcResult existsResult = mockMvc
+	        .perform(post("/exists/").contentType(MediaType.APPLICATION_JSON).content(jsonPayload))
+	        .andExpect(status().isOk()).andReturn();
 
-		// Check if the query exists
-		MvcResult existsResult = mockMvc
-				.perform(post("/exists/").contentType(MediaType.APPLICATION_JSON).content(jsonPayload))
-				.andExpect(status().isOk()).andReturn();
+	    String responseContent = existsResult.getResponse().getContentAsString();
 
-		String responseContent = existsResult.getResponse().getContentAsString();
-
-		assertFalse(responseContent.equals("[]"), "Response should not be an empty array");
+	    assertFalse(responseContent.equals("[]"), "Response should not be an empty array");
 	}
 
 	@Test
