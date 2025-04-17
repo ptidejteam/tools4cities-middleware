@@ -123,7 +123,7 @@ public class ApplyTest {
 
 	@Test
 	public void whenBrokenJsonQuery_thenReturnError() throws Exception {
-		String brokenJson = "{ \"use\": \"ca.concordia.encs.citydata.producers.StringProducer\", "
+		String brokenJson = "{ \"use\": \"ca.concordia.encs.citydata.producers.RandomStringProducer\", "
 				+ "\"withParams\": [ { \"name\": \"generationProcess\", \"value\": \"random\" } ";
 
 		mockMvc.perform(post("/apply/sync").contentType(MediaType.APPLICATION_JSON).content(brokenJson))
@@ -144,7 +144,7 @@ public class ApplyTest {
 	// Test for missing "withParams" field
 	@Test
 	public void whenMissingWithParamsField_thenReturnError() throws Exception {
-		String missingWithParams = "{ \"use\": \"ca.concordia.encs.citydata.producers.StringProducer\" }";
+		String missingWithParams = "{ \"use\": \"ca.concordia.encs.citydata.producers.RandomStringProducer\" }";
 
 		mockMvc.perform(post("/apply/sync").contentType(MediaType.APPLICATION_JSON).content(missingWithParams))
 				.andExpect(content().string(containsString("Missing 'withParams' field")));
@@ -153,7 +153,7 @@ public class ApplyTest {
 	// Test for non-existent param in Producer/Operation
 	@Test
 	public void whenNonExistentParam_thenReturnError() throws Exception {
-		String nonExistentParam = "{ \"use\": \"ca.concordia.encs.citydata.producers.StringProducer\", \"withParams\": [ { \"name\": \"nonExistentParam\", \"value\": \"value\" } ] }";
+		String nonExistentParam = "{ \"use\": \"ca.concordia.encs.citydata.producers.RandomStringProducer\", \"withParams\": [ { \"name\": \"nonExistentParam\", \"value\": \"value\" } ] }";
 
 		mockMvc.perform(post("/apply/sync").contentType(MediaType.APPLICATION_JSON).content(nonExistentParam))
 				.andExpect(content().string(containsString("No suitable setter found for nonExistentParam")));
@@ -163,7 +163,7 @@ public class ApplyTest {
 	// params)
 	@Test
 	public void whenMissingParamsForOperation_thenReturnError() throws Exception {
-		String missingParamsForOperation = "{ \"use\": \"ca.concordia.encs.citydata.producers.StringProducer\", \"withParams\": [ { \"name\": \"generationProcess\", \"value\": \"random\" } ], \"apply\": [ { \"name\": \"ca.concordia.encs.citydata.operations.JsonFilterOperation\" } ] }";
+		String missingParamsForOperation = "{ \"use\": \"ca.concordia.encs.citydata.producers.RandomStringProducer\", \"withParams\": [ { \"name\": \"generationProcess\", \"value\": \"random\" } ], \"apply\": [ { \"name\": \"ca.concordia.encs.citydata.operations.JsonFilterOperation\" } ] }";
 
 		mockMvc.perform(post("/apply/sync").contentType(MediaType.APPLICATION_JSON).content(missingParamsForOperation))
 				.andExpect(status().isInternalServerError())
