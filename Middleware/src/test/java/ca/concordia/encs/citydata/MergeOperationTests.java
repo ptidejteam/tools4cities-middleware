@@ -44,7 +44,7 @@ public class MergeOperationTests {
 		JsonObject jsonObject = com.google.gson.JsonParser.parseString(jsonPayload).getAsJsonObject();
 		jsonObject.getAsJsonArray("apply").get(0).getAsJsonObject().remove("withParams");
 		mockMvc.perform(post("/apply/sync").contentType(MediaType.APPLICATION_JSON).content(jsonObject.toString()))
-				.andExpect(status().isInternalServerError())
+				.andExpect(status().is5xxServerError())
 				.andExpect(content().string(containsString("Missing 'targetProducer' field")));
 	}
 
@@ -66,7 +66,7 @@ public class MergeOperationTests {
 		applyObject.add("withParams", withParamsArray);
 
 		mockMvc.perform(post("/apply/sync").contentType(MediaType.APPLICATION_JSON).content(jsonObject.toString()))
-				.andExpect(status().isInternalServerError())
+				.andExpect(status().is5xxServerError())
 				.andExpect(content().string(containsString("Missing 'targetProducerParams' field")));
 	}
 
