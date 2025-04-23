@@ -1,20 +1,20 @@
 package ca.concordia.encs.citydata.core.implementations;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
 import ca.concordia.encs.citydata.core.contracts.IOperation;
 import ca.concordia.encs.citydata.core.contracts.IRunner;
-import ca.concordia.encs.citydata.core.exceptions.Exceptions;
 
 /**
  *
  * This implements features common to all Operations, such as notifying Runners
  * 
+ * @author Gabriel C. Ullmann
+ * @date 2025-04-23
  */
-public abstract class AbstractOperation<E> extends MiddlewareEntity implements IOperation<E> {
+public abstract class AbstractOperation<E> extends AbstractEntity implements IOperation<E> {
 
 	private Set<IRunner> runners = new HashSet<>();
 
@@ -27,12 +27,6 @@ public abstract class AbstractOperation<E> extends MiddlewareEntity implements I
 		this.runners.add(aRunner);
 	}
 
-	/*
-	 * @Override public ArrayList<E> apply(ArrayList<E> input) { System.out.
-	 * println("Unimplemented method! This method must be implemented by a subclass."
-	 * ); return null; }
-	 */
-
 	@Override
 	public void notifyObservers() {
 
@@ -42,13 +36,4 @@ public abstract class AbstractOperation<E> extends MiddlewareEntity implements I
 		}
 	}
 
-	@Override
-	public ArrayList<E> apply(ArrayList<E> input) {
-		if (input == null || input.isEmpty()) {
-			throw new Exceptions.InvalidOperationParameterException(
-					"Input data is null or empty. Cannot perform the operation.");
-		}
-		System.out.println("Unimplemented method! This method must be implemented by a subclass.");
-		return null;
-	}
 }

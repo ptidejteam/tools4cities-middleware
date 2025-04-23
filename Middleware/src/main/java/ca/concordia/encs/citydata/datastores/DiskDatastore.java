@@ -8,13 +8,15 @@ import java.nio.file.Path;
 import java.util.Iterator;
 
 import ca.concordia.encs.citydata.core.contracts.IDataStore;
-import ca.concordia.encs.citydata.core.implementations.MiddlewareEntity;
+import ca.concordia.encs.citydata.core.implementations.AbstractEntity;
 
-/* A DataStore that persists information in the disk. 
- * Author: Gabriel C. Ullmann
- * Date: 2025-02-19
+/**
+ * A DataStore that persists information in the disk.
+ * 
+ * @author Gabriel C. Ullmann
+ * @date 2025-02-19
  */
-public class DiskDatastore extends MiddlewareEntity implements IDataStore<byte[]> {
+public class DiskDatastore extends AbstractEntity implements IDataStore<byte[]> {
 
 	private static final String filePrefix = ".citydata";
 	private static final String baseFolderPath = "./citydata-files/";
