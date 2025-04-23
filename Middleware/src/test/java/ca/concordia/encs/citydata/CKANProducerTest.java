@@ -35,14 +35,14 @@ public class CKANProducerTest {
 
 	// FETCHING METADATA
 	@Test
-	void testListDatasets() throws MiddlewareException {
+	void testListDatasets() throws Exception {
 		String jsonPayload = PayloadFactory.getExampleQuery("ckanMetadataProducerListDatasets");
 		mockMvc.perform(post("/apply/sync").contentType(MediaType.APPLICATION_JSON).content(jsonPayload))
 				.andExpect(status().isOk()).andExpect(content().string(containsString("montreal-buildings")));
 	}
 
 	@Test
-	void testFetchDatasetMetadata() throws MiddlewareException {
+	void testFetchDatasetMetadata() throws Exception {
 		String jsonPayload = PayloadFactory.getExampleQuery("ckanMetadataProducerDataset");
 		mockMvc.perform(post("/apply/sync").contentType(MediaType.APPLICATION_JSON).content(jsonPayload))
 				.andExpect(status().isOk())
@@ -50,7 +50,7 @@ public class CKANProducerTest {
 	}
 
 	@Test
-	void testFetchResourceMetadata() throws MiddlewareException {
+	void testFetchResourceMetadata() throws Exception {
 		String jsonPayload = PayloadFactory.getExampleQuery("ckanMetadataProducerResource");
 		mockMvc.perform(post("/apply/sync").contentType(MediaType.APPLICATION_JSON).content(jsonPayload))
 				.andExpect(status().isOk())
@@ -58,7 +58,7 @@ public class CKANProducerTest {
 	}
 
 	@Test
-	void testFetchNonExistingDatasetMetadata() throws MiddlewareException {
+	void testFetchNonExistingDatasetMetadata() throws Exception {
 		String jsonPayload = PayloadFactory.getExampleQuery("ckanMetadataProducerDataset").replace("montreal-buildings",
 				"bogus-dataset");
 		mockMvc.perform(post("/apply/sync").contentType(MediaType.APPLICATION_JSON).content(jsonPayload))
@@ -67,14 +67,14 @@ public class CKANProducerTest {
 
 	// FETCHING DATA
 	@Test
-	void testFetchResource() throws MiddlewareException {
+	void testFetchResource() throws Exception {
 		String jsonPayload = PayloadFactory.getExampleQuery("ckanProducer");
 		mockMvc.perform(post("/apply/sync").contentType(MediaType.APPLICATION_JSON).content(jsonPayload))
 				.andExpect(status().isOk()).andExpect(content().string(containsString("FeatureCollection")));
 	}
 
 	@Test
-	void testFetchResourceWithOperation() throws MiddlewareException {
+	void testFetchResourceWithOperation() throws Exception {
 		String runnerId = "";
 		String jsonPayload = PayloadFactory.getExampleQuery("ckanProducerWithReplace");
 
@@ -99,7 +99,7 @@ public class CKANProducerTest {
 	}
 
 	@Test
-	void testFetchNonExistingResource() throws MiddlewareException {
+	void testFetchNonExistingResource() throws Exception {
 		String jsonPayload = PayloadFactory.getExampleQuery("ckanProducer").replace("c67", "123");
 		mockMvc.perform(post("/apply/sync").contentType(MediaType.APPLICATION_JSON).content(jsonPayload))
 				.andExpect(status().isInternalServerError())
