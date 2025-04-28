@@ -30,6 +30,7 @@ jobs:
         HUB_USERNAME: ${{ secrets.HUB_USERNAME }},
         HUB_PASSWORD: ${{ secrets.HUB_PASSWORD }}
 
+
     steps:
     - uses: actions/checkout@v4
     - name: Set up JDK 21

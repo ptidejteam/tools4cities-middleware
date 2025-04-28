@@ -4,17 +4,21 @@ import java.util.HashMap;
 import java.util.Set;
 import java.util.UUID;
 
+import ca.concordia.encs.citydata.core.contracts.IEntity;
+
 /**
  *
- * This is the most generic blueprint of what a "thing" in the middleware should
- * be. Producers, Operations, Runners and DataStores are middleware entities.
+ * This is the most generic blueprint of what a "thing" in the CityData should
+ * be. Producers, Operations, Runners and DataStores are CityData entities.
  * 
+ * @author Gabriel C. Ullmann
+ * @date 2025-04-23
  */
-public class MiddlewareEntity {
+public abstract class AbstractEntity implements IEntity {
 
 	private HashMap<String, Object> metadata = new HashMap<>();
 
-	public MiddlewareEntity() {
+	public AbstractEntity() {
 		UUID uniqueId = UUID.randomUUID();
 		this.setMetadata("id", uniqueId.toString());
 	}

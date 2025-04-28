@@ -21,24 +21,26 @@ import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import ca.concordia.encs.citydata.core.utils.RequestOptions;
-import ca.concordia.encs.citydata.core.contracts.IOperation;
-import ca.concordia.encs.citydata.core.contracts.IProducer;
-import ca.concordia.encs.citydata.core.contracts.IRunner;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import ca.concordia.encs.citydata.core.contracts.IOperation;
+import ca.concordia.encs.citydata.core.contracts.IProducer;
+import ca.concordia.encs.citydata.core.contracts.IRunner;
 import ca.concordia.encs.citydata.core.exceptions.MiddlewareException;
+import ca.concordia.encs.citydata.core.utils.RequestOptions;
 
 /**
  *
  * This implements features common to all Producers, such as reading data from
  * files and URLs and notifying runners
  * 
+ * @author Gabriel C. Ullmann
+ * @date 2025-04-23
  */
-public abstract class AbstractProducer<E> extends MiddlewareEntity implements IProducer<E> {
+public abstract class AbstractProducer<E> extends AbstractEntity implements IProducer<E> {
 
 	protected String filePath;
 	protected RequestOptions fileOptions;
@@ -50,21 +52,10 @@ public abstract class AbstractProducer<E> extends MiddlewareEntity implements IP
 		this.setMetadata("role", "producer");
 	}
 
-	/*
-	 * @Override public void setOperation(IOperation operation) { this.operation =
-	 * operation; }
-	 */
-
 	@Override
 	public void addObserver(final IRunner aRunner) {
 		this.runners.add(aRunner);
 	}
-
-	/*
-	 * @Override public void fetch() { System.out.
-	 * println("Unimplemented method! This method must be implemented by a subclass."
-	 * ); }
-	 */
 
 	@Override
 	public void setOperation(IOperation operation) {

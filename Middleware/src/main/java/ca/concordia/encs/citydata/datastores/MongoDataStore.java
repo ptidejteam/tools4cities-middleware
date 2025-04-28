@@ -15,7 +15,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Component;
 
 import ca.concordia.encs.citydata.core.contracts.IDataStore;
-import ca.concordia.encs.citydata.core.implementations.MiddlewareEntity;
+import ca.concordia.encs.citydata.core.implementations.AbstractEntity;
 import ca.concordia.encs.citydata.core.utils.ProducerUsageData;
 
 /***
@@ -26,7 +26,7 @@ import ca.concordia.encs.citydata.core.utils.ProducerUsageData;
  * @date 2024-02-26
  */
 @Component
-public class MongoDataStore extends MiddlewareEntity implements IDataStore<ProducerUsageData> {
+public class MongoDataStore extends AbstractEntity implements IDataStore<ProducerUsageData> {
 
 	@Autowired(required = false)
 	private MongoTemplate mongoTemplate;
