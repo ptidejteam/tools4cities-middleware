@@ -1,0 +1,37 @@
+package ca.concordia.encs.citydata;
+
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+
+import java.util.ArrayList;
+
+import ca.concordia.encs.citydata.core.exceptions.MiddlewareException;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import ca.concordia.encs.citydata.core.implementations.AbstractOperation;
+
+/* This java class contains tests for custom exceptions
+ * Author: Sikandar Ejaz
+ * Date: 2-8-2025
+ */
+
+public class MiddlewareExceptionTest {
+	private AbstractOperation<String> abstractOperation;
+
+	@BeforeEach
+	void OperationsetUp() {
+		abstractOperation = new AbstractOperation<>() {
+			@Override
+			public ArrayList<String> apply(ArrayList<String> input) {
+				return super.apply(input);
+			}
+		};
+	}
+
+	@Test
+	void testNullInputThrowsInvalidOperationParameterException() {
+		assertThatExceptionOfType(MiddlewareException.InvalidOperationParameterException.class)
+				.isThrownBy(() -> abstractOperation.apply(null))
+				.withMessageContaining("Input data is null or empty. Cannot perform the operation.");
+	}
+}

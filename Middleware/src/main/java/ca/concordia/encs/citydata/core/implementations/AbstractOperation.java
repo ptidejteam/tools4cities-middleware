@@ -7,6 +7,9 @@ import java.util.Set;
 import ca.concordia.encs.citydata.core.contracts.IOperation;
 import ca.concordia.encs.citydata.core.contracts.IRunner;
 
+import ca.concordia.encs.citydata.core.exceptions.MiddlewareException;
+
+
 /**
  *
  * This implements features common to all Operations, such as notifying Runners
