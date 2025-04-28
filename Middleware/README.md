@@ -1,8 +1,10 @@
-# CityData Middleware
+![image](./docs/logo.png)
 
 ![Java](https://img.shields.io/badge/Java-orange)
 ![Apache Maven](https://github.com/ptidejteam/ptidej-Ptidej/actions/workflows/maven.yml/badge.svg)
 [![CO₂ Shield](https://img.shields.io/badge/CO₂-C_0.36g-C89806)](https://overbrowsing.com/projects/co2-shield)
+
+
 
 The CityData middleware allows users to fetch, transform, and process data from various sources using Producers and Operations.
 

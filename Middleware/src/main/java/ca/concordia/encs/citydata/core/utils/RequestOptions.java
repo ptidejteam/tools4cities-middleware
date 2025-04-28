@@ -1,10 +1,13 @@
-package ca.concordia.encs.citydata.core;
+package ca.concordia.encs.citydata.core.utils;
 
 import java.util.HashMap;
 
 /**
- * This class represents HTTP request options. Only basic options have been
- * included so far, it will be further detailed in the future.
+ * This class represents HTTP request options, such as headers. It is used by
+ * the AbstractProducer to fetch files via HTTP.
+ * 
+ * @author Gabriel C. Ullmann
+ * @date 2025-03-28
  */
 public class RequestOptions {
 	public String method;

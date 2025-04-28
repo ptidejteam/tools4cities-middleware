@@ -1,4 +1,4 @@
-package ca.concordia.encs.citydata.core;
+package ca.concordia.encs.citydata.core.contracts;
 
 import java.util.Iterator;
 import java.util.UUID;
@@ -14,14 +14,6 @@ import java.util.UUID;
  * String IDs, set, get, delete
  */
 public interface IDataStore<E> {
-
-//	void set(String key, E value);
-//
-//	E get(String key);
-//
-//	Iterator<E> getValues();
-//
-//	void delete(String key);
 
 	void set(UUID key, E value);
 	// Still support String Ids
@@ -49,7 +41,7 @@ public interface IDataStore<E> {
         if (key != null) {
             delete(UUID.fromString(key));
         }
-    }
+}
 	
 	
 

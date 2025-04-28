@@ -4,18 +4,20 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.UUID;
 
-import ca.concordia.encs.citydata.core.IDataStore;
-import ca.concordia.encs.citydata.core.IProducer;
-import ca.concordia.encs.citydata.core.MiddlewareEntity;
+import ca.concordia.encs.citydata.core.contracts.IDataStore;
+import ca.concordia.encs.citydata.core.contracts.IProducer;
+import ca.concordia.encs.citydata.core.implementations.AbstractEntity;
 
 /**
  *
  * A DataStore that stores information in RAM only rather than an actual
- * database. There is no persistence! Once the application is killed, all data
- * is lost.
+ * database. ATTENTION: There is no persistence! Once the application stops
+ * running, all data is lost.
  * 
+ * @author Gabriel C. Ullmann
+ * @date 2024-12-01
  */
-public class InMemoryDataStore extends MiddlewareEntity implements IDataStore<IProducer<?>> {
+public class InMemoryDataStore extends AbstractEntity implements IDataStore<IProducer<?>> {
 
 	private HashMap<UUID, IProducer<?>> map = new HashMap<>();
 

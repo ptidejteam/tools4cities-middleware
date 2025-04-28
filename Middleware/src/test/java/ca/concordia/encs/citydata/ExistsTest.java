@@ -17,7 +17,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
-import ca.concordia.encs.citydata.core.AppConfig;
+import ca.concordia.encs.citydata.core.configs.AppConfig;
 
 /* ExistsController tests
  * Author: Minette

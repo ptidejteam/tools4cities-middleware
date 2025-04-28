@@ -1,24 +1,25 @@
-package ca.concordia.encs.citydata.core;
+package ca.concordia.encs.citydata.core.implementations;
 
 import java.util.HashMap;
 import java.util.Set;
 import java.util.UUID;
 
+import ca.concordia.encs.citydata.core.contracts.IEntity;
+
 /**
  *
- * This is the most generic blueprint of what a "thing" in the middleware should
- * be. Producers, Operations, Runners and DataStores are middleware entities.
+ * This is the most generic blueprint of what a "thing" in the CityData should
+ * be. Producers, Operations, Runners and DataStores are CityData entities.
  * 
- * Refactoring made to allow MiddlewareEntity methods to receive and return the type java.util.UUID whenever possible.
- * Added 2 new methods getId() and getIdAsAString() to maintain compatibility where Strings are needed; and stored UUID
- * as UUIDs instead of Strings
  * 
+ * @author Gabriel C. Ullmann
+ * @date 2025-04-23
  */
-public class MiddlewareEntity {
+public abstract class AbstractEntity implements IEntity {
 
 	private HashMap<String, Object> metadata = new HashMap<>();
 
-	public MiddlewareEntity() {
+	public AbstractEntity() {
 		UUID uniqueId = UUID.randomUUID();
 		// Storing as UUID instead of uniqueId.toString()
 		this.setMetadata("id", uniqueId);

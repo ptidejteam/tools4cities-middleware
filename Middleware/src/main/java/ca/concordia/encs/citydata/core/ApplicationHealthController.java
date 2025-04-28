@@ -5,6 +5,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/***
+ * This is the running checkpoint of the Spring Boot Application.
+ * 
+ * @author Minette Zongo
+ * @date 2025-04-22
+ */
+
 @RestController
 @RequestMapping("/health")
 public class ApplicationHealthController {
@@ -13,19 +20,4 @@ public class ApplicationHealthController {
 	public String ping() {
 		return "Application up and working! ";
 	}
-
-//	@GetMapping("/bye")
-//	public String sayBye() {
-//		return "Good bye";
-//	}
-//
-//	@GetMapping("/welcome")
-//	public String sayWelcome() {
-//		return "Welcome!";
-//	}
-//
-//	@GetMapping("/{name}")
-//	public String name(@PathVariable String name) {
-//		return "Hello " + name;
-//	}
 }

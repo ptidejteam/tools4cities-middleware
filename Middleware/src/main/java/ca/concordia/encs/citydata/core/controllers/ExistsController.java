@@ -1,8 +1,10 @@
-package ca.concordia.encs.citydata.core;
+package ca.concordia.encs.citydata.core.controllers;
 
 import java.util.Iterator;
 import java.util.UUID;
 
+import ca.concordia.encs.citydata.core.contracts.IProducer;
+import ca.concordia.encs.citydata.core.implementations.AbstractProducer;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;

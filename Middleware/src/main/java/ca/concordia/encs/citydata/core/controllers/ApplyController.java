@@ -1,4 +1,4 @@
-package ca.concordia.encs.citydata.core;
+package ca.concordia.encs.citydata.core.controllers;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -17,10 +17,17 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 
+import ca.concordia.encs.citydata.core.contracts.IProducer;
 import ca.concordia.encs.citydata.datastores.InMemoryDataStore;
 import ca.concordia.encs.citydata.producers.ExceptionProducer;
 import ca.concordia.encs.citydata.runners.SequentialRunner;
 
+/***
+ * This class manages all requests sent to the /apply route
+ * 
+ * @author Gabriel C. Ullmann
+ * @date 2024-12-01
+ */
 @RestController
 @RequestMapping("/apply")
 public class ApplyController {
@@ -44,7 +51,6 @@ public class ApplyController {
 							System.out.println("Busy waiting!");
 						}
 					} catch (Exception e) {
-						// stop runner as soon as an exception is thrown to avoid infinite loops
 						deckard.setAsDone();
 						InMemoryDataStore store = InMemoryDataStore.getInstance();
 						store.set(deckard.getId(), new ExceptionProducer(e));
@@ -140,4 +146,5 @@ public class ApplyController {
 		String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(timeObject);
 		return ResponseEntity.status(HttpStatus.OK).body("pong at " + timeStamp);
 	}
+
 }

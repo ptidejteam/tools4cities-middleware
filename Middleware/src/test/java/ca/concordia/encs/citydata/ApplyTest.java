@@ -24,8 +24,8 @@ import org.springframework.web.context.WebApplicationContext;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
-import ca.concordia.encs.citydata.core.AppConfig;
-import ca.concordia.encs.citydata.core.ReflectionUtils;
+import ca.concordia.encs.citydata.core.configs.AppConfig;
+import ca.concordia.encs.citydata.core.utils.ReflectionUtils;
 
 @SpringBootTest(classes = AppConfig.class)
 @AutoConfigureMockMvc
@@ -110,7 +110,7 @@ public class ApplyTest {
 	public void testSyncWrongMediaTypeAccess() throws Exception {
 		String jsonPayload = PayloadFactory.getBasicQuery();
 		mockMvc.perform(post("/apply/sync").contentType("XXX").content(jsonPayload))
-				.andExpect(status().is5xxServerError());
+				.andExpect(status().is4xxClientError());
 	}
 
 	// Test for sync with wrong media type
@@ -216,23 +216,23 @@ public class ApplyTest {
 		assertNotNull(method);
 		assertEquals("setLength", method.getName());
 	}
+
 	@Test
 	public void testRoutesList() throws Exception {
-		mockMvc.perform(get("/routes/list"))
-				.andExpect(status().isOk())
+		mockMvc.perform(get("/routes/list")).andExpect(status().isOk())
 				.andExpect(content().string(containsString("Method: [")));
 
 	}
+
 	@Test
 	public void testOperationsList() throws Exception {
-		mockMvc.perform(get("/operations/list"))
-				.andExpect(status().isOk())
+		mockMvc.perform(get("/operations/list")).andExpect(status().isOk())
 				.andExpect(content().string(containsString("ca.concordia.encs.citydata")));
 	}
 
 	@Test
 	public void testProducersList() throws Exception {
-		mockMvc.perform(get("/producers/list"))
-				.andExpect(status().isOk())
+		mockMvc.perform(get("/producers/list")).andExpect(status().isOk())
 				.andExpect(content().string(containsString("ca.concordia.encs.citydata")));
-}}
+	}
+}

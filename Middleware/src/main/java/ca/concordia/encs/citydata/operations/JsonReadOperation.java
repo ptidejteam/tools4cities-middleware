@@ -8,8 +8,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-import ca.concordia.encs.citydata.core.AbstractOperation;
-import ca.concordia.encs.citydata.core.IOperation;
+import ca.concordia.encs.citydata.core.implementations.AbstractOperation;
+import ca.concordia.encs.citydata.core.contracts.IOperation;
 
 public class JsonReadOperation extends AbstractOperation<JsonObject> implements IOperation<JsonObject> {
 	private String path = "";
