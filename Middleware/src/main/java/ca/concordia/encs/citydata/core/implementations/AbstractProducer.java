@@ -26,14 +26,11 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-
 import ca.concordia.encs.citydata.core.contracts.IOperation;
 import ca.concordia.encs.citydata.core.contracts.IProducer;
 import ca.concordia.encs.citydata.core.contracts.IRunner;
-import ca.concordia.encs.citydata.core.exceptions.Exceptions;
-import ca.concordia.encs.citydata.core.utils.RequestOptions;
 import ca.concordia.encs.citydata.core.exceptions.MiddlewareException;
-
+import ca.concordia.encs.citydata.core.utils.RequestOptions;
 
 /**
  *
