@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Iterator;
+import java.util.UUID;
 
 import ca.concordia.encs.citydata.core.contracts.IDataStore;
 import ca.concordia.encs.citydata.core.implementations.AbstractEntity;
@@ -42,6 +43,11 @@ public class DiskDatastore extends AbstractEntity implements IDataStore<byte[]> 
 	}
 
 	@Override
+    public void set(UUID key, byte[] value) {
+        set(key.toString(), value);
+    }
+	
+	@Override
 	public void set(String key, byte[] value) {
 		String path = baseFolderPath + key + filePrefix;
 		try (FileOutputStream fos = new FileOutputStream(path)) {
@@ -51,6 +57,11 @@ public class DiskDatastore extends AbstractEntity implements IDataStore<byte[]> 
 			e.printStackTrace();
 		}
 	}
+	
+	@Override
+    public byte[] get(UUID key) {
+        return get(key.toString());
+    }
 
 	@Override
 	public byte[] get(String key) {
@@ -69,6 +80,11 @@ public class DiskDatastore extends AbstractEntity implements IDataStore<byte[]> 
 	}
 
 	@Override
+    public void delete(UUID key) {
+        delete(key.toString());
+    }
+	
+	@Override
 	public void delete(String key) {
 		Path filePath = Path.of(baseFolderPath + key + filePrefix);
 		try {
@@ -76,6 +92,6 @@ public class DiskDatastore extends AbstractEntity implements IDataStore<byte[]> 
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}
-
+    }
+	
 }

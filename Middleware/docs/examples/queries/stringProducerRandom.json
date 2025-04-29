@@ -1,5 +1,5 @@
 {
-    "use": "ca.concordia.encs.citydata.producers.StringProducer",
+    "use": "ca.concordia.encs.citydata.producers.RandomStringProducer",
     "withParams": [
         {
             "name": "generationProcess",

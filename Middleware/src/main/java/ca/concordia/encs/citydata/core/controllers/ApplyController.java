@@ -3,6 +3,7 @@ package ca.concordia.encs.citydata.core.controllers;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,14 +34,14 @@ public class ApplyController {
 
 	@RequestMapping(value = "/sync", method = RequestMethod.POST)
 	public ResponseEntity<String> sync(@RequestBody String steps) {
-		String runnerId = "";
+		UUID runnerId = null;
 		String errorMessage = "";
 		HttpStatus responseCode = HttpStatus.OK;
 
 		try {
 			JsonObject stepsObject = JsonParser.parseString(steps).getAsJsonObject();
 			SequentialRunner deckard = new SequentialRunner(stepsObject);
-			runnerId = deckard.getMetadataString("id");
+			runnerId = deckard.getId();
 			Thread runnerTask = new Thread() {
 				public void run() {
 					try {
@@ -51,7 +52,7 @@ public class ApplyController {
 					} catch (Exception e) {
 						deckard.setAsDone();
 						InMemoryDataStore store = InMemoryDataStore.getInstance();
-						store.set(deckard.getMetadataString("id"), new ExceptionProducer(e));
+						store.set(deckard.getId(), new ExceptionProducer(e));
 					}
 				}
 			};
@@ -113,25 +114,30 @@ public class ApplyController {
 		}
 
 		return ResponseEntity.status(responseCode)
-				.body("Hello! The runner " + runnerId
+				.body("Hello! The runner " + runnerId.toString()
 						+ " is currently working on your request. Please make a GET request to /apply/async/ "
-						+ runnerId + " to retrieve request results.");
+						+ runnerId.toString() + " to retrieve request results.");
 	}
 
 	@RequestMapping(value = "/async/{runnerId}", method = RequestMethod.GET)
-	public ResponseEntity<String> asyncId(@PathVariable("runnerId") String runnerId) {
+    public ResponseEntity<String> asyncId(@PathVariable("runnerId") String runnerIdStr) {
+        try {
+            UUID runnerId = UUID.fromString(runnerIdStr);
+            InMemoryDataStore store = InMemoryDataStore.getInstance();
+            IProducer<?> storeResult = store.get(runnerId);
 
-		InMemoryDataStore store = InMemoryDataStore.getInstance();
-		IProducer<?> storeResult = store.get(runnerId);
-
-		if (storeResult != null) {
-			return ResponseEntity.status(HttpStatus.OK).body(storeResult.getResultJSONString());
-		} else {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND)
-					.body("Sorry, your request result is not ready yet. Please try again later.");
-		}
-
-	}
+            if (storeResult != null) {
+                return ResponseEntity.status(HttpStatus.OK).body(storeResult.getResultJSONString());
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body("Sorry, your request result is not ready yet. Please try again later.");
+            }
+        } catch (IllegalArgumentException e) {
+            // Handle case where the provided ID is not a valid UUID
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Invalid runner ID format. Please provide a valid UUID.");
+        }
+    }
 
 	@RequestMapping(value = "/ping", method = RequestMethod.GET)
 	public ResponseEntity<String> ping() {

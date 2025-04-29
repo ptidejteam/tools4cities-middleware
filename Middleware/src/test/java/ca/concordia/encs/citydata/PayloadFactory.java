@@ -12,7 +12,7 @@ public abstract class PayloadFactory {
 
 	public static String getBasicQuery() {
 		JsonObject payload = new JsonObject();
-		payload.addProperty("use", "ca.concordia.encs.citydata.producers.StringProducer");
+		payload.addProperty("use", "ca.concordia.encs.citydata.producers.RandomStringProducer");
 
 		JsonArray withParams = new JsonArray();
 		JsonObject param1 = new JsonObject();
