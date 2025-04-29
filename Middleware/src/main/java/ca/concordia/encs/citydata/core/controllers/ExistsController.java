@@ -47,11 +47,9 @@ public class ExistsController {
 				// e.g., producers handled by the SingleStepRunner
 				if (queryInProducer != null) {
 					final UUID runnerIdFromProducer = producer.getId();
-					//final String runnerIdFromProducer = producer.getMetadataString("id");
 					final String timestamp = producer.getMetadataString("timestamp");
 					if (queryInProducer.equals(queryFromUserRequest)) {
 						final JsonObject producerMetadata = new JsonObject();
-						//producerMetadata.addProperty("runnerId", runnerIdFromProducer);
 						producerMetadata.addProperty("runnerId", runnerIdFromProducer.toString());
 						producerMetadata.addProperty("timestamp", timestamp);
 						matchingProducers.add(producerMetadata);

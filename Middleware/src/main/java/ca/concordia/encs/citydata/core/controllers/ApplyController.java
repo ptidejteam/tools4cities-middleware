@@ -34,7 +34,6 @@ public class ApplyController {
 
 	@RequestMapping(value = "/sync", method = RequestMethod.POST)
 	public ResponseEntity<String> sync(@RequestBody String steps) {
-		//String runnerId = "";
 		UUID runnerId = null;
 		String errorMessage = "";
 		HttpStatus responseCode = HttpStatus.OK;

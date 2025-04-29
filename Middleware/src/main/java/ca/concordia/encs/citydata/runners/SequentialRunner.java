@@ -129,7 +129,6 @@ public class SequentialRunner extends AbstractRunner implements IRunner {
 			}
 		} catch (Exception e) {
 			InMemoryDataStore store = InMemoryDataStore.getInstance();
-			// store.set(this.getMetadataString("id"), new ExceptionProducer(e));
 			store.set(this.getId(), new ExceptionProducer(e));
 
 			// stop runner as soon as an exception is thrown to avoid infinite loops
