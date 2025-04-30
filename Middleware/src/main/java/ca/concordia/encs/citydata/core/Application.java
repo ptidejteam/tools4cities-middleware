@@ -26,10 +26,9 @@ public class Application {
 	DiskDatastore diskStore = DiskDatastore.getInstance();
 	MongoDataStore mongoDataStore = MongoDataStore.getInstance();
 
-	public static void main(String[] args) throws IllegalArgumentException {
+	public static void main(String[] args) {
 		ApplicationContext context = SpringApplication.run(Application.class, args);
 		MongoDataStore mongoDataStore = context.getBean(MongoDataStore.class);
-
 	}
 
 }
