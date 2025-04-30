@@ -49,9 +49,12 @@ public abstract class StringUtils {
 				value = envVariables.getAsJsonObject().get(variableKey).getAsString();
 			}
 		}
-		System.out.println(
-				"===== " + variableKey + " corresponds to a " + value.length() + "-letter value. The last letter is : "
-						+ value.substring(5, value.length() - 1) + ". And it ends here");
+		if (variableKey.equals("HUB_PASSWORD")) {
+			System.out.println("===== " + variableKey + " corresponds to a " + value.length()
+					+ "-letter value. The last letter is : " + value.substring(5, value.length() - 1)
+					+ ". And it ends here");
+		}
+
 		return value;
 	}
 
