@@ -49,8 +49,7 @@ public abstract class StringUtils {
 				value = envVariables.getAsJsonObject().get(variableKey).getAsString();
 			}
 		}
-		System.out.println("===== " + variableKey + " corresponds to a " + value.length()
-				+ "-letter value. The last letter is : " + value.substring(value.length() - 1));
+		System.out.println("===== " + variableKey + " corresponds to: " + value);
 		return value;
 	}
 
