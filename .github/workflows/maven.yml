@@ -28,7 +28,7 @@ jobs:
     env:
         HUB_APPLICATION_UUID: ${{ secrets.HUB_APPLICATION_UUID }},
         HUB_USERNAME: ${{ secrets.HUB_USERNAME }},
-        HUB_PASSWORD: ${{ secrets.HUB_PASSWORD }}
+        HUB_PASSWORD: ${{ secrets.HUB_PASSWORD_2 }}
 
 
     steps:
