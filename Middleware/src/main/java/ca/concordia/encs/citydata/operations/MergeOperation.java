@@ -7,8 +7,8 @@ import java.util.Date;
 
 import com.google.gson.JsonArray;
 
-import ca.concordia.encs.citydata.core.AbstractOperation;
-import ca.concordia.encs.citydata.core.IOperation;
+import ca.concordia.encs.citydata.core.implementations.AbstractOperation;
+import ca.concordia.encs.citydata.core.contracts.IOperation;
 import ca.concordia.encs.citydata.datastores.InMemoryDataStore;
 import ca.concordia.encs.citydata.runners.SingleStepRunner;
 

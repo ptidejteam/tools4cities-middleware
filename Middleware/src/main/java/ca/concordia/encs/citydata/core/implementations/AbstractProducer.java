@@ -1,7 +1,7 @@
 /**
  * 
  */
-package ca.concordia.encs.citydata.core;
+package ca.concordia.encs.citydata.core.implementations;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -26,15 +26,21 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-import ca.concordia.encs.citydata.core.exceptions.Exceptions;
+import ca.concordia.encs.citydata.core.contracts.IOperation;
+import ca.concordia.encs.citydata.core.contracts.IProducer;
+import ca.concordia.encs.citydata.core.contracts.IRunner;
+import ca.concordia.encs.citydata.core.exceptions.MiddlewareException;
+import ca.concordia.encs.citydata.core.utils.RequestOptions;
 
 /**
  *
  * This implements features common to all Producers, such as reading data from
  * files and URLs and notifying runners
  * 
+ * @author Gabriel C. Ullmann
+ * @date 2025-04-23
  */
-public abstract class AbstractProducer<E> extends MiddlewareEntity implements IProducer<E> {
+public abstract class AbstractProducer<E> extends AbstractEntity implements IProducer<E> {
 
 	protected String filePath;
 	protected RequestOptions fileOptions;
@@ -46,26 +52,15 @@ public abstract class AbstractProducer<E> extends MiddlewareEntity implements IP
 		this.setMetadata("role", "producer");
 	}
 
-	/*
-	 * @Override public void setOperation(IOperation operation) { this.operation =
-	 * operation; }
-	 */
-
 	@Override
 	public void addObserver(final IRunner aRunner) {
 		this.runners.add(aRunner);
 	}
 
-	/*
-	 * @Override public void fetch() { System.out.
-	 * println("Unimplemented method! This method must be implemented by a subclass."
-	 * ); }
-	 */
-
 	@Override
 	public void setOperation(IOperation operation) {
 		if (operation == null) {
-			throw new Exceptions.InvalidOperationException(
+			throw new MiddlewareException.InvalidOperationException(
 					"Operation cannot be null. Please provide a valid operation.");
 		}
 		this.operation = operation;
@@ -74,7 +69,7 @@ public abstract class AbstractProducer<E> extends MiddlewareEntity implements IP
 	@Override
 	public void fetch() {
 		if (this.filePath == null || this.filePath.isEmpty()) {
-			throw new Exceptions.InvalidProducerParameterException(
+			throw new MiddlewareException.InvalidProducerParameterException(
 					"Producer file path is missing or empty. Please set a valid file path.");
 		}
 		System.out.println("Unimplemented method! This method must be implemented by a subclass.");

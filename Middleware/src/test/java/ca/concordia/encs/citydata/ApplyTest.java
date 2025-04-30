@@ -24,8 +24,8 @@ import org.springframework.web.context.WebApplicationContext;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
-import ca.concordia.encs.citydata.core.AppConfig;
-import ca.concordia.encs.citydata.core.ReflectionUtils;
+import ca.concordia.encs.citydata.core.configs.AppConfig;
+import ca.concordia.encs.citydata.core.utils.ReflectionUtils;
 
 @SpringBootTest(classes = AppConfig.class)
 @AutoConfigureMockMvc
@@ -81,13 +81,14 @@ public class ApplyTest {
 				.andExpect(content().string(containsString("Sorry, your request result is not ready yet.")));
 	}
 
-	// Test for invalid runner ID Need to fix
+	// Test for invalid runner ID Need to fix -- I (Minette) fixed it, changed 404 to 400 in the status and updated expected message
 	@Test
 	public void whenInvalidRunnerId_thenReturnNotReadyMessage() throws Exception {
 		String invalidRunnerId = "nonexistent-runner-id";
-		mockMvc.perform(get("/apply/async/" + invalidRunnerId)).andExpect(status().is(404))
-				.andExpect(content().string(containsString("Sorry, your request result is not ready yet.")));
-	}
+		mockMvc.perform(get("/apply/async/" + invalidRunnerId))
+        .andExpect(status().is(400))  // Changed from 404 to 400
+        .andExpect(content().string(containsString("Invalid runner ID format. Please provide a valid UUID.")));
+	}	
 
 	// Test for ping route
 	@Test
@@ -109,7 +110,7 @@ public class ApplyTest {
 	public void testSyncWrongMediaTypeAccess() throws Exception {
 		String jsonPayload = PayloadFactory.getBasicQuery();
 		mockMvc.perform(post("/apply/sync").contentType("XXX").content(jsonPayload))
-				.andExpect(status().is5xxServerError());
+				.andExpect(status().is4xxClientError());
 	}
 
 	// Test for sync with wrong media type
@@ -122,7 +123,7 @@ public class ApplyTest {
 
 	@Test
 	public void whenBrokenJsonQuery_thenReturnError() throws Exception {
-		String brokenJson = "{ \"use\": \"ca.concordia.encs.citydata.producers.StringProducer\", "
+		String brokenJson = "{ \"use\": \"ca.concordia.encs.citydata.producers.RandomStringProducer\", "
 				+ "\"withParams\": [ { \"name\": \"generationProcess\", \"value\": \"random\" } ";
 
 		mockMvc.perform(post("/apply/sync").contentType(MediaType.APPLICATION_JSON).content(brokenJson))
@@ -143,7 +144,7 @@ public class ApplyTest {
 	// Test for missing "withParams" field
 	@Test
 	public void whenMissingWithParamsField_thenReturnError() throws Exception {
-		String missingWithParams = "{ \"use\": \"ca.concordia.encs.citydata.producers.StringProducer\" }";
+		String missingWithParams = "{ \"use\": \"ca.concordia.encs.citydata.producers.RandomStringProducer\" }";
 
 		mockMvc.perform(post("/apply/sync").contentType(MediaType.APPLICATION_JSON).content(missingWithParams))
 				.andExpect(content().string(containsString("Missing 'withParams' field")));
@@ -152,7 +153,7 @@ public class ApplyTest {
 	// Test for non-existent param in Producer/Operation
 	@Test
 	public void whenNonExistentParam_thenReturnError() throws Exception {
-		String nonExistentParam = "{ \"use\": \"ca.concordia.encs.citydata.producers.StringProducer\", \"withParams\": [ { \"name\": \"nonExistentParam\", \"value\": \"value\" } ] }";
+		String nonExistentParam = "{ \"use\": \"ca.concordia.encs.citydata.producers.RandomStringProducer\", \"withParams\": [ { \"name\": \"nonExistentParam\", \"value\": \"value\" } ] }";
 
 		mockMvc.perform(post("/apply/sync").contentType(MediaType.APPLICATION_JSON).content(nonExistentParam))
 				.andExpect(content().string(containsString("No suitable setter found for nonExistentParam")));
@@ -162,7 +163,7 @@ public class ApplyTest {
 	// params)
 	@Test
 	public void whenMissingParamsForOperation_thenReturnError() throws Exception {
-		String missingParamsForOperation = "{ \"use\": \"ca.concordia.encs.citydata.producers.StringProducer\", \"withParams\": [ { \"name\": \"generationProcess\", \"value\": \"random\" } ], \"apply\": [ { \"name\": \"ca.concordia.encs.citydata.operations.JsonFilterOperation\" } ] }";
+		String missingParamsForOperation = "{ \"use\": \"ca.concordia.encs.citydata.producers.RandomStringProducer\", \"withParams\": [ { \"name\": \"generationProcess\", \"value\": \"random\" } ], \"apply\": [ { \"name\": \"ca.concordia.encs.citydata.operations.JsonFilterOperation\" } ] }";
 
 		mockMvc.perform(post("/apply/sync").contentType(MediaType.APPLICATION_JSON).content(missingParamsForOperation))
 				.andExpect(status().isInternalServerError())
@@ -215,23 +216,23 @@ public class ApplyTest {
 		assertNotNull(method);
 		assertEquals("setLength", method.getName());
 	}
+
 	@Test
 	public void testRoutesList() throws Exception {
-		mockMvc.perform(get("/routes/list"))
-				.andExpect(status().isOk())
+		mockMvc.perform(get("/routes/list")).andExpect(status().isOk())
 				.andExpect(content().string(containsString("Method: [")));
 
 	}
+
 	@Test
 	public void testOperationsList() throws Exception {
-		mockMvc.perform(get("/operations/list"))
-				.andExpect(status().isOk())
+		mockMvc.perform(get("/operations/list")).andExpect(status().isOk())
 				.andExpect(content().string(containsString("ca.concordia.encs.citydata")));
 	}
 
 	@Test
 	public void testProducersList() throws Exception {
-		mockMvc.perform(get("/producers/list"))
-				.andExpect(status().isOk())
+		mockMvc.perform(get("/producers/list")).andExpect(status().isOk())
 				.andExpect(content().string(containsString("ca.concordia.encs.citydata")));
-}}
+	}
+}

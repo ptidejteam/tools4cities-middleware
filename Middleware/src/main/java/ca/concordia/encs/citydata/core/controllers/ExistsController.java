@@ -1,7 +1,10 @@
-package ca.concordia.encs.citydata.core;
+package ca.concordia.encs.citydata.core.controllers;
 
 import java.util.Iterator;
+import java.util.UUID;
 
+import ca.concordia.encs.citydata.core.contracts.IProducer;
+import ca.concordia.encs.citydata.core.implementations.AbstractProducer;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -43,11 +46,11 @@ public class ExistsController {
 				// error or intermediate operation
 				// e.g., producers handled by the SingleStepRunner
 				if (queryInProducer != null) {
-					final String runnerIdFromProducer = producer.getMetadataString("id");
+					final UUID runnerIdFromProducer = producer.getId();
 					final String timestamp = producer.getMetadataString("timestamp");
 					if (queryInProducer.equals(queryFromUserRequest)) {
 						final JsonObject producerMetadata = new JsonObject();
-						producerMetadata.addProperty("runnerId", runnerIdFromProducer);
+						producerMetadata.addProperty("runnerId", runnerIdFromProducer.toString());
 						producerMetadata.addProperty("timestamp", timestamp);
 						matchingProducers.add(producerMetadata);
 					}

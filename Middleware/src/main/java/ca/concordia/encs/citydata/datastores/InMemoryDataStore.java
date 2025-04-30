@@ -2,21 +2,24 @@ package ca.concordia.encs.citydata.datastores;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.UUID;
 
-import ca.concordia.encs.citydata.core.IDataStore;
-import ca.concordia.encs.citydata.core.IProducer;
-import ca.concordia.encs.citydata.core.MiddlewareEntity;
+import ca.concordia.encs.citydata.core.contracts.IDataStore;
+import ca.concordia.encs.citydata.core.contracts.IProducer;
+import ca.concordia.encs.citydata.core.implementations.AbstractEntity;
 
 /**
  *
  * A DataStore that stores information in RAM only rather than an actual
- * database. There is no persistence! Once the application is killed, all data
- * is lost.
+ * database. ATTENTION: There is no persistence! Once the application stops
+ * running, all data is lost.
  * 
+ * @author Gabriel C. Ullmann
+ * @date 2024-12-01
  */
-public class InMemoryDataStore extends MiddlewareEntity implements IDataStore<IProducer<?>> {
+public class InMemoryDataStore extends AbstractEntity implements IDataStore<IProducer<?>> {
 
-	private HashMap<String, IProducer<?>> map = new HashMap<>();
+	private HashMap<UUID, IProducer<?>> map = new HashMap<>();
 
 	private static final InMemoryDataStore storeInstance = new InMemoryDataStore();
 
@@ -31,27 +34,27 @@ public class InMemoryDataStore extends MiddlewareEntity implements IDataStore<IP
 	}
 
 	@Override
-	public void set(String key, IProducer<?> value) {
-		map.put(key, value);
-	}
+	public void set(UUID key, IProducer<?> value) {
+        map.put(key, value);
+    }
 
 	@Override
-	public IProducer<?> get(String key) {
-		return map.get(key);
-	}
-
-	@Override
-	public Iterator<IProducer<?>> getValues() {
-		return map.values().iterator();
-	}
-
-	@Override
-	public void delete(String key) {
-		map.remove(key);
-	}
-
-	public void truncate() {
-		this.map = new HashMap<>();
-	}
+    public IProducer<?> get(UUID key) {
+        return map.get(key);
+    }
+    
+    @Override
+    public Iterator<IProducer<?>> getValues() {
+        return map.values().iterator();
+    }
+    
+    @Override
+    public void delete(UUID key) {
+        map.remove(key);
+    }
+    
+    public void truncate() {
+        this.map = new HashMap<>();
+    }
 
 }
