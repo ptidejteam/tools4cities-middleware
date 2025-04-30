@@ -82,11 +82,17 @@ public class Application {
 			int rowIndex = 0;
 			while ((record = reader.read()) != null && rowIndex < 100) {
 
-				if ("0.7686".equals(record.get("energieactivelivree_kwh").toString())) {
-					System.out.println("Row " + rowIndex + ": " + record);
-					System.out.println(convertInt96ToDateTimeString((byte[]) record.get("dateinterval")));
+//				if ("0.7686".equals(record.get("energieactivelivree_kwh").toString())) {
+				System.out.println("Row " + rowIndex + ": " + record);
+				Object date1 = record.get("dateinterval");
+				String date2 = date1.toString();
+				String date3 = date2.substring(1, date2.length() - 1);
+				String[] date4 = date3.split(",");
+				byte[] date4ByteArray = new byte[12];
+				for (int i = 0; i < 12; i++) {
+					date4ByteArray[i] = (byte) Integer.parseInt(date4[i].trim());
 				}
-
+				System.out.println(convertInt96ToDateTimeString(date4ByteArray));
 				rowIndex++;
 			}
 
