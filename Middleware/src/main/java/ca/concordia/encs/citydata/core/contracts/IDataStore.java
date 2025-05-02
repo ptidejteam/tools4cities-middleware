@@ -12,6 +12,8 @@ import java.util.UUID;
  * 
  * Refactoring made: changed the method's signature to use UUIDs instead of Strings and default methods to still handle
  * String IDs, set, get, delete
+ * @authors: Gabriel C. Ullmann, Minette Zongo
+ * Date: 2025-02-22
  */
 public interface IDataStore<E> {
 
