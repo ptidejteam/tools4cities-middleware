@@ -25,8 +25,8 @@ import ca.concordia.encs.citydata.runners.SequentialRunner;
 /***
  * This class manages all requests sent to the /apply route
  * 
- * @author Gabriel C. Ullmann
- * @date 2024-12-01
+ * @author Gabriel C. Ullmann, Minette Zongo
+ * @date 2024-12-01, 2025-02-24
  */
 @RestController
 @RequestMapping("/apply")
