@@ -65,8 +65,7 @@ public class EnergyConsumptionWithFilterTest {
                 .andExpect(content().string(containsString("result")))
                 .andReturn();
         
-        String responseContent = mvcResult.getResponse().getContentAsString();
-        System.out.println("API Response: " + responseContent);
+        String responseContent = mvcResult.getResponse().getContentAsString
         
         energyConsumptionProducer = new EnergyConsumptionProducer();
         energyConsumptionProducer.setCity("montreal");
@@ -81,11 +80,8 @@ public class EnergyConsumptionWithFilterTest {
 
         Thread runnerThread = new Thread(() -> {
             try {
-                System.out.println("Starting runner thread");
-                runner.runSteps();
-                System.out.println("Runner steps completed");
+                runner.runSteps
             } catch (Exception e) {
-                System.err.println("Runner thread error: " + e.getMessage());
                 e.printStackTrace();
             }
         });
