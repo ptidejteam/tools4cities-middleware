@@ -24,6 +24,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import ca.concordia.encs.citydata.core.configs.AppConfig;
+import ca.concordia.encs.citydata.datastores.InMemoryDataStore;
 import ca.concordia.encs.citydata.producers.EnergyConsumptionProducer;
 import ca.concordia.encs.citydata.operations.StringFilterOperation;
 import ca.concordia.encs.citydata.PayloadFactory;
@@ -92,26 +93,7 @@ public class EnergyConsumptionWithFilterTest {
         runnerThread.start();
         runnerThread.join(); 
 
-        // I'm using reflection to access private csvProducer field and be able to call getResult()'s method 
-        Field csvProducerField = EnergyConsumptionProducer.class.getDeclaredField("csvProducer");
-        csvProducerField.setAccessible(true);
-        Object csvProducer = csvProducerField.get(energyConsumptionProducer);
-
-        Method getResultMethod = csvProducer.getClass().getMethod("getResult");
-        
-        @SuppressWarnings("unchecked")
-        ArrayList<?> result = (ArrayList<?>) getResultMethod.invoke(csvProducer);
-        
-
-        if (result != null && !result.isEmpty()) {
-            int sampleSize = Math.min(3, result.size());
-            System.out.println("Sample data (first " + sampleSize + " records):");
-            for (int i = 0; i < sampleSize; i++) {
-                System.out.println(result.get(i));
-            }
-        } else {
-            System.err.println("No results returned from producer!");
-        }
+        ArrayList<?> result = InMemoryDataStore.getInstance().get(runnerId).getResult();
 
         assertNotNull(result, "Result should not be null");
         assertThat(result).isNotEmpty();
