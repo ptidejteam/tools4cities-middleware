@@ -26,7 +26,7 @@ import ca.concordia.encs.citydata.runners.SequentialRunner;
  * This class manages all requests sent to the /apply route
  * 
  * @author Gabriel C. Ullmann, Minette Zongo
- * @date 2024-12-01, 2025-02-24
+ * @date 2025-02-24
  */
 @RestController
 @RequestMapping("/apply")
@@ -120,24 +120,24 @@ public class ApplyController {
 	}
 
 	@RequestMapping(value = "/async/{runnerId}", method = RequestMethod.GET)
-    public ResponseEntity<String> asyncId(@PathVariable("runnerId") String runnerIdStr) {
-        try {
-            UUID runnerId = UUID.fromString(runnerIdStr);
-            InMemoryDataStore store = InMemoryDataStore.getInstance();
-            IProducer<?> storeResult = store.get(runnerId);
+	public ResponseEntity<String> asyncId(@PathVariable("runnerId") String runnerIdStr) {
+		try {
+			UUID runnerId = UUID.fromString(runnerIdStr);
+			InMemoryDataStore store = InMemoryDataStore.getInstance();
+			IProducer<?> storeResult = store.get(runnerId);
 
-            if (storeResult != null) {
-                return ResponseEntity.status(HttpStatus.OK).body(storeResult.getResultJSONString());
-            } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                        .body("Sorry, your request result is not ready yet. Please try again later.");
-            }
-        } catch (IllegalArgumentException e) {
-            // Handle case where the provided ID is not a valid UUID
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Invalid runner ID format. Please provide a valid UUID.");
-        }
-    }
+			if (storeResult != null) {
+				return ResponseEntity.status(HttpStatus.OK).body(storeResult.getResultJSONString());
+			} else {
+				return ResponseEntity.status(HttpStatus.NOT_FOUND)
+						.body("Sorry, your request result is not ready yet. Please try again later.");
+			}
+		} catch (IllegalArgumentException e) {
+			// Handle case where the provided ID is not a valid UUID
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+					.body("Invalid runner ID format. Please provide a valid UUID.");
+		}
+	}
 
 	@RequestMapping(value = "/ping", method = RequestMethod.GET)
 	public ResponseEntity<String> ping() {

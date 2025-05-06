@@ -1,15 +1,13 @@
 package ca.concordia.encs.citydata;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -25,80 +23,74 @@ import org.springframework.test.web.servlet.MvcResult;
 
 import ca.concordia.encs.citydata.core.configs.AppConfig;
 import ca.concordia.encs.citydata.datastores.InMemoryDataStore;
-import ca.concordia.encs.citydata.producers.EnergyConsumptionProducer;
 import ca.concordia.encs.citydata.operations.StringFilterOperation;
-import ca.concordia.encs.citydata.PayloadFactory;
+import ca.concordia.encs.citydata.producers.EnergyConsumptionProducer;
 import ca.concordia.encs.citydata.runners.SingleStepRunner;
 
 /***
- * This test validates the energy consumption data filtering through the API endpoint and also directly through 
- * the producer component.
+ * This test validates the energy consumption data filtering through the API
+ * endpoint and also directly through the producer component.
  * 
  * @author Minette Zongo M.
  * @date 2025-04-29
  */
 
-
 @SpringBootTest(classes = AppConfig.class)
 @AutoConfigureMockMvc
 @ComponentScan(basePackages = "ca.concordia.encs.citydata.core")
 public class EnergyConsumptionWithFilterTest {
-    @Autowired
-    private MockMvc mockMvc;
+	@Autowired
+	private MockMvc mockMvc;
 
-    private EnergyConsumptionProducer energyConsumptionProducer;
+	private EnergyConsumptionProducer energyConsumptionProducer;
 
-    @BeforeEach
-    void setUp() {
-        energyConsumptionProducer = new EnergyConsumptionProducer();
-    }
-    
-    @Test
-    public void testEnergyConsumptionWithTimeFilter() throws Exception {
-    	
-        String jsonPayload = PayloadFactory.getExampleQuery("energyConsumptionWithFilter");
+	@BeforeEach
+	void setUp() {
+		energyConsumptionProducer = new EnergyConsumptionProducer();
+	}
 
-        MvcResult mvcResult = mockMvc.perform(post("/apply/sync")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(jsonPayload))
-                .andExpect(status().isOk())
-                .andExpect(content().string(containsString("result")))
-                .andReturn();
-        
-        String responseContent = mvcResult.getResponse().getContentAsString
-        
-        energyConsumptionProducer = new EnergyConsumptionProducer();
-        energyConsumptionProducer.setCity("montreal");
+	@Test
+	public void testEnergyConsumptionWithTimeFilter() throws Exception {
 
-        StringFilterOperation filterOperation = new StringFilterOperation();
-        filterOperation.setFilterBy("09:45:00");
-        energyConsumptionProducer.setOperation(filterOperation);
+		String jsonPayload = PayloadFactory.getExampleQuery("energyConsumptionWithFilter");
 
-        SingleStepRunner runner = new SingleStepRunner(energyConsumptionProducer);
-        UUID runnerId = UUID.randomUUID();
-        runner.setMetadata("id", runnerId.toString());
+		MvcResult mvcResult = mockMvc
+				.perform(post("/apply/sync").contentType(MediaType.APPLICATION_JSON).content(jsonPayload))
+				.andExpect(status().isOk()).andExpect(content().string(containsString("result"))).andReturn();
 
-        Thread runnerThread = new Thread(() -> {
-            try {
-                runner.runSteps
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
+		String responseContent = mvcResult.getResponse().getContentAsString();
 
-        runnerThread.start();
-        runnerThread.join(); 
+		energyConsumptionProducer = new EnergyConsumptionProducer();
+		energyConsumptionProducer.setCity("montreal");
 
-        ArrayList<?> result = InMemoryDataStore.getInstance().get(runnerId).getResult();
+		StringFilterOperation filterOperation = new StringFilterOperation();
+		filterOperation.setFilterBy("09:45:00");
+		energyConsumptionProducer.setOperation(filterOperation);
 
-        assertNotNull(result, "Result should not be null");
-        assertThat(result).isNotEmpty();
+		SingleStepRunner runner = new SingleStepRunner(energyConsumptionProducer);
+		UUID runnerId = UUID.randomUUID();
+		runner.setMetadata("id", runnerId.toString());
 
-        for (Object item : result) {
-            String itemString = item.toString();
-            assertTrue(itemString.contains("09:45:00"),
-                    "Filtered item should contain '09:45:00': " + itemString);
-        }
-    }
-       
+		Thread runnerThread = new Thread(() -> {
+			try {
+				runner.runSteps();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		});
+
+		runnerThread.start();
+		runnerThread.join();
+
+		ArrayList<?> result = InMemoryDataStore.getInstance().get(runnerId).getResult();
+
+		assertNotNull(result, "Result should not be null");
+		assertThat(result).isNotEmpty();
+
+		for (Object item : result) {
+			String itemString = item.toString();
+			assertTrue(itemString.contains("09:45:00"), "Filtered item should contain '09:45:00': " + itemString);
+		}
+	}
+
 }
