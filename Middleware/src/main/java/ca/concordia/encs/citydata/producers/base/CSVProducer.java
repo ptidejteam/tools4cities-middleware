@@ -1,4 +1,4 @@
-package ca.concordia.encs.citydata.producers;
+package ca.concordia.encs.citydata.producers.base;
 
 import java.util.ArrayList;
 import java.util.Arrays;
