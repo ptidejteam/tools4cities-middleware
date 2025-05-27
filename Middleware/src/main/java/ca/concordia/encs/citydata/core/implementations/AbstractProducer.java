@@ -38,7 +38,7 @@ import ca.concordia.encs.citydata.core.utils.RequestOptions;
  * files and URLs and notifying runners
  * 
  * @author Gabriel C. Ullmann
- * @date 2025-04-23
+ * @date 2025-05-27
  */
 public abstract class AbstractProducer<E> extends AbstractEntity implements IProducer<E> {
 
@@ -77,14 +77,9 @@ public abstract class AbstractProducer<E> extends AbstractEntity implements IPro
 
 	@Override
 	public void notifyObservers() {
-		try {
-			for (final Iterator<IRunner> iterator = this.runners.iterator(); iterator.hasNext();) {
-
-				final IRunner runner = iterator.next();
-				runner.newDataAvailable(this);
-			}
-		} catch (final Exception e) {
-			e.printStackTrace();
+		for (final Iterator<IRunner> iterator = this.runners.iterator(); iterator.hasNext();) {
+			final IRunner runner = iterator.next();
+			runner.newDataAvailable(this);
 		}
 	}
 

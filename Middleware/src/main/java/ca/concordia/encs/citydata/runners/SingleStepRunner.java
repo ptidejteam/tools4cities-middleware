@@ -22,7 +22,7 @@ import ca.concordia.encs.citydata.producers.ExceptionProducer;
  * are applying (e.g. MergeOperation).
  * 
  * Author: Gabriel C. Ullmann 
- * Date: 2025-02-14
+ * Date: 2025-05-27
  */
 public class SingleStepRunner extends AbstractRunner implements IRunner {
 
@@ -92,12 +92,10 @@ public class SingleStepRunner extends AbstractRunner implements IRunner {
 			this.setAsDone();
 			System.out.println("Run completed!");
 		} catch (Exception e) {
+			// stop runner as soon as an exception is thrown to avoid infinite loops
 			InMemoryDataStore store = InMemoryDataStore.getInstance();
 			store.set(this.getMetadataString("id"), new ExceptionProducer(e));
-
-			// stop runner as soon as an exception is thrown to avoid infinite loops
 			this.setAsDone();
-			System.out.println(e.getMessage());
 		}
 	}
 
