@@ -3,6 +3,7 @@ package ca.concordia.encs.citydata.producers;
 import java.security.InvalidParameterException;
 
 import ca.concordia.encs.citydata.core.implementations.AbstractProducer;
+import ca.concordia.encs.citydata.producers.base.CSVProducer;
 import ca.concordia.encs.citydata.core.contracts.IOperation;
 import ca.concordia.encs.citydata.core.contracts.IProducer;
 import ca.concordia.encs.citydata.core.contracts.IRunner;
