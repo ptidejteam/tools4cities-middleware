@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.UUID;
 
-import ca.concordia.encs.citydata.core.implementations.AbstractProducer;
 import ca.concordia.encs.citydata.core.contracts.IProducer;
+import ca.concordia.encs.citydata.core.implementations.AbstractProducer;
 
 /**
  *
@@ -40,7 +40,7 @@ public class StringProducer extends AbstractProducer<String> implements IProduce
 
 		// if this is running for the first time, fetch
 		// otherwise, just apply next operation on top of previous result
-		if (this.result == null) {
+		if (this.result.isEmpty()) {
 
 			if (this.generationProcess.equalsIgnoreCase("processInput")) {
 				resultSet.add(this.inputString);
