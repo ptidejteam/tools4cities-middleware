@@ -52,4 +52,16 @@ public class MiddlewareException extends RuntimeException {
 			super(message);
 		}
 	}
+
+	public static class DataStoreException extends MiddlewareException {
+		public DataStoreException(String message) {
+			super("Data store error: " + message);
+		}
+	}
+
+	public static class ThreadInterruptedException extends MiddlewareException {
+		public ThreadInterruptedException(String message) {
+			super(message);
+		}
+	}
 }

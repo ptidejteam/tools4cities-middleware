@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.UUID;
 
 import ca.concordia.encs.citydata.core.contracts.IDataStore;
+import ca.concordia.encs.citydata.core.exceptions.MiddlewareException;
 import ca.concordia.encs.citydata.core.implementations.AbstractEntity;
 
 /**
@@ -54,7 +55,7 @@ public class DiskDatastore extends AbstractEntity implements IDataStore<byte[]> 
 			fos.write(value);
 			System.out.println("Data saved successfully!");
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw new MiddlewareException.DataStoreException("Failed to save data to disk: " + e.getMessage());
 		}
 	}
 	
@@ -69,7 +70,7 @@ public class DiskDatastore extends AbstractEntity implements IDataStore<byte[]> 
 		try {
 			return Files.readAllBytes(filePath);
 		} catch (IOException e) {
-			return null;
+			throw new MiddlewareException.DataStoreException("Failed to retrieve data from disk: " + e.getMessage());
 		}
 	}
 
@@ -90,7 +91,7 @@ public class DiskDatastore extends AbstractEntity implements IDataStore<byte[]> 
 		try {
 			Files.delete(filePath);
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw new MiddlewareException.DataStoreException("Failed to delete data from disk: " + e.getMessage());
 		}
     }
 	
