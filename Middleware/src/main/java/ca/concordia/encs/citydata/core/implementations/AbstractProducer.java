@@ -46,7 +46,7 @@ public abstract class AbstractProducer<E> extends AbstractEntity implements IPro
 	protected RequestOptions fileOptions;
 	public IOperation<E> operation;
 	private Set<IRunner> runners = new HashSet<>();
-	protected ArrayList<E> result;
+	protected ArrayList<E> result = new ArrayList<>();
 
 	public AbstractProducer() {
 		this.setMetadata("role", "producer");
@@ -95,31 +95,6 @@ public abstract class AbstractProducer<E> extends AbstractEntity implements IPro
 	@Override
 	public ArrayList<E> getResult() {
 		return this.result;
-	}
-
-	@Override
-	// if this is a JsonObject, JsonElement or JsonArray producer, stringify the
-	// JsonObject
-	// else, forcibly cast the result into string, but also put it in a JSON for
-	// return
-	public String getResultJSONString() {
-		JsonArray jsonArray = new JsonArray();
-		if (this.result == null) {
-			return null;
-		} else if (this.result.size() > 0 && this.result.get(0) instanceof JsonObject) {
-			for (E el : this.result) {
-				jsonArray.add((JsonObject) el);
-			}
-		} else if (this.result.size() > 0 && this.result.get(0) instanceof JsonElement) {
-			for (E el : this.result) {
-				jsonArray.add((JsonElement) el);
-			}
-		} else {
-			JsonObject result = new JsonObject();
-			result.addProperty("result", this.result.toString());
-			jsonArray.add(result);
-		}
-		return jsonArray.toString();
 	}
 
 	/**
@@ -200,5 +175,20 @@ public abstract class AbstractProducer<E> extends AbstractEntity implements IPro
 			throw new RuntimeException("An error occured while fetching the data: ", e);
 		}
 
+	}
+
+	@Override
+	public String toString() {
+		JsonArray jsonArray = new JsonArray();
+		if (!this.result.isEmpty() && this.result.getFirst() instanceof JsonElement) {
+			for (E element : this.result) {
+				jsonArray.add((JsonElement) element);
+			}
+		} else {
+			JsonObject result = new JsonObject();
+			result.addProperty("result", this.result.toString());
+			jsonArray.add(result);
+		}
+		return jsonArray.toString();
 	}
 }
