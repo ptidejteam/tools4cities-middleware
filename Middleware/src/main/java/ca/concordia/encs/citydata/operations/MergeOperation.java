@@ -69,7 +69,7 @@ public class MergeOperation extends AbstractOperation<String> implements IOperat
 			}
 
 		} catch (InterruptedException e) {
-			throw new MiddlewareException.ThreadInterruptedException("Thread was interrupted during execution." +e.getMessage());
+			throw new MiddlewareException.ThreadInterruptedException("Thread was interrupted during execution. " + e.getMessage());
 		}
 
 		return sourceList;
