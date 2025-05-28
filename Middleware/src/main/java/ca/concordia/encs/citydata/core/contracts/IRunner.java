@@ -28,6 +28,6 @@ public interface IRunner {
 	// receiving notifications from other entities
 	void newOperationApplied(IOperation<?> operation);
 
-	void newDataAvailable(IProducer<?> producer) throws Exception;
+	void newDataAvailable(IProducer<?> producer);
 
 }
