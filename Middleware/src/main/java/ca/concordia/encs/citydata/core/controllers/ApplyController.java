@@ -81,10 +81,10 @@ public class ApplyController {
 		// return an error code
 		if (resultProducer.getClass() == ExceptionProducer.class) {
 			responseCode = HttpStatus.INTERNAL_SERVER_ERROR;
-			return ResponseEntity.status(responseCode).body(resultProducer.getResultJSONString());
+			return ResponseEntity.status(responseCode).body(resultProducer.toString());
 		}
 
-		return ResponseEntity.status(responseCode).body(resultProducer.getResultJSONString());
+		return ResponseEntity.status(responseCode).body(resultProducer.toString());
 	}
 
 	@RequestMapping(value = "/async", method = RequestMethod.POST)
@@ -127,7 +127,7 @@ public class ApplyController {
             IProducer<?> storeResult = store.get(runnerId);
 
             if (storeResult != null) {
-                return ResponseEntity.status(HttpStatus.OK).body(storeResult.getResultJSONString());
+                return ResponseEntity.status(HttpStatus.OK).body(storeResult.toString());
             } else {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .body("Sorry, your request result is not ready yet. Please try again later.");

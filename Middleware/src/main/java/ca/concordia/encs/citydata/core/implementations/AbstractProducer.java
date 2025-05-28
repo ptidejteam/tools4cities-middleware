@@ -97,25 +97,6 @@ public abstract class AbstractProducer<E> extends AbstractEntity implements IPro
 		return this.result;
 	}
 
-	@Override
-	// if this is a JsonObject, JsonElement or JsonArray producer, stringify the
-	// JsonObject
-	// else, forcibly cast the result into string, but also put it in a JSON for
-	// return
-	public String getResultJSONString() {
-		JsonArray jsonArray = new JsonArray();
-		if (!this.result.isEmpty() && this.result.getFirst() instanceof JsonElement) {
-			for (E element : this.result) {
-				jsonArray.add((JsonElement) element);
-			}
-		} else {
-			JsonObject result = new JsonObject();
-			result.addProperty("result", this.result.toString());
-			jsonArray.add(result);
-		}
-		return jsonArray.toString();
-	}
-
 	/**
 	 * Fetch file via HTTP GET or POST
 	 */
@@ -194,5 +175,20 @@ public abstract class AbstractProducer<E> extends AbstractEntity implements IPro
 			throw new RuntimeException("An error occured while fetching the data: ", e);
 		}
 
+	}
+
+	@Override
+	public String toString() {
+		JsonArray jsonArray = new JsonArray();
+		if (!this.result.isEmpty() && this.result.getFirst() instanceof JsonElement) {
+			for (E element : this.result) {
+				jsonArray.add((JsonElement) element);
+			}
+		} else {
+			JsonObject result = new JsonObject();
+			result.addProperty("result", this.result.toString());
+			jsonArray.add(result);
+		}
+		return jsonArray.toString();
 	}
 }
