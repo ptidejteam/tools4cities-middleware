@@ -6,6 +6,13 @@ import java.util.Random;
 import ca.concordia.encs.citydata.core.contracts.IProducer;
 import ca.concordia.encs.citydata.core.implementations.AbstractProducer;
 
+/**
+ *
+ * This Producer outputs random integers. For test only.
+ * 
+ * @author Gabriel C. Ullmann
+ * @date 2025-05-28
+ */
 public class RandomNumberProducer extends AbstractProducer<Integer> implements IProducer<Integer> {
 	private int listSize;
 	private int generationDelay;

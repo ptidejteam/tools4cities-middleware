@@ -9,8 +9,10 @@ import ca.concordia.encs.citydata.core.implementations.AbstractProducer;
 
 /**
  *
- * This Producer outputs both random or pre-defined strings. For test only.
+ * This Producer outputs random strings. For test only.
  * 
+ * @author Gabriel C. Ullmann, Minette Zongo
+ * @date 2025-05-28
  */
 public class RandomStringProducer extends AbstractProducer<String> implements IProducer<String> {
 

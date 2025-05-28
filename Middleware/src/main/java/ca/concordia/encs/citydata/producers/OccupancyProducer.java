@@ -6,6 +6,13 @@ import java.util.Random;
 import ca.concordia.encs.citydata.core.contracts.IProducer;
 import ca.concordia.encs.citydata.core.implementations.AbstractProducer;
 
+/**
+ *
+ * This Producer simulates an occupancy sensor.
+ * 
+ * @author Sikandar Ejaz, Gabriel C. Ullmann
+ * @date 2025-05-28
+ */
 public class OccupancyProducer extends AbstractProducer<String> implements IProducer<String> {
 	private int listSize;
 
