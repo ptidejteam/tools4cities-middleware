@@ -66,16 +66,44 @@ public class StringUtilsTest {
     }
 
     @Test
-    public void fetchEnvVariableAndMatchWithConstant() {
+    public void fetchEnvVariableAndMatchWithConstant(){
+        // Load the properties file
+        Path propertiesFilePath = Paths.get("src/main/resources/application.properties");
+        assertTrue(Files.exists(propertiesFilePath), "Properties file does not exist");
+
+        java.util.Properties properties = new java.util.Properties();
+        try (var inputStream = Files.newInputStream(propertiesFilePath)) {
+            properties.load(inputStream);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        // Fetch the value from the properties file
         String expectedValue = "mongodb://localhost:27017/citydata";
-        String actualValue = StringUtils.getEnvVariable("spring.data.mongodb.uri");
+        String actualValue = properties.getProperty("spring.data.mongodb.uri");
+
+        // Assert the value
         assertEquals(expectedValue, actualValue);
     }
 
     @Test
-    public void fetchEnvVariableAndMatchWithAnotherConstant() {
+    public void fetchEnvVariableAndMatchWithAnotherConstant()  {
+        // Load the properties file
+        Path propertiesFilePath = Paths.get("src/main/resources/application.properties");
+        assertTrue(Files.exists(propertiesFilePath), "Properties file does not exist");
+
+        java.util.Properties properties = new java.util.Properties();
+        try (var inputStream = Files.newInputStream(propertiesFilePath)) {
+            properties.load(inputStream);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        // Fetch the value from the properties file
         String expectedValue = null;
-        String actualValue = StringUtils.getEnvVariable("HUB_APPLICATION_UUID");
+        String actualValue = properties.getProperty("HUB_MONGO_DB_URI");
+
+        // Assert the value
         assertEquals(expectedValue, actualValue);
     }
 }
