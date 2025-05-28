@@ -58,10 +58,32 @@ public class MiddlewareException extends RuntimeException {
 			super("Data store error: " + message);
 		}
 	}
+	public static class DataStoreWritingFailureException extends MiddlewareException {
+		public DataStoreWritingFailureException(String message) {
+			super("Data store writing failure: " + message);
+		}
+	}
+	public static class DataStoreFailureReadingException extends MiddlewareException {
+		public DataStoreFailureReadingException(String message) {
+			super("Data store reading failure: " + message);
+		}
+	}
+
+	public static class DataStoreDeleteFailureException extends MiddlewareException {
+		public DataStoreDeleteFailureException(String message) {
+			super("Data store deletion failure: " + message);
+		}
+	}
 
 	public static class ThreadInterruptedException extends MiddlewareException {
 		public ThreadInterruptedException(String message) {
 			super(message);
 		}
 	}
+	public static class NoSuitableSetterException extends MiddlewareException {
+		public NoSuitableSetterException(String message) {
+			super(message);
+		}
+	}
+
 }

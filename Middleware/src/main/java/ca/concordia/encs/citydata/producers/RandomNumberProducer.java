@@ -3,7 +3,7 @@ package ca.concordia.encs.citydata.producers;
 import java.util.ArrayList;
 import java.util.Random;
 
-import ca.concordia.encs.citydata.core.exceptions.MiddlewareException;
+import ca.concordia.encs.citydata.core.exceptions.MiddlewareException.ThreadInterruptedException;
 import ca.concordia.encs.citydata.core.implementations.AbstractProducer;
 import ca.concordia.encs.citydata.core.contracts.IProducer;
 
@@ -37,7 +37,7 @@ public class RandomNumberProducer extends AbstractProducer<Integer> implements I
 			}
 			this.applyOperation();
 		} catch (InterruptedException e) {
-			throw new MiddlewareException.ThreadInterruptedException(
+			throw new ThreadInterruptedException(
 					"Thread was interrupted while generating random numbers: " + e.getMessage());
 		}
 	}

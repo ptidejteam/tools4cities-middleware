@@ -9,12 +9,12 @@ import java.util.Iterator;
 import java.util.UUID;
 
 import ca.concordia.encs.citydata.core.contracts.IDataStore;
-import ca.concordia.encs.citydata.core.exceptions.MiddlewareException;
 import ca.concordia.encs.citydata.core.implementations.AbstractEntity;
+import ca.concordia.encs.citydata.core.exceptions.MiddlewareException.*;
 
 /**
  * A DataStore that persists information in the disk.
- * 
+ *
  * @author Gabriel C. Ullmann
  * @date 2025-02-19
  */
@@ -47,7 +47,7 @@ public class DiskDatastore extends AbstractEntity implements IDataStore<byte[]> 
     public void set(UUID key, byte[] value) {
         set(key.toString(), value);
     }
-	
+
 	@Override
 	public void set(String key, byte[] value) {
 		String path = baseFolderPath + key + filePrefix;
@@ -55,10 +55,10 @@ public class DiskDatastore extends AbstractEntity implements IDataStore<byte[]> 
 			fos.write(value);
 			System.out.println("Data saved successfully!");
 		} catch (IOException e) {
-			throw new MiddlewareException.DataStoreException("Failed to save data to disk: " + e.getMessage());
+			throw new DataStoreWritingFailureException("Failed to save data to disk: " + e.getMessage());
 		}
 	}
-	
+
 	@Override
     public byte[] get(UUID key) {
         return get(key.toString());
@@ -70,7 +70,7 @@ public class DiskDatastore extends AbstractEntity implements IDataStore<byte[]> 
 		try {
 			return Files.readAllBytes(filePath);
 		} catch (IOException e) {
-			throw new MiddlewareException.DataStoreException("Failed to retrieve data from disk: " + e.getMessage());
+			throw new DataStoreFailureReadingException("Failed to retrieve data from disk: " + e.getMessage());
 		}
 	}
 
@@ -84,15 +84,15 @@ public class DiskDatastore extends AbstractEntity implements IDataStore<byte[]> 
     public void delete(UUID key) {
         delete(key.toString());
     }
-	
+
 	@Override
 	public void delete(String key) {
 		Path filePath = Path.of(baseFolderPath + key + filePrefix);
 		try {
 			Files.delete(filePath);
 		} catch (IOException e) {
-			throw new MiddlewareException.DataStoreException("Failed to delete data from disk: " + e.getMessage());
+			throw new DataStoreDeleteFailureException("Failed to delete data from disk: " + e.getMessage());
 		}
     }
-	
+
 }

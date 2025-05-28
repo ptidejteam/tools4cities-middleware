@@ -48,7 +48,7 @@ public class SequentialRunner extends AbstractRunner implements IRunner {
 		// if there are no steps to run, warn the user and stop
 		if (this.steps == null) {
 			this.setAsDone();
-			throw new MiddlewareException("No steps to run! Please provide steps so the runner can execute them.");
+			throw new MiddlewareException.NoStepsToRunException("No steps to run! Please provide steps so the runner can execute them.");
 		}
 
 		// start by extracting Producers, Operations and their params from the query
