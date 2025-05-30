@@ -29,6 +29,4 @@ public interface IProducer<E> {
 	// 4 - output data
 	ArrayList<E> getResult();
 
-	String getResultJSONString();
-
 }

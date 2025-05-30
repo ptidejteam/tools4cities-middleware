@@ -29,7 +29,7 @@ import ca.concordia.encs.citydata.producers.ExceptionProducer;
  * then proceeds to the next Operation until all operations are completed.
  *
  * @author Gabriel C. Ullmann
- * @date 2025-02-14
+ * @date 2025-05-27
  */
 @Component
 public class SequentialRunner extends AbstractRunner implements IRunner {
@@ -128,12 +128,10 @@ public class SequentialRunner extends AbstractRunner implements IRunner {
 				this.applyNextOperation(producer);
 			}
 		} catch (Exception e) {
+			// stop runner as soon as an exception is thrown to avoid infinite loops
 			InMemoryDataStore store = InMemoryDataStore.getInstance();
 			store.set(this.getId(), new ExceptionProducer(e));
-
-			// stop runner as soon as an exception is thrown to avoid infinite loops
 			this.setAsDone();
-			System.out.println(e.getMessage());
 		}
 
 	}

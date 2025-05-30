@@ -15,7 +15,7 @@ import ca.concordia.encs.citydata.core.exceptions.MiddlewareException;
  * This implements features common to all Operations, such as notifying Runners
  * 
  * @author Gabriel C. Ullmann
- * @date 2025-04-23
+ * @date 2025-05-27
  */
 public abstract class AbstractOperation<E> extends AbstractEntity implements IOperation<E> {
 
@@ -32,7 +32,6 @@ public abstract class AbstractOperation<E> extends AbstractEntity implements IOp
 
 	@Override
 	public void notifyObservers() {
-
 		for (final Iterator<IRunner> iterator = this.runners.iterator(); iterator.hasNext();) {
 			final IRunner runner = iterator.next();
 			runner.newOperationApplied(this);
