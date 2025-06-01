@@ -31,7 +31,7 @@ public class EnergyConsumptionProducer extends AbstractProducer<JsonArray> imple
 	public void setCity(String city) {
 		this.city = city;
 		if (this.city != null) {
-			this.cityConsumptionDataset = "/Users/gabrielullmann/Desktop/citydata-hq/data/OPE_Consommation.parquet";
+			this.cityConsumptionDataset = "./src/test/data/" + this.city + "_energy_consumption.parquet";
 		} else {
 			throw new InvalidParameterException("Please provide a city name to the producer.");
 		}
