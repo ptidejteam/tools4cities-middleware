@@ -89,7 +89,8 @@ public class EnergyConsumptionWithFilterTest {
 
 		for (Object item : result) {
 			String itemString = item.toString();
-			assertTrue(itemString.contains("00:00:00"), "Filtered item should contain '00:00:00': " + itemString);
+			assertTrue(itemString.contains("2021-09-01 00:00:00"),
+					"Filtered item should contain '2021-09-01 00:00:00': " + itemString);
 		}
 	}
 
