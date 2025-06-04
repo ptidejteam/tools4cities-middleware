@@ -39,10 +39,6 @@ public class EnergyConsumptionProducer extends AbstractProducer<JsonArray> imple
 		this.city = city;
 		if (this.city != null) {
 			this.cityConsumptionDataset = "./src/test/data/" + this.city + "_energy_consumption.parquet";
-			File f = new File(this.cityConsumptionDataset);
-			if (!f.exists()) {
-				throw new DatasetNotFound(this.city);
-			}
 		} else {
 			throw new InvalidParameterException("Please provide a city name to the producer.");
 		}
@@ -89,6 +85,10 @@ public class EnergyConsumptionProducer extends AbstractProducer<JsonArray> imple
 		LocalDateTime localStartDate = StringUtils.parseDate(this.startDatetime);
 		LocalDateTime localEndDate = StringUtils.parseDate(this.endDatetime);
 
+		File f = new File(this.cityConsumptionDataset);
+		if (!f.exists()) {
+			throw new DatasetNotFound(this.city);
+		}
 		if (this.clientId == null || this.clientId < 0) {
 			throw new IllegalArgumentException("Please inform a clientId from 0 to 72947.");
 		}
