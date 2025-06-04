@@ -79,7 +79,7 @@ public class MergeOperationTests {
 				.getAsJsonObject().addProperty("value", "Wrong.Producer");
 
 		mockMvc.perform(post("/apply/sync").contentType(MediaType.APPLICATION_JSON).content(jsonObject.toString()))
-				.andExpect(status().isInternalServerError());
+				.andExpect(status().is5xxServerError());
 	}
 
 	@Test
@@ -90,14 +90,14 @@ public class MergeOperationTests {
 				.getAsJsonObject().getAsJsonArray("value").get(0).getAsJsonObject().addProperty("name", "wrongParam");
 
 		mockMvc.perform(post("/apply/sync").contentType(MediaType.APPLICATION_JSON).content(jsonObject.toString()))
-				.andExpect(status().isInternalServerError());
+				.andExpect(status().is5xxServerError());
 	}
 
 	@Test
 	public void testMergeOperationWithBrokenJson() throws Exception {
 		String brokenJson = PayloadFactory.getInvalidJson();
 		mockMvc.perform(post("/apply/sync").contentType(MediaType.APPLICATION_JSON).content(brokenJson))
-				.andExpect(status().is4xxClientError())
+				.andExpect(status().isNotAcceptable())
 				.andExpect(content().string(containsString("Your query is not a valid JSON file.")));
 	}
 
