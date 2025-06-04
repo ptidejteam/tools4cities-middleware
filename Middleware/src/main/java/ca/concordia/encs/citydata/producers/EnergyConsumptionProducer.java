@@ -14,15 +14,10 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import ca.concordia.encs.citydata.core.contracts.IProducer;
+import ca.concordia.encs.citydata.core.exceptions.MiddlewareException;
 import ca.concordia.encs.citydata.core.exceptions.MiddlewareException.DatasetNotFound;
 import ca.concordia.encs.citydata.core.implementations.AbstractProducer;
 import ca.concordia.encs.citydata.core.utils.StringUtils;
-
-/*
- * 2.556.132.960 records
- * 2021-09-01 00:00:00
- * 2022-08-31 23:45:00
- */
 
 /**
  *
@@ -146,7 +141,7 @@ public class EnergyConsumptionProducer extends AbstractProducer<JsonArray> imple
 			rs.close();
 			stmt.close();
 			conn.close();
-		} catch (SQLException | IllegalArgumentException e) {
+		} catch (SQLException | IllegalArgumentException | MiddlewareException e) {
 			JsonObject resultRow = new JsonObject();
 			resultRow.addProperty("error", e.getMessage());
 			resultsArray.add(resultRow);
