@@ -30,7 +30,7 @@ import ca.concordia.encs.citydata.runners.SingleStepRunner;
  * This test validates the energy consumption data filtering through the API
  * endpoint and also directly through the producer component.
  * 
- * @author Minette Zongo M.
+ * @author Minette Zongo M., Gabriel C. Ullmann
  * @date 2025-04-29
  */
 
@@ -58,13 +58,14 @@ public class EnergyConsumptionWithFilterTest {
 				.andExpect(status().isOk()).andExpect(content().string(containsString("clientId"))).andReturn();
 
 		String responseContent = mvcResult.getResponse().getContentAsString();
-		System.out.println("API Response: " + responseContent);
+		assertThat(responseContent).isNotEmpty();
 
+		// test by direct instantiation of producer
 		energyConsumptionProducer = new EnergyConsumptionProducer();
 		energyConsumptionProducer.setCity("montreal");
-		energyConsumptionProducer.setStartDatetime("2021-09-01 09:00:00");
-		energyConsumptionProducer.setEndDatetime("2021-09-01 10:00:00");
-		energyConsumptionProducer.setClientId(123);
+		energyConsumptionProducer.setStartDatetime("2021-09-01 00:00:00");
+		energyConsumptionProducer.setEndDatetime("2021-09-01 23:59:00");
+		energyConsumptionProducer.setClientId(1);
 
 		SingleStepRunner runner = new SingleStepRunner(energyConsumptionProducer);
 		UUID runnerId = UUID.randomUUID();
@@ -72,9 +73,7 @@ public class EnergyConsumptionWithFilterTest {
 
 		Thread runnerThread = new Thread(() -> {
 			try {
-				System.out.println("Starting runner thread");
 				runner.runSteps();
-				System.out.println("Runner steps completed");
 			} catch (Exception e) {
 				System.err.println("Runner thread error: " + e.getMessage());
 				e.printStackTrace();
@@ -90,8 +89,16 @@ public class EnergyConsumptionWithFilterTest {
 
 		for (Object item : result) {
 			String itemString = item.toString();
-			assertTrue(itemString.contains("09:45:00"), "Filtered item should contain '09:45:00': " + itemString);
+			assertTrue(itemString.contains("00:00:00"), "Filtered item should contain '00:00:00': " + itemString);
 		}
+	}
+
+	@Test
+	public void testEnergyConsumptionWithAverage() throws Exception {
+		String jsonPayload = PayloadFactory.getExampleQuery("energyConsumptionAverage");
+		mockMvc.perform(post("/apply/sync").contentType(MediaType.APPLICATION_JSON).content(jsonPayload))
+				.andExpect(status().isOk()).andExpect(content().string(containsString("0.35069153"))).andReturn();
+
 	}
 
 }
