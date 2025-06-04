@@ -79,7 +79,7 @@ public class MergeOperationTests {
 				.getAsJsonObject().addProperty("value", "Wrong.Producer");
 
 		mockMvc.perform(post("/apply/sync").contentType(MediaType.APPLICATION_JSON).content(jsonObject.toString()))
-				.andExpect(status().is5xxServerError());
+				.andExpect(status().is4xxClientError());
 	}
 
 	@Test
