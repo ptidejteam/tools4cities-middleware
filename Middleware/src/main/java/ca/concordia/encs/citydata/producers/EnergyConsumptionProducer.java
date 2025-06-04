@@ -1,5 +1,6 @@
 package ca.concordia.encs.citydata.producers;
 
+import java.io.File;
 import java.security.InvalidParameterException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -13,6 +14,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import ca.concordia.encs.citydata.core.contracts.IProducer;
+import ca.concordia.encs.citydata.core.exceptions.MiddlewareException.DatasetNotFound;
 import ca.concordia.encs.citydata.core.implementations.AbstractProducer;
 import ca.concordia.encs.citydata.core.utils.StringUtils;
 
@@ -20,6 +22,16 @@ import ca.concordia.encs.citydata.core.utils.StringUtils;
  * 2.556.132.960 records
  * 2021-09-01 00:00:00
  * 2022-08-31 23:45:00
+ */
+
+/**
+ *
+ * This Producer provide energy consumption data read from a Parquet file which
+ * must be provided by the CityData instance. If no file is found, this producer
+ * will return an message telling the user no data is available.
+ * 
+ * @author Gabriel C. Ullmann, Minette Zongo
+ * @date 2025-05-28
  */
 public class EnergyConsumptionProducer extends AbstractProducer<JsonArray> implements IProducer<JsonArray> {
 	private String city;
@@ -32,6 +44,10 @@ public class EnergyConsumptionProducer extends AbstractProducer<JsonArray> imple
 		this.city = city;
 		if (this.city != null) {
 			this.cityConsumptionDataset = "./src/test/data/" + this.city + "_energy_consumption.parquet";
+			File f = new File(this.cityConsumptionDataset);
+			if (!f.exists()) {
+				throw new DatasetNotFound(this.city);
+			}
 		} else {
 			throw new InvalidParameterException("Please provide a city name to the producer.");
 		}
@@ -74,10 +90,11 @@ public class EnergyConsumptionProducer extends AbstractProducer<JsonArray> imple
 	}
 
 	private void validateParams() {
+		int MAX_QUERY_DAYS = 30;
 		LocalDateTime localStartDate = StringUtils.parseDate(this.startDatetime);
 		LocalDateTime localEndDate = StringUtils.parseDate(this.endDatetime);
 
-		if (this.clientId == null) {
+		if (this.clientId == null || this.clientId < 0) {
 			throw new IllegalArgumentException("Please inform a clientId from 0 to 72947.");
 		}
 		if (localStartDate == null || localEndDate == null) {
@@ -86,8 +103,9 @@ public class EnergyConsumptionProducer extends AbstractProducer<JsonArray> imple
 		if (!localStartDate.isBefore(localEndDate)) {
 			throw new IllegalArgumentException("Please inform a start date that is before the end date.");
 		}
-		if (localStartDate.plusDays(30).isBefore(localEndDate)) {
-			throw new IllegalArgumentException("Please inform a time period no longer than 30 days.");
+		if (localStartDate.plusDays(MAX_QUERY_DAYS).isBefore(localEndDate)) {
+			throw new IllegalArgumentException(
+					"Please inform a time period no longer than " + MAX_QUERY_DAYS + " days.");
 		}
 	}
 
